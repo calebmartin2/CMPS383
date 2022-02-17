@@ -1,0 +1,101 @@
+image: mcr.microsoft.com/dotnet/sdk:6.0
+
+options:
+  max-time: 15
+pipelines:
+  default:
+    - parallel:
+        - step:
+            name: "Build/Test Web"
+            script:
+              - sleep 10
+              - dotnet test SP22.P05.Tests.Web
+            services:
+              - sqlserver
+        - step:
+            name: "Build/Test Mobile"
+            deployment: test-mobile
+            caches:
+              - npm
+            script:
+              - curl -sL https://deb.nodesource.com/setup_16.x | bash -
+              - apt-get install -y nodejs
+              - apt-get install -y build-essential
+              - apt-get update
+              - cd SP22-P05-Mobile
+              - npm install -g expo-cli
+              - npm ci
+              - expo install expo-updates
+              - expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
+              - expo publish --non-interactive --release-channel ci
+  branches:
+    master:
+      - parallel:
+          - step:
+              name: "Build/Test/Publish Web"
+              script:
+                - curl -sL https://deb.nodesource.com/setup_16.x | bash -
+                - apt-get install -y nodejs
+                - apt-get install -y build-essential
+                - apt-get update
+                - apt-get install --yes zip
+                - sleep 10
+                - dotnet test SP22.P05.Tests.Web
+                - dotnet publish SP22.P05.Web --output publish
+                - cd publish && zip -r web-$BITBUCKET_BUILD_NUMBER.zip .
+              services:
+                - sqlserver
+              artifacts:
+                - publish/*.zip
+          - step:
+              name: "Build/Test/Publish Expo"
+              deployment: test-mobile
+              caches:
+                - npm
+              script:
+                - curl -sL https://deb.nodesource.com/setup_16.x | bash -
+                - apt-get install -y nodejs
+                - apt-get install -y build-essential
+                - apt-get update
+                - cd SP22-P05-Mobile
+                - npm install -g expo-cli
+                - npm install -g eas-cli
+                - npm ci
+                - expo install expo-updates
+                - expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
+                - expo publish --non-interactive
+                - export EAS_NO_VCS=1
+                - eas build --platform android --no-wait --non-interactive
+      - step:
+          name: "Deploy to Azure"
+          deployment: test
+          script:
+            - pipe: microsoft/azure-web-apps-deploy:1.0.0
+              variables:
+                AZURE_APP_ID: $AZURE_APP_ID
+                AZURE_PASSWORD: $AZURE_PASSWORD
+                AZURE_TENANT_ID: $AZURE_TENANT_ID
+                AZURE_RESOURCE_GROUP: "sp22-p05-g##"
+                AZURE_APP_NAME: "selu383-sp22-p05-g##"
+                ZIP_FILE: "publish/web-$BITBUCKET_BUILD_NUMBER.zip"
+      - step:
+          name: "Check API Health"
+          script:
+            - curl -s https://selu383-sp22-p05-g##.azurewebsites.net/api/products
+            - sleep 10
+            - curl -sSf https://selu383-sp22-p05-g##.azurewebsites.net/api/products
+      - step:
+          name: "Check React Web Health"
+          script:
+            - curl -sSf https://selu383-sp22-p05-g##.azurewebsites.net/manifest.json
+
+definitions:
+  caches:
+    npm: ~/.npm
+  services:
+    sqlserver:
+      image: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+      memory: 2048
+      variables:
+        ACCEPT_EULA: Y
+        SA_PASSWORD: Password123!
