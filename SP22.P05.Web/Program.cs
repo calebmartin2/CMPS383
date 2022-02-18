@@ -5,7 +5,7 @@ using SP22.P05.Web.Features.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataContext")));
 
-builder.Services.AddIdentity<User,Role>()
+builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<DataContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -57,6 +57,16 @@ app.UseAuthorization();
 app.UseEndpoints(x =>
 {
     x.MapControllers();
+});
+
+app.UseStaticFiles();
+app.UseSpa(spaBuilder =>
+{
+    spaBuilder.Options.SourcePath = "ClientApp";
+    if (app.Environment.IsDevelopment())
+    {
+        spaBuilder.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+    }
 });
 
 app.Run();
