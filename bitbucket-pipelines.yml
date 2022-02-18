@@ -75,19 +75,19 @@ pipelines:
                 AZURE_APP_ID: $AZURE_APP_ID
                 AZURE_PASSWORD: $AZURE_PASSWORD
                 AZURE_TENANT_ID: $AZURE_TENANT_ID
-                AZURE_RESOURCE_GROUP: "sp22-p05-g##"
-                AZURE_APP_NAME: "selu383-sp22-p05-g##"
+                AZURE_RESOURCE_GROUP: "sp22-p05-g01"
+                AZURE_APP_NAME: "selu383-sp22-p05-g01"
                 ZIP_FILE: "publish/web-$BITBUCKET_BUILD_NUMBER.zip"
       - step:
           name: "Check API Health"
           script:
-            - curl -s https://selu383-sp22-p05-g##.azurewebsites.net/api/products
+            - curl -s https://selu383-sp22-p05-g01.azurewebsites.net/api/products
             - sleep 10
-            - curl -sSf https://selu383-sp22-p05-g##.azurewebsites.net/api/products
+            - curl -sSf https://selu383-sp22-p05-g01.azurewebsites.net/api/products
       - step:
           name: "Check React Web Health"
           script:
-            - curl -sSf https://selu383-sp22-p05-g##.azurewebsites.net/manifest.json
+            - curl -sSf https://selu383-sp22-p05-g01.azurewebsites.net/manifest.json
 
 definitions:
   caches:
