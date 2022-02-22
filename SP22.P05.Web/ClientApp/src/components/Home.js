@@ -7,7 +7,7 @@ export function Home() {
 
   useEffect(() => {
     async function fetchProducts() {
-      axios.get('localhost:5001/api/products')
+      axios.get('https://localhost:5001/api/products')
         .then(function (response) {
           console.log(response.data);
           const data = response.data;
