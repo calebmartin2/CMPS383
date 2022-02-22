@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SP22.P05.Web.Data;
 using SP22.P05.Web.Features.Authorization;
-using System.Web.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataContext")));
