@@ -93,8 +93,33 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
+        else if (!current.IsActive)
+        {
+            return BadRequest("Product is already inactive.");
+        }
 
-        products.Remove(current);
+        current.IsActive = false;
+        dataContext.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPut("UnDeleteProduct/{id}")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public ActionResult<ProductDto> UnDeleteProduct(int id)
+    {
+        var products = dataContext.Set<Product>();
+        var current = products.FirstOrDefault(x => x.Id == id);
+        if (current == null)
+        {
+            return NotFound();
+        }
+        else if (current.IsActive)
+        {
+            return BadRequest("Product is already active.");
+        }
+
+        current.IsActive = true;
         dataContext.SaveChanges();
 
         return Ok();
