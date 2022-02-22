@@ -10,6 +10,7 @@ public class Product
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public bool IsActive { get; set; }
 
     public virtual ICollection<SaleEventProduct> SaleEventProducts { get; set; } = new List<SaleEventProduct>();
 }
@@ -24,5 +25,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(x => x.Description)
             .IsRequired();
+
+        builder.Property(x => x.IsActive)
+           .HasDefaultValue(true)
+           .IsRequired();
     }
 }

@@ -21,7 +21,7 @@ public class ProductsController : ControllerBase
     public ProductDto[] GetAllProducts()
     {
         var products = dataContext.Set<Product>();
-        return GetProductDtos(products).ToArray();
+        return GetProductDtos(products.Where(x => x.IsActive)).ToArray();
     }
 
     [HttpGet]
