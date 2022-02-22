@@ -19,7 +19,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = RoleNames.Admin)]
+    //[Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<UserDto>> Create(CreateUserDto dto)
     {
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
@@ -31,7 +31,7 @@ public class UsersController : ControllerBase
         var createResult = await userManager.CreateAsync(newUser, dto.Password);
         if (!createResult.Succeeded)
         {
-            return BadRequest();
+            return BadRequest("Cannot create user (possible bad password).");
         }
 
         try
@@ -39,12 +39,12 @@ public class UsersController : ControllerBase
             var roleResult = await userManager.AddToRolesAsync(newUser, dto.Roles);
             if (!roleResult.Succeeded)
             {
-                return BadRequest();
+                return BadRequest("Cannot add user to role");
             }
         }
         catch (InvalidOperationException e) when(e.Message.StartsWith("Role") && e.Message.EndsWith("does not exist."))
         {
-            return BadRequest();
+            return BadRequest("Role does not exist");
         }
 
         transaction.Complete();
