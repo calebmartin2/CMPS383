@@ -1,6 +1,6 @@
 import { Navbar, Container  } from "react-bootstrap";
 
-export function NavMenu() {
+export function Navmenu() {
     return (
     <Navbar expand="lg" variant="light" bg="light">
         <Container>
