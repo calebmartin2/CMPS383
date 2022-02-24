@@ -4,7 +4,7 @@
 
 namespace SP22.P03.Web.Migrations
 {
-    public partial class AddingPublishers : Migration
+    public partial class AddingPublisherInfo : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,20 +20,10 @@ namespace SP22.P03.Web.Migrations
                 table: "Product",
                 column: "PublisherId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Product_AspNetUsers_PublisherId",
-                table: "Product",
-                column: "PublisherId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.NoAction);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Product_AspNetUsers_PublisherId",
-                table: "Product");
 
             migrationBuilder.DropIndex(
                 name: "IX_Product_PublisherId",

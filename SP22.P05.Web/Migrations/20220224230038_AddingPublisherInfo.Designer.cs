@@ -12,8 +12,8 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220224224223_AddingPublishers")]
-    partial class AddingPublishers
+    [Migration("20220224230038_AddingPublisherInfo")]
+    partial class AddingPublisherInfo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
