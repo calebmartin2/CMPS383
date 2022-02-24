@@ -47,7 +47,8 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
+
     public ActionResult<ProductDto> CreateProduct(ProductDto productDto)
     {
         var product = new Product
@@ -65,7 +66,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> UpdateProduct(int id, ProductDto productDto)
     {
         var products = dataContext.Set<Product>();
@@ -84,7 +85,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> DeleteProduct(int id)
     {
         var products = dataContext.Set<Product>();
@@ -105,7 +106,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("UnDeleteProduct/{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> UnDeleteProduct(int id)
     {
         var products = dataContext.Set<Product>();

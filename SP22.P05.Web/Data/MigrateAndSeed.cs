@@ -48,6 +48,15 @@ public static class MigrateAndSeed
     private static async Task AddRoles(IServiceProvider services)
     {
         var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        // Got to be a better way than this. Checking to see if publisher already exists, if not, add it.
+        if (roleManager.Roles.Count(x => x.Name == RoleNames.Publisher) == 0)
+        {
+            await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.Publisher
+            });
+        }
+
         if (roleManager.Roles.Any())
         {
             return;
@@ -78,7 +87,7 @@ public static class MigrateAndSeed
             Name = "Spring Sale",
             StartUtc = DateTimeOffset.UtcNow,
             EndUtc = DateTimeOffset.UtcNow.AddDays(1),
-            Products = 
+            Products =
             {
                 new SaleEventProduct
                 {
