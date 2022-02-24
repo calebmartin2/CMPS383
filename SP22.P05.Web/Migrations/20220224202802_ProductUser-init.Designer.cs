@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SP22.P05.Web.Data;
 
@@ -11,9 +12,10 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220224202802_ProductUser-init")]
+    partial class ProductUserinit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,7 +127,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductUser", (string)null);
+                    b.ToTable("ProductUser");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.Role", b =>
@@ -266,14 +268,9 @@ namespace SP22.P03.Web.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("PublisherId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("PublisherId");
-
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEvent", b =>
@@ -297,7 +294,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SaleEvent", (string)null);
+                    b.ToTable("SaleEvent");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEventProduct", b =>
@@ -323,7 +320,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("SaleEventId");
 
-                    b.ToTable("SaleEventProduct", (string)null);
+                    b.ToTable("SaleEventProduct");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -398,17 +395,6 @@ namespace SP22.P03.Web.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SP22.P05.Web.Features.Products.Product", b =>
-                {
-                    b.HasOne("SP22.P05.Web.Features.Authorization.User", "Publisher")
-                        .WithMany()
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Publisher");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEventProduct", b =>

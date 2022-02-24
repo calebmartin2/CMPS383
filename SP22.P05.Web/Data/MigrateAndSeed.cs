@@ -48,20 +48,30 @@ public static class MigrateAndSeed
     private static async Task AddRoles(IServiceProvider services)
     {
         var roleManager = services.GetRequiredService<RoleManager<Role>>();
-        if (roleManager.Roles.Any())
+
+        if (!await roleManager.RoleExistsAsync(RoleNames.Admin))
         {
-            return;
+            await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.Admin
+            });
         }
 
-        await roleManager.CreateAsync(new Role
+        if (!await roleManager.RoleExistsAsync(RoleNames.User))
         {
-            Name = RoleNames.Admin
-        });
+            await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.User
+            });
+        }
 
-        await roleManager.CreateAsync(new Role
+        if (!await roleManager.RoleExistsAsync(RoleNames.Publisher))
         {
-            Name = RoleNames.User
-        });
+            await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.Publisher
+            });
+        }
     }
 
     private static void AddSaleEvent(DataContext context)
@@ -78,7 +88,7 @@ public static class MigrateAndSeed
             Name = "Spring Sale",
             StartUtc = DateTimeOffset.UtcNow,
             EndUtc = DateTimeOffset.UtcNow.AddDays(1),
-            Products = 
+            Products =
             {
                 new SaleEventProduct
                 {
