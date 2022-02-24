@@ -65,10 +65,9 @@ app.UseSpa(spaBuilder =>
     spaBuilder.Options.SourcePath = "ClientApp";
     if (app.Environment.IsDevelopment())
     {
-        spaBuilder.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+        spaBuilder.UseProxyToSpaDevelopmentServer("https://localhost:3000");
     }
 });
-
 app.Run();
 
 namespace SP22.P05.Web

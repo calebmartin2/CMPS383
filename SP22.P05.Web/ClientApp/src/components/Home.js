@@ -1,5 +1,5 @@
-import Button from 'react-bootstrap/Button';
-import { Link } from "react-router-dom";
+import axios from "axios";
+import React, { useState, useEffect } from 'react';
 
 export function Home() {
   const [products, setProducts] = useState([]);
@@ -32,3 +32,4 @@ export function Home() {
     </>
   );
 }
+
