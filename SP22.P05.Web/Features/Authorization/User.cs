@@ -6,5 +6,5 @@ namespace SP22.P05.Web.Features.Authorization;
 public class User : IdentityUser<int>
 {
     public virtual ICollection<UserRole> Roles { get; set; } = new List<UserRole>();
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<ProductUser> Products { get; set; } = new List<ProductUser>();
 }

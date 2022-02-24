@@ -14,6 +14,8 @@ public class Product
     public bool IsActive { get; set; }
 
     public virtual ICollection<SaleEventProduct> SaleEventProducts { get; set; } = new List<SaleEventProduct>();
+    public virtual ICollection<ProductUser> Users { get; set; } = new List<ProductUser>();
+
 
 }
 
