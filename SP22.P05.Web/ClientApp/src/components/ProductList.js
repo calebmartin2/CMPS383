@@ -8,7 +8,6 @@ export function ProductList() {
 
     const [products, setProducts] = useState([]);
 
-
     useEffect(() => {
         async function fetchProducts() {
             axios.get('/api/products')
@@ -24,18 +23,14 @@ export function ProductList() {
         fetchProducts();
     }, [])
 
-
     return (
         <>
             <div className="ProductList">
                 <Row xs={2} md={3} className="g-4" >
-
-
                     {products.map((product) => (
                         <ProductCard key={product.id} myProduct={product} />
                     ))
                     }
-
                 </Row>
             </div>
         </>

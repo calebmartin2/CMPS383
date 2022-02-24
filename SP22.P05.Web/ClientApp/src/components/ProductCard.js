@@ -4,13 +4,12 @@ export function ProductCard({ myProduct }) {
     return (
         <Col>
 
-        <Card className="ProductCard">
+        <Card className="ProductCard h-100">
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body>
                 <Card.Title>{myProduct.name}</Card.Title>
                 <Card.Text>
-                    This is a longer card with supporting text below as a natural
-                    lead-in to additional content. This content is a little bit longer.
+                    {myProduct.description}
                 </Card.Text>
             </Card.Body>
         </Card>
