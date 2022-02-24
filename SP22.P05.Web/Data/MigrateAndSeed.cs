@@ -48,29 +48,30 @@ public static class MigrateAndSeed
     private static async Task AddRoles(IServiceProvider services)
     {
         var roleManager = services.GetRequiredService<RoleManager<Role>>();
-        // Got to be a better way than this. Checking to see if publisher already exists, if not, add it.
-        if (roleManager.Roles.Count(x => x.Name == RoleNames.Publisher) == 0)
+
+        if (!await roleManager.RoleExistsAsync(RoleNames.Admin))
+        {
+            await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.Admin
+            });
+        }
+
+        if (!await roleManager.RoleExistsAsync(RoleNames.User))
+        {
+            await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.User
+            });
+        }
+
+        if (!await roleManager.RoleExistsAsync(RoleNames.Publisher))
         {
             await roleManager.CreateAsync(new Role
             {
                 Name = RoleNames.Publisher
             });
         }
-
-        if (roleManager.Roles.Any())
-        {
-            return;
-        }
-
-        await roleManager.CreateAsync(new Role
-        {
-            Name = RoleNames.Admin
-        });
-
-        await roleManager.CreateAsync(new Role
-        {
-            Name = RoleNames.User
-        });
     }
 
     private static void AddSaleEvent(DataContext context)
