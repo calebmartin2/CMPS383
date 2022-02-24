@@ -58,6 +58,9 @@ public class ProductsController : ControllerBase
 
     public ActionResult<ProductDto> CreateProduct(ProductDto productDto)
     {
+        //Find publisher's name
+        var products = dataContext.Set<ProductUser>();
+
         var product = new Product
         {
             Name = productDto.Name,
