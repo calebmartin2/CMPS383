@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SP22.P05.Web.Data;
+using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
 
@@ -58,19 +59,25 @@ public class ProductsController : ControllerBase
 
     public ActionResult<ProductDto> CreateProduct(ProductDto productDto)
     {
-        //Find publisher's name
-        var products = dataContext.Set<ProductUser>();
+        var publisherId = User.GetCurrentUserId();
+        var publisherName = User.GetCurrentUserName();
+        if (publisherId == null)
+        {
+            return BadRequest();
+        }
 
         var product = new Product
         {
             Name = productDto.Name,
             Description = productDto.Description,
-            Price = productDto.Price
+            Price = productDto.Price,
+            PublisherId = (int)publisherId
         };
 
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
+        productDto.PublisherName = publisherName;
 
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productDto);
     }
