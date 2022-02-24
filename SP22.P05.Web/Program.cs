@@ -27,7 +27,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddCors();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -51,7 +50,6 @@ app.UseHttpsRedirection();
 // added to make things work with the SPA
 app.UseRouting();
 
-app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -67,7 +65,7 @@ app.UseSpa(spaBuilder =>
     spaBuilder.Options.SourcePath = "ClientApp";
     if (app.Environment.IsDevelopment())
     {
-        spaBuilder.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+        spaBuilder.UseProxyToSpaDevelopmentServer("https://localhost:3000");
     }
 });
 app.Run();
