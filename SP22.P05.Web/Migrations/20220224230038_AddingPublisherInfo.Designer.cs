@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SP22.P05.Web.Data;
 
@@ -11,9 +12,10 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220224230038_AddingPublisherInfo")]
+    partial class AddingPublisherInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,7 +127,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductUser", (string)null);
+                    b.ToTable("ProductUser");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.Role", b =>
@@ -273,7 +275,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEvent", b =>
@@ -297,7 +299,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SaleEvent", (string)null);
+                    b.ToTable("SaleEvent");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEventProduct", b =>
@@ -323,7 +325,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("SaleEventId");
 
-                    b.ToTable("SaleEventProduct", (string)null);
+                    b.ToTable("SaleEventProduct");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

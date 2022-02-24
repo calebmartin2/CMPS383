@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SP22.P05.Web.Data;
+using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
 
@@ -46,26 +47,43 @@ public class ProductsController : ControllerBase
         return GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
     }
 
+    //[HttpPost]
+    //[Route("buy-product")]
+    //public ActionResult BuyProduct(int id)
+    //{
+
+    //}
+
     [HttpPost]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
+
     public ActionResult<ProductDto> CreateProduct(ProductDto productDto)
     {
+        var publisherId = User.GetCurrentUserId();
+        var publisherName = User.GetCurrentUserName();
+        if (publisherId == null)
+        {
+            return BadRequest();
+        }
+
         var product = new Product
         {
             Name = productDto.Name,
             Description = productDto.Description,
-            Price = productDto.Price
+            Price = productDto.Price,
+            PublisherId = (int)publisherId
         };
 
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
+        productDto.PublisherName = publisherName;
 
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productDto);
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> UpdateProduct(int id, ProductDto productDto)
     {
         var products = dataContext.Set<Product>();
@@ -84,7 +102,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> DeleteProduct(int id)
     {
         var products = dataContext.Set<Product>();
@@ -105,7 +123,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("UnDeleteProduct/{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> UnDeleteProduct(int id)
     {
         var products = dataContext.Set<Product>();

@@ -18,4 +18,6 @@ public class ProductDto
     public decimal? SalePrice { get; set; }
 
     public DateTimeOffset? SaleEndUtc { get; set; }
+    public string? PublisherName { get; set; }
+
 }
