@@ -46,6 +46,13 @@ public class ProductsController : ControllerBase
         return GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
     }
 
+    //[HttpPost]
+    //[Route("buy-product")]
+    //public ActionResult BuyProduct(int id)
+    //{
+
+    //}
+
     [HttpPost]
     [Authorize(Roles = RoleNames.AdminOrPublisher)]
 

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Sales;
 
 namespace SP22.P05.Web.Features.Products;
@@ -13,6 +14,7 @@ public class Product
     public bool IsActive { get; set; }
 
     public virtual ICollection<SaleEventProduct> SaleEventProducts { get; set; } = new List<SaleEventProduct>();
+
 }
 
 public class ProductConfiguration : IEntityTypeConfiguration<Product>
