@@ -6,7 +6,6 @@ namespace SP22.P05.Web.Features.Authorization;
 
 public class UserInfo
 {
-    public int Id { get; set; }
     public User? User { get; set; }
     public int UserId { get; set; }
     [MaxLength(120)]
@@ -21,7 +20,7 @@ public class UserInfoConfiguration : IEntityTypeConfiguration<UserInfo>
 {
     public void Configure(EntityTypeBuilder<UserInfo> builder)
     {
-
+        builder.HasKey(x => x.UserId);
         builder
             .HasOne(x => x.User)
             .WithOne(x => x.UserInfo)

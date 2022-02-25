@@ -6,8 +6,6 @@ namespace SP22.P05.Web.Features.Authorization;
 
 public class PublisherInfo
 {
-    public int Id { get; set; }
-    [Key]
     public User? User { get; set; }
     public int UserId { get; set; }
     [MaxLength(120)]
@@ -17,6 +15,8 @@ public class PublisherInfoConfiguration : IEntityTypeConfiguration<PublisherInfo
 {
     public void Configure(EntityTypeBuilder<PublisherInfo> builder)
     {
+
+        builder.HasKey(x => x.UserId);
 
         builder
             .HasOne(x => x.User)
