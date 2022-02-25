@@ -24,7 +24,7 @@ public static class MigrateAndSeed
     {
         var userManager = services.GetRequiredService<UserManager<User>>();
         var tempPublisher = await userManager.FindByNameAsync("alice");
-        var publishers = context.Set<SaleEvent>();
+        var publishers = context.Set<PublisherInfo>();
         if (publishers.Any())
         {
             return;

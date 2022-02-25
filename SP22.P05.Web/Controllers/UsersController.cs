@@ -12,10 +12,12 @@ namespace SP22.P05.Web.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly UserManager<User> userManager;
+    private readonly DataContext dataContext;
 
-    public UsersController(UserManager<User> userManager)
+    public UsersController(UserManager<User> userManager, DataContext dataContext)
     {
         this.userManager = userManager;
+        this.dataContext = dataContext;
     }
 
     [HttpPost]
@@ -93,5 +95,49 @@ public class UsersController : ControllerBase
             UserName = newUser.UserName,
         });
     }
+    [HttpPost("create-publisher")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<UserDto>> CreatePublisher(CreatePublisherDto dto)
+    {
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
+        var newPublisher = new User
+        {
+            UserName = dto.UserName,
+        };
+        var createResult = await userManager.CreateAsync(newPublisher, dto.Password);
+        if (!createResult.Succeeded)
+        {
+            return BadRequest("Cannot create user (possible bad password).");
+        }
+
+        try
+        {
+            var roleResult = await userManager.AddToRoleAsync(newPublisher, RoleNames.Publisher);
+            if (!roleResult.Succeeded)
+            {
+                return BadRequest("Cannot add user to role");
+            }
+        }
+        catch (InvalidOperationException e) when (e.Message.StartsWith("Role") && e.Message.EndsWith("does not exist."))
+        {
+            return BadRequest("Role does not exist");
+        }
+
+        var publisherInfo = new PublisherInfo
+        {
+            UserId = newPublisher.Id,
+            CompanyName = dto.CompanyName,
+        };
+        dataContext.Add(publisherInfo);
+        dataContext.SaveChanges();
+
+        transaction.Complete();
+        return Ok(new PublisherDto
+        {
+            Id = newPublisher.Id,
+            UserName = newPublisher.UserName,
+            CompanyName = dto.CompanyName,
+        });
+    }
 }

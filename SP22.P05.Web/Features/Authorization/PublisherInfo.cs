@@ -9,6 +9,7 @@ public class PublisherInfo
     public User? User { get; set; }
     public int UserId { get; set; }
     [MaxLength(120)]
+    [Required]
     public string CompanyName { get; set; } = string.Empty;
 }
 public class PublisherInfoConfiguration : IEntityTypeConfiguration<PublisherInfo>
