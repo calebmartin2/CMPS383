@@ -47,13 +47,6 @@ public class ProductsController : ControllerBase
         return GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
     }
 
-    //[HttpPost]
-    //[Route("buy-product")]
-    //public ActionResult BuyProduct(int id)
-    //{
-
-    //}
-
     [HttpPost]
     [Authorize(Roles = RoleNames.AdminOrPublisher)]
 
@@ -160,6 +153,8 @@ public class ProductsController : ControllerBase
                 Price = x.Product.Price,
                 SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
+                PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.UserName
+
             });
     }
 }

@@ -12,8 +12,8 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220224230038_AddingPublisherInfo")]
-    partial class AddingPublisherInfo
+    [Migration("20220225003250_PublisherIdValues")]
+    partial class PublisherIdValues
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -269,7 +269,9 @@ namespace SP22.P03.Web.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("PublisherId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.HasKey("Id");
 

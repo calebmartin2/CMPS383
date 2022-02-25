@@ -34,5 +34,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.IsActive)
            .HasDefaultValue(true)
            .IsRequired();
+
+        builder.Property(x => x.PublisherId)
+            .HasDefaultValue(1);
     }
 }
