@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from 'react';
 import { ProductCard } from "./ProductCard";
-import { Card, Row, Col } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import './ProductList.css'
 
 export function ProductList() {

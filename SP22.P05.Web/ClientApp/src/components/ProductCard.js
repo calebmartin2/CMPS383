@@ -1,4 +1,4 @@
-import { Card, Row, Col } from "react-bootstrap";
+import { Card, Col } from "react-bootstrap";
 import './ProductList.css'
 export function ProductCard({ myProduct }) {
     return (
