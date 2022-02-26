@@ -5,7 +5,7 @@ import { Row } from "react-bootstrap";
 import './ProductList.css'
 
 export function ProductList() {
-
+    document.title = "ICE - Store"
     const [products, setProducts] = useState([]);
 
     useEffect(() => {

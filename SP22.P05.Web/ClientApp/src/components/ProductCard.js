@@ -4,7 +4,7 @@ export function ProductCard({ myProduct }) {
     return (
         <Col>
 
-        <Card className="ProductCard h-100">
+        <Card className="ProductCard h-100" bg="black" text="white">
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body>
                 <Card.Title>{myProduct.name}</Card.Title>

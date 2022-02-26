@@ -1,4 +1,10 @@
 .ProductList {
-    margin: 3em auto;
     max-width: 80%;
+    margin: 1em auto;
+    float: none;
+}
+
+.ProductCard {
+    border-width: 0.15em !important; /*TODO: Figure out a better way than using !important*/
+    border-color: #00d7ff !important;
 }
