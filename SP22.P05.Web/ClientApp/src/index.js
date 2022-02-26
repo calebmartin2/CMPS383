@@ -5,7 +5,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.css';
-
+import "@fontsource/roboto"
+import "@fontsource/roboto/700.css"
 
 ReactDOM.render(
   <BrowserRouter>

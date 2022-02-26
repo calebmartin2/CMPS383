@@ -7,7 +7,7 @@ export function ProductCard({ myProduct }) {
         <Card className="ProductCard h-100" bg="black" text="white">
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body>
-                <Card.Title>{myProduct.name}</Card.Title>
+                <Card.Title style= {{fontWeight: 700}}>{myProduct.name}</Card.Title>
                 <Card.Text>
                     {myProduct.description}
                 </Card.Text>
