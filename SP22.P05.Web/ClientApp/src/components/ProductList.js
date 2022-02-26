@@ -25,7 +25,7 @@ export function ProductList() {
 
     return (
         <>
-            <div className="ProductList">
+            <div className="ProductList mx-auto text-break">
                 <Row xs={2} md={3} className="g-4" >
                     {products.map((product) => (
                         <ProductCard key={product.id} myProduct={product} />
