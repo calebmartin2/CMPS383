@@ -5,10 +5,10 @@ import { Row } from "react-bootstrap";
 import './ProductList.css'
 
 export function ProductList() {
-    document.title = "ICE - Store"
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
+        document.title = "ICE - Store"
         async function fetchProducts() {
             axios.get('/api/products')
                 .then(function (response) {

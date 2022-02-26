@@ -12,6 +12,7 @@ export function ProductCard({ myProduct }) {
                     {myProduct.description}
                 </Card.Text>
             </Card.Body>
+            <Card.Footer>${myProduct.price.toFixed(2)}</Card.Footer>
         </Card>
         </Col>
 

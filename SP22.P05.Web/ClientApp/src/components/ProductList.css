@@ -1,9 +1,15 @@
 .ProductList {
-    margin-top: 2em;
      max-width: 80%;
 }
 
 .ProductCard {
     border-width: 0.15em !important; /*TODO: Figure out a better way than using !important*/
     border-color: #00d7ff !important;
+}
+
+.ProductCard .card-footer {
+    background-color: #00d7ff;
+    color: black;
+    font-weight: 700;
+    text-align: right;
 }
