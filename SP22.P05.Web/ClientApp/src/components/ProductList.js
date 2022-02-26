@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useState, useEffect } from 'react';
 import { ProductCard } from "./ProductCard";
-import { Card, Row, Col } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import './ProductList.css'
 
 export function ProductList() {
-
+    document.title = "ICE - Store"
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export function ProductList() {
 
     return (
         <>
-            <div className="ProductList">
+            <div className="ProductList mx-auto text-break">
                 <Row xs={2} md={3} className="g-4" >
                     {products.map((product) => (
                         <ProductCard key={product.id} myProduct={product} />
