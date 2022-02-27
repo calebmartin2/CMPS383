@@ -20,6 +20,7 @@ export function Login() {
                 console.log(response.data);
                 setisLoginFail(false);
                 setLoginSuccess(true);
+                localStorage.setItem('user', JSON.stringify(response.data))
             })
             .catch(function (error) {
                 setisLoginFail(true)
