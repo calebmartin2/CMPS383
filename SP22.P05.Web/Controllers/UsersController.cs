@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SP22.P05.Web.Data;
+using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 
 namespace SP22.P05.Web.Controllers;
@@ -62,7 +63,11 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserDto>> SignUp(SignUpDto dto)
     {
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        string[] tempRole = new string[1] { "User" };
+
+        if (User.GetCurrentUserName() != null)
+        {
+            return BadRequest("User already logged in.");
+        }
 
         var newUser = new User
         {
@@ -76,7 +81,7 @@ public class UsersController : ControllerBase
 
         try
         {
-            var roleResult = await userManager.AddToRolesAsync(newUser, tempRole);
+            var roleResult = await userManager.AddToRoleAsync(newUser, RoleNames.User);
             if (!roleResult.Succeeded)
             {
                 return BadRequest("Cannot add user to role");
@@ -91,7 +96,7 @@ public class UsersController : ControllerBase
         return Ok(new UserDto
         {
             Id = newUser.Id,
-            Roles = tempRole,
+            Roles = new string[1] { RoleNames.User },
             UserName = newUser.UserName,
         });
     }
