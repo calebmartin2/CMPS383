@@ -3,6 +3,7 @@ import { Home } from "./components/Home";
 import { Navmenu } from "./components/Navmenu";
 import NotFoundPage from "./components/NotFoundPage";
 import Login from "./components/Login";
+import { PublisherPortal } from "./components/PublisherPortal";
 import "./App.css"
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFoundPage />} />
+          <Route path="/publisher" element={<PublisherPortal />} />
         </Routes>
       </div>
     </div>
