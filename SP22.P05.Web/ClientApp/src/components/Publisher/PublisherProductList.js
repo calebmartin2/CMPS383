@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from 'react';
-import { Table, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
 export default function PublisherProductList() {
     const [products, setProducts] = useState([]);
@@ -28,7 +28,6 @@ export default function PublisherProductList() {
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +35,6 @@ export default function PublisherProductList() {
                     <tr key={product.id}>
                         <td>{product.name}</td>
                         <td>${product.price.toFixed(2)}</td>
-                        <td><Button>Edit</Button></td>
                     </tr>
                 ))
                 }
