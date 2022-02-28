@@ -70,7 +70,7 @@ public class ProductsController : ControllerBase
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
-        productDto.PublisherName = publisherName;
+        productDto.PublisherName = publisherName; //TODO, get the company name rather than the username
 
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productDto);
     }

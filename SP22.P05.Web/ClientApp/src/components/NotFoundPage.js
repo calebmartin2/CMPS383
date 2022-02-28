@@ -1,4 +1,5 @@
 const NotFoundPage = () => {
+    document.title = "404 Not Found"
     return (
         <>
             <div style={{ textAlign: "center" }}>
