@@ -36,8 +36,8 @@ export function Navmenu() {
     }
     return (
       <>
-        <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
-        <Link to="/SignUp"><Button variant="secondary">SIGN UP</Button></Link>
+        <Nav.Link as={Link} to="/Login">LOGIN</Nav.Link>
+        <Nav.Link as={Link} to="/SignUp">SIGN UP</Nav.Link>
       </>
     )
   }
@@ -46,11 +46,13 @@ export function Navmenu() {
     <>
       <Navbar expand="lg" variant="dark" bg="dark">
         <Container>
-          <Navbar.Brand href="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
+          <Navbar.Brand as={Link} to="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
+            <Nav.Link as={Link} to="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
           </Nav>
+          <Nav>
           {renderLoginButton()}
+          </Nav>
         </Container>
       </Navbar>
     </>
