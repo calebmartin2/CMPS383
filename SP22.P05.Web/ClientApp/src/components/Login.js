@@ -50,6 +50,7 @@ export function Login() {
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
+            <h1>LOGIN</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />

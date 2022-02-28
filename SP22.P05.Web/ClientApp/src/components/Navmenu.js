@@ -4,6 +4,7 @@ import iceLogo from '../content/ice_logo.png';
 import { Button } from "react-bootstrap";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { checkForRole } from "./checkForRole";
 
 export function Navmenu() {
   let location = useLocation()
@@ -29,7 +30,7 @@ export function Navmenu() {
     } else if (loggedInUser) {
       return (
         <>
-          <p>{JSON.parse(loggedInUser).userName}</p>
+          <Navbar.Text>{JSON.parse(loggedInUser).userName}</Navbar.Text>
           <Button onClick={handleLogout} variant="danger">LOGOUT</Button>
         </>
       )
@@ -43,6 +44,7 @@ export function Navmenu() {
       <Navbar expand="lg" variant="dark" bg="dark">
         <Container>
           <Navbar.Brand href="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
+          <Navbar.Text>{checkForRole("Publisher") ? null : "PUBLISHER"}</Navbar.Text>
           {renderLoginButton()}
         </Container>
       </Navbar>
