@@ -72,6 +72,11 @@ export function Login() {
                 <Button variant="primary" onClick={handleLogin}>
                     LOGIN
                 </Button>
+                <Link to="/SignUp">
+                    <p>
+                        New to ICE?
+                    </p>
+                </Link>
             </Form>
             <AlertPassword />
         </>
