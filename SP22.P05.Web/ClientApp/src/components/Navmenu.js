@@ -34,14 +34,13 @@ export function Navmenu() {
           <Button onClick={handleLogout} variant="danger">LOGOUT</Button>
         </>
       )
-    } else if (location.pathname.toLowerCase() !== '/login') {
-      return (
-        <>
-          <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
-          <Link to="/SignUp"><Button variant="secondary">SignUp</Button></Link>
-        </>
-      )
     }
+    return (
+      <>
+        <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
+        <Link to="/SignUp"><Button variant="secondary">SIGN UP</Button></Link>
+      </>
+    )
   }
 
   return (
