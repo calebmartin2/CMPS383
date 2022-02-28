@@ -2,29 +2,26 @@ import { Navbar, Container } from "react-bootstrap";
 import "./Navmenu.css";
 import iceLogo from '../content/ice_logo.png';
 import { Button } from "react-bootstrap";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useCallback } from "react";
 
 export function Navmenu() {
   let location = useLocation()
   const loggedInUser = localStorage.getItem("user");
-
-  // https://blog.logrocket.com/how-when-to-force-react-component-re-render/
-  const [, updateState] = useState();
-  const forceUpdate = useCallback(() => updateState({}), []);
+  let navigate = useNavigate();
 
 
   function handleLogout() {
     axios.post('/api/authentication/logout', {
-  })
+    })
       .then(function (response) {
-          console.log(response.data);
-          localStorage.removeItem('user')
-          forceUpdate()
+        console.log(response.data);
+        localStorage.removeItem('user')
+        navigate("/", { replace: true });
       })
       .catch(function (error) {
-          console.log(error);
+        console.log(error);
       });
   }
 
