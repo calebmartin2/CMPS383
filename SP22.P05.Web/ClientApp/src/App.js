@@ -4,6 +4,7 @@ import { Navmenu } from "./components/Navmenu";
 import NotFoundPage from "./components/NotFoundPage";
 import Login from "./components/Login";
 import "./App.css"
+import SignUp from "./components/SignUp";
 
 function App() {
   return (
@@ -11,8 +12,9 @@ function App() {
       <Navmenu />
       <div className="main-container">
         <Routes>
-          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

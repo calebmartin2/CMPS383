@@ -17,14 +17,14 @@ export function Navmenu() {
 
   function handleLogout() {
     axios.post('/api/authentication/logout', {
-  })
+    })
       .then(function (response) {
-          console.log(response.data);
-          localStorage.removeItem('user')
-          forceUpdate()
+        console.log(response.data);
+        localStorage.removeItem('user')
+        forceUpdate()
       })
       .catch(function (error) {
-          console.log(error);
+        console.log(error);
       });
   }
 
@@ -39,7 +39,12 @@ export function Navmenu() {
         </>
       )
     } else if (location.pathname.toLowerCase() !== '/login') {
-      return <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
+      return (
+        <>
+          <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
+          <Link to="/SignUp"><Button variant="secondary">SignUp</Button></Link>
+        </>
+      )
     }
   }
 
