@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from 'react';
 // TODO: Make a list of the products the publisher owns, instead of cards
-import { ProductCard } from "../ProductCard";
-import { Row } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 
 export default function PublisherProductList() {
     const [products, setProducts] = useState([]);
@@ -25,14 +24,26 @@ export default function PublisherProductList() {
 
     return (
         <>
-            <div className="ProductList mx-auto text-break">
-                <Row xs={2} md={3} className="g-4" >
-                    {products.map((product) => (
-                        <ProductCard key={product.id} myProduct={product} />
-                    ))
-                    }
-                </Row>
-            </div>
+            <Table striped bordered hover variant="dark">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {products.map((product) => (
+                    <tr key={product.id}>
+                        <td>{product.name}</td>
+                        <td>${product.price.toFixed(2)}</td>
+                        <td><Button>Edit</Button></td>
+                    </tr>
+                ))
+                }
+                </tbody>
+            </Table>
+
         </>
     );
 }
