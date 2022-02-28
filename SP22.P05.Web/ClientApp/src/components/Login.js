@@ -41,16 +41,22 @@ export function Login() {
         return <></>
     }
 
+    const handleKeypress = e => {
+      if (e.code === "Enter" || e.code === "NumpadEnter") {
+        handleLogin();
+      }
+    };
+
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} />
+                    <Form.Control type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Link to="/">
                     <Button variant="secondary">
