@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import PublisherProductList from "./PublisherProductList"
 
 export function PublisherPortal() {
     // TODO: Ask if there's a better way for hiding pages for users without that role
@@ -11,10 +12,12 @@ export function PublisherPortal() {
             return <Navigate to="/" />;
         }
     }
+
     return (
         <>
             {checkForPublisher()}
             <h1>Publisher Portal</h1>
+            <PublisherProductList/>
         </>
     )
 }

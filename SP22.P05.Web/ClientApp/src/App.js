@@ -3,7 +3,7 @@ import { Home } from "./components/Home";
 import { Navmenu } from "./components/Navmenu";
 import NotFoundPage from "./components/NotFoundPage";
 import Login from "./components/Login";
-import { PublisherPortal } from "./components/PublisherPortal";
+import { PublisherPortal } from "./components/Publisher/PublisherPortal";
 import "./App.css"
 
 function App() {
