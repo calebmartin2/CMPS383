@@ -36,8 +36,8 @@ export function Navmenu() {
     }
     return (
       <>
-        <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
-        <Link to="/SignUp"><Button variant="secondary">SIGN UP</Button></Link>
+        <Nav.Link as={Link} to="/Login">LOGIN</Nav.Link>
+        <Nav.Link as={Link} to="/SignUp">SIGN UP</Nav.Link>
       </>
     )
   }
@@ -50,7 +50,9 @@ export function Navmenu() {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
           </Nav>
+          <Nav>
           {renderLoginButton()}
+          </Nav>
         </Container>
       </Navbar>
     </>
