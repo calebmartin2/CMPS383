@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
@@ -10,6 +10,10 @@ export function Login() {
     const [password, setPassword] = useState("")
     const [isLoginFail, setisLoginFail] = useState(false);
     const [loginSuccess, setLoginSuccess] = useState(false);
+
+    useEffect(() => {
+        document.title = "ICE - Login"
+     }, []);
 
     function handleLogin() {
         axios.post('/api/authentication/login', {
@@ -49,6 +53,7 @@ export function Login() {
 
     return (
         <>
+        
             <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
             <h1>LOGIN</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
@@ -13,6 +13,10 @@ export function SignUp() {
     const [signUpSuccess, setSignUpSuccess] = useState(false);
     const [show, setShow] = useState(false);
 
+
+    useEffect(() => {
+        document.title = "ICE - Sign Up"
+     }, []);
 
     function handleSignUp() {
         if (userName === "" || password === "") {
@@ -63,7 +67,7 @@ export function SignUp() {
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
-                <h1>Create Account</h1>
+                <h1>SIGN UP</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />

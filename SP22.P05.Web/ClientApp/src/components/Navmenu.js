@@ -1,7 +1,6 @@
-import { Navbar, Container } from "react-bootstrap";
+import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import "./Navmenu.css";
 import iceLogo from '../content/ice_logo.png';
-import { Button } from "react-bootstrap";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { checkForRole } from "./checkForRole";
@@ -34,14 +33,13 @@ export function Navmenu() {
           <Button onClick={handleLogout} variant="danger">LOGOUT</Button>
         </>
       )
-    } else if (location.pathname.toLowerCase() !== '/login') {
-      return (
-        <>
-          <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
-          <Link to="/SignUp"><Button variant="secondary">SignUp</Button></Link>
-        </>
-      )
     }
+    return (
+      <>
+        <Link to="/Login"><Button variant="primary">LOGIN</Button></Link>
+        <Link to="/SignUp"><Button variant="secondary">SIGN UP</Button></Link>
+      </>
+    )
   }
 
   return (
@@ -49,7 +47,9 @@ export function Navmenu() {
       <Navbar expand="lg" variant="dark" bg="dark">
         <Container>
           <Navbar.Brand href="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
-          <Navbar.Text>{checkForRole("Publisher") ? null : "PUBLISHER"}</Navbar.Text>
+          <Nav className="me-auto">
+            <Nav.Link href="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
+          </Nav>
           {renderLoginButton()}
         </Container>
       </Navbar>
