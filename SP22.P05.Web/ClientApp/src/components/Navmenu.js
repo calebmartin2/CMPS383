@@ -46,9 +46,9 @@ export function Navmenu() {
     <>
       <Navbar expand="lg" variant="dark" bg="dark">
         <Container>
-          <Navbar.Brand href="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
+          <Navbar.Brand as={Link} to="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
+            <Nav.Link as={Link} to="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
           </Nav>
           {renderLoginButton()}
         </Container>
