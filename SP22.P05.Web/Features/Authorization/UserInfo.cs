@@ -13,7 +13,6 @@ public class UserInfo
     [MaxLength(120)]
     public string LastName { get; set; } = string.Empty;
     public virtual ICollection<ProductUserInfo> Products { get; set; } = new List<ProductUserInfo>();
-    //public int ProductUserInfo { get; set; }
 
 }
 
