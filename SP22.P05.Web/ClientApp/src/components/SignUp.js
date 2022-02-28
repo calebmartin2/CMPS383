@@ -8,10 +8,22 @@ export function SignUp() {
 
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
     const [isSignUpFail, setisSignUpFail] = useState(false);
     const [signUpSuccess, setSignUpSuccess] = useState(false);
+    const [show, setShow] = useState(false);
+
 
     function handleSignUp() {
+        if (userName === "" || password === "") {
+            setisSignUpFail(true);
+        }
+
+        if (password !== confirmPassword) {
+            setShow(true);
+            return;
+        }
+
         axios.post('/api/users/sign-up', {
             userName: userName,
             password: password
@@ -31,24 +43,27 @@ export function SignUp() {
         if (isSignUpFail) {
             return (
                 <Alert variant="danger">
-                    <Alert.Heading>Need Username and Password.</Alert.Heading>
-                </Alert>
+                <Alert.Heading>Need Username and Password.</Alert.Heading>
+            </Alert>
             )
         } else if (signUpSuccess) {
-            return <Navigate to="/Login"/>
+            return <Navigate to="/Login" />
         }
         return <></>
     }
 
     const handleKeypress = e => {
-      if (e.code === "Enter" || e.code === "NumpadEnter") {
-        handleSignUp();
-      }
+        setShow(false);
+        setisSignUpFail(false);
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
+            handleSignUp();
+        }
     };
 
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
+                <h1>Create Account</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />
@@ -56,6 +71,10 @@ export function SignUp() {
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
+                    <Form.Label>Confirm Password</Form.Label>
+                    <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Link to="/">
                     <Button variant="secondary">
@@ -65,8 +84,14 @@ export function SignUp() {
                 <Button variant="primary" onClick={handleSignUp}>
                     SignUp
                 </Button>
+                <Link to="/Login">
+                    <p>Already a Member?</p>
+                </Link>
             </Form>
             <AlertPassword />
+            <Alert show={show} variant="danger">
+                <Alert.Heading>Passwords must match.</Alert.Heading>
+            </Alert>
         </>
     )
 }
