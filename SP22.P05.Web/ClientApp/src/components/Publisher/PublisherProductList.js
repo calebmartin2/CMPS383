@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState, useEffect } from 'react';
-// TODO: Make a list of the products the publisher owns, instead of cards
 import { Table, Button } from "react-bootstrap";
 
 export default function PublisherProductList() {
