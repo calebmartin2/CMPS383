@@ -6,12 +6,13 @@ import Login from "./components/Login";
 import { PublisherPortal } from "./components/Publisher/PublisherPortal";
 import "./App.css"
 import SignUp from "./components/SignUp";
+import { Container } from "react-bootstrap";
 
 function App() {
   return (
     <div className="App bg-black text-white">
       <Navmenu />
-      <div className="main-container">
+      <Container>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -19,7 +20,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/publisher" element={<PublisherPortal />} />
         </Routes>
-      </div>
+        </Container>
     </div>
   );
 }
