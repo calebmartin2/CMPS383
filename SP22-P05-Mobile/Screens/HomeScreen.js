@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import axios from "axios";
 import baseUrl from '../BaseUrl';
+import { Text, Card, Button } from 'react-native-elements';
 
 export default function HomeScreen() {
     const [products, setProducts] = useState([]);
@@ -24,16 +25,24 @@ export default function HomeScreen() {
     }, [])
 
     return (
+        <ScrollView>
+
         <View style={styles.container}>
             <StatusBar style="auto" />
+                
+
             {products.map((product) => (
-                <View key={product.id}>
-                    <Text>{product.name}</Text>
+                <Card key={product.id}>
+                    <Card.Title style={styles.productPrice}>{product.name}</Card.Title>
                     <Text>{product.description}</Text>
-                </View>
+                    <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                </Card>
+
             ))
             }
         </View>
+        </ScrollView>
+
     );
 }
 
@@ -41,7 +50,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
+
     },
+    price: {
+        fontWeight: "700",
+        textAlign: 'right'
+    },
+    productPrice: {
+        textAlign: 'left'
+    }
 });
