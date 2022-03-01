@@ -80,13 +80,8 @@ export function SignUp() {
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
-                <Link to="/">
-                    <Button variant="secondary">
-                        BACK
-                    </Button>
-                </Link>
                 <Button variant="primary" onClick={handleSignUp}>
-                    SignUp
+                    SIGN UP
                 </Button>
                 <Link to="/Login">
                     <p>Already a Member?</p>

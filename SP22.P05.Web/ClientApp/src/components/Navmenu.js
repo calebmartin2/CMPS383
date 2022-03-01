@@ -1,4 +1,4 @@
-import { Navbar, Container, Nav, Button } from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import "./Navmenu.css";
 import iceLogo from '../content/ice_logo.png';
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -29,8 +29,9 @@ export function Navmenu() {
     } else if (loggedInUser) {
       return (
         <>
-          <Navbar.Text>{JSON.parse(loggedInUser).userName}</Navbar.Text>
-          <Button onClick={handleLogout} variant="danger">LOGOUT</Button>
+        <NavDropdown title={JSON.parse(loggedInUser).userName.toUpperCase()} id="navbarScrollingDropdown">
+          <NavDropdown.Item to="/" onClick={handleLogout}>LOGOUT</NavDropdown.Item>
+        </NavDropdown>
         </>
       )
     }

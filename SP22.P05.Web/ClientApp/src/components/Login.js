@@ -53,7 +53,6 @@ export function Login() {
 
     return (
         <>
-        
             <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
             <h1>LOGIN</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
@@ -64,11 +63,6 @@ export function Login() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
-                <Link to="/">
-                    <Button variant="secondary">
-                        BACK
-                    </Button>
-                </Link>
                 <Button variant="primary" onClick={handleLogin}>
                     LOGIN
                 </Button>
