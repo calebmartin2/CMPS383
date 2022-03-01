@@ -46,7 +46,7 @@ export function SignUp() {
     function AlertPassword() {
         if (isSignUpFail) {
             return (
-                <Alert variant="danger">
+                <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
                 <Alert.Heading>Need Username and Password.</Alert.Heading>
             </Alert>
             )
@@ -88,7 +88,7 @@ export function SignUp() {
                 </Link>
             </Form>
             <AlertPassword />
-            <Alert show={show} variant="danger">
+            <Alert style={{ maxWidth: "25em", margin: "1em auto" }} show={show} variant="danger">
                 <Alert.Heading>Passwords must match.</Alert.Heading>
             </Alert>
         </>

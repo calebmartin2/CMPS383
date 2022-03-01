@@ -35,7 +35,7 @@ export function Login() {
     function AlertPassword() {
         if (isLoginFail) {
             return (
-                <Alert variant="danger">
+                <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
                     <Alert.Heading>Invalid Username or Password.</Alert.Heading>
                 </Alert>
             )
