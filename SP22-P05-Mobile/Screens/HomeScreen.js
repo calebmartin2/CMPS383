@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView } from 'react-native';
 import axios from "axios";
 import baseUrl from '../BaseUrl';
-import { Text, Card, Button } from 'react-native-elements';
+import { Text, Card } from 'react-native-elements';
 
 export default function HomeScreen() {
     const [products, setProducts] = useState([]);
