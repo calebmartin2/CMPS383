@@ -23,7 +23,7 @@ export default function PublisherProductList() {
 
     return (
         <>
-            <Table striped bordered hover variant="dark">
+            <Table striped bordered hover variant="dark" className="PublisherProductTable">
                 <thead>
                     <tr>
                         <th>Name</th>

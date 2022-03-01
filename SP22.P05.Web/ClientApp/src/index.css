@@ -1,6 +1,7 @@
 body {
   margin: 0;
   background-color: #000000 !important; /*being overridden by something else, not sure what*/
+  background-image: url(./content/background_cubes.svg);
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif !important;
