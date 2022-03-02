@@ -46,7 +46,7 @@ export function SignUp() {
     function AlertPassword() {
         if (isSignUpFail) {
             return (
-                <Alert variant="danger">
+                <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
                 <Alert.Heading>Need Username and Password.</Alert.Heading>
             </Alert>
             )
@@ -80,20 +80,15 @@ export function SignUp() {
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
-                <Link to="/">
-                    <Button variant="secondary">
-                        BACK
-                    </Button>
-                </Link>
                 <Button variant="primary" onClick={handleSignUp}>
-                    SignUp
+                    SIGN UP
                 </Button>
                 <Link to="/Login">
                     <p>Already a Member?</p>
                 </Link>
             </Form>
             <AlertPassword />
-            <Alert show={show} variant="danger">
+            <Alert style={{ maxWidth: "25em", margin: "1em auto" }} show={show} variant="danger">
                 <Alert.Heading>Passwords must match.</Alert.Heading>
             </Alert>
         </>

@@ -1,11 +1,15 @@
 .ProductCard {
-    border-width: 0.15em !important; /*TODO: Figure out a better way than using !important*/
-    border-color: #00d7ff !important;
+    border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+    border-image: linear-gradient( #212529, rgb(9, 118, 161), #212529) 1 !important;
 }
 
 .ProductCard .card-footer {
-    background-color: #00d7ff;
-    color: black;
-    font-weight: 700;
+    background-color: #32383e;
+    /* color: black;
+    font-weight: 700; */
     text-align: right;
+}
+
+.card-body {
+    background-color: #212529 !important;
 }
