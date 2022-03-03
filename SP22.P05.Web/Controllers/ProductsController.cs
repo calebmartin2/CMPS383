@@ -187,7 +187,8 @@ public class ProductsController : ControllerBase
             .Select(x => new
             {
                 Product = x,
-                CurrentSale = x.SaleEventProducts.FirstOrDefault(y => y.SaleEvent!.StartUtc <= now && now <= y.SaleEvent.EndUtc)
+                CurrentSale = x.SaleEventProducts.FirstOrDefault(y => y.SaleEvent!.StartUtc <= now && now <= y.SaleEvent.EndUtc),
+                RelatedTags = x.Tags.Select(x => x.Tag.Name).ToArray(),
             })
             .Select(x => new ProductDto
             {
@@ -197,7 +198,8 @@ public class ProductsController : ControllerBase
                 Price = x.Product.Price,
                 SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
-                PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName
+                PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
+                Tags = x.RelatedTags
 
             });
     }
