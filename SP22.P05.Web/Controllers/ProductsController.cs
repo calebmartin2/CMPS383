@@ -136,6 +136,50 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("add-tag")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public ActionResult<TagDto> AddTag(TagDto tag)
+    {
+        var newTag = new Tag()
+        {
+            Name = tag.Name,
+        };
+
+        dataContext.Add(newTag);
+        dataContext.SaveChanges();
+        tag.Id = newTag.Id;
+        return Ok(tag);
+    }
+    [HttpPost("add-product-to-tag")]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
+    public ActionResult AddProductToTag(int productId, int tagId)
+    {
+        var products = dataContext.Set<Product>();
+        var tags = dataContext.Set<Tag>();
+        var currentTag = tags.FirstOrDefault(x => x.Id == tagId);
+        var currentProduct = products.FirstOrDefault(x => x.Id == productId);
+
+        if (currentProduct == null)
+        {
+            return BadRequest("Product does not exist");
+        }
+        if (currentTag == null)
+        {
+            return BadRequest("Tag does not exist");
+        }
+        var newProductTag = new ProductTag()
+        {
+            ProductId = productId,
+            TagId = tagId
+            
+        };
+        dataContext.Add(newProductTag);
+        dataContext.SaveChanges();
+        //TODO: Change return to the product
+        return Ok();
+    }
+
+
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
         var now = DateTimeOffset.UtcNow;
