@@ -11,7 +11,17 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
-        <Stack.Screen name="ICE - Store" component={HomeScreen} />
+        <Stack.Screen name="ICE - Store" component={HomeScreen}  options={{
+          title: 'ICE - Store',
+          headerStyle: {
+            backgroundColor: 'rgb(33,37,41)',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      /> 
       </Stack.Navigator>
     </NavigationContainer>
   );

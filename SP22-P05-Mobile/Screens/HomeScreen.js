@@ -25,31 +25,22 @@ export default function HomeScreen() {
     }, [])
 
     return (
-
-        <View style={styles.container}>
-            <StatusBar style="auto" />
-                
-
-            {products.map((product) => (
-                <Card key={product.id} containerStyle={{ backgroundColor: 'rgb(33,37,41)' }}>
-                    <Card.Title style={styles.title}>{product.name}</Card.Title>
-                    <Text>{product.description}</Text>
-                    <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                </Card>
-
-            ))
-            }
-        </View>
-
+        <ScrollView style={styles.scrollView}>
+            <View style={styles.container}>
+                <StatusBar style="light" />
+                {products.map((product) => (
+                    <Card key={product.id} containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }}>
+                        <Card.Title style={styles.title}>{product.name}</Card.Title>
+                        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                    </Card>
+                ))
+                }
+            </View>
+        </ScrollView >
     );
 }
 
-const theme = {
-    card: {
-      containerStyle: {
-      }
-    }
-  }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -65,6 +56,9 @@ const styles = StyleSheet.create({
     title: {
         textAlign: 'left',
         color: 'rgb(255,255,255)'
+    },
+    scrollView: {
+        backgroundColor: 'rgb(19,24,27)',
     },
 });
 
