@@ -101,7 +101,6 @@ public class UsersController : ControllerBase
         });
     }
     [HttpPost("create-publisher")]
-    [Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<UserDto>> CreatePublisher(CreatePublisherDto dto)
     {
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
@@ -118,7 +117,7 @@ public class UsersController : ControllerBase
 
         try
         {
-            var roleResult = await userManager.AddToRoleAsync(newPublisher, RoleNames.Publisher);
+            var roleResult = await userManager.AddToRoleAsync(newPublisher, RoleNames.PendingPublisher);
             if (!roleResult.Succeeded)
             {
                 return BadRequest("Cannot add user to role");
@@ -145,4 +144,19 @@ public class UsersController : ControllerBase
             CompanyName = dto.CompanyName,
         });
     }
+    [HttpGet("get-pending-publishers")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<List<PublisherDto>>> GetPublishers(int id, bool approve)
+    {
+        var pendingPublishers = await userManager.GetUsersInRoleAsync(RoleNames.PendingPublisher);
+        // TODO, actually return the publishers, pendingPublishers gets the correct users
+        return Ok();
+    }
+
+    //[HttpPost("verify-publisher")]
+    //[Authorize(Roles = RoleNames.Admin)]
+    //public async Task<ActionResult> VerifyPublisher(int id, bool approve) 
+    //{
+    //    // Check if user exists
+    //}
 }

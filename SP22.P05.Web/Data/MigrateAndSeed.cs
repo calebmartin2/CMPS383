@@ -97,6 +97,14 @@ public static class MigrateAndSeed
                 Name = RoleNames.Publisher
             });
         }
+
+        if (!await roleManager.RoleExistsAsync(RoleNames.PendingPublisher))
+        {
+            await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.PendingPublisher
+            });
+        }
     }
 
     private static void AddSaleEvent(DataContext context)
