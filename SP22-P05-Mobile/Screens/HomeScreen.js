@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import axios from "axios";
 import baseUrl from '../BaseUrl';
 import { Text, Card } from 'react-native-elements';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -29,10 +29,12 @@ export default function HomeScreen() {
             <View style={styles.container}>
                 <StatusBar style="light" />
                 {products.map((product) => (
-                    <Card key={product.id} containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }}>
-                        <Card.Title style={styles.title}>{product.name}</Card.Title>
-                        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                    </Card>
+                    <TouchableOpacity key={product.id} onPress={() => navigation.navigate('ProductInfo', {product: product})}>
+                        <Card containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
+                            <Card.Title style={styles.title}>{product.name}</Card.Title>
+                            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                        </Card>
+                    </TouchableOpacity>
                 ))
                 }
             </View>
