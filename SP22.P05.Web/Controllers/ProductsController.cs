@@ -25,6 +25,13 @@ public class ProductsController : ControllerBase
         return GetProductDtos(products.Where(x => x.IsActive)).ToArray();
     }
 
+    [HttpGet("get-products-by-tags")]
+    public ProductDto[] GetProductsByTags(int[] tags)
+    {
+        var products = dataContext.Set<Product>();
+        return GetProductDtos(products.Where(x => x.IsActive)).ToArray();
+    }
+
     [HttpGet]
     [Route("{id}")]
     public ActionResult<ProductDto> GetProductById(int id)
@@ -136,6 +143,67 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("get-tags")]
+    public ActionResult<TagDto[]> GetTags()
+    {
+        var tags = dataContext.Set<Tag>();
+        var returnDto = tags.Select(x => new
+        {
+            Tag = x,
+        }).Select (x => new TagDto
+        {
+            Id = x.Tag.Id,
+            Name = x.Tag.Name,
+
+        });
+        return Ok(returnDto.ToArray());
+    }
+
+    [HttpPost("add-tag")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public ActionResult<TagDto> AddTag(TagDto tag)
+    {
+        var newTag = new Tag()
+        {
+            Name = tag.Name,
+        };
+
+        dataContext.Add(newTag);
+        dataContext.SaveChanges();
+        tag.Id = newTag.Id;
+        return Ok(tag);
+    }
+
+    [HttpPost("add-product-to-tag")]
+    [Authorize(Roles = RoleNames.AdminOrPublisher)]
+    public ActionResult AddProductToTag(int productId, int tagId)
+    {
+        var products = dataContext.Set<Product>();
+        var tags = dataContext.Set<Tag>();
+        var currentTag = tags.FirstOrDefault(x => x.Id == tagId);
+        var currentProduct = products.FirstOrDefault(x => x.Id == productId);
+
+        if (currentProduct == null)
+        {
+            return BadRequest("Product does not exist");
+        }
+        if (currentTag == null)
+        {
+            return BadRequest("Tag does not exist");
+        }
+        var newProductTag = new ProductTag()
+        {
+            ProductId = productId,
+            TagId = tagId
+            
+        };
+        dataContext.Add(newProductTag);
+        dataContext.SaveChanges();
+        //TODO: Change return to the product
+        return Ok();
+    }
+
+
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
         var now = DateTimeOffset.UtcNow;
@@ -143,7 +211,7 @@ public class ProductsController : ControllerBase
             .Select(x => new
             {
                 Product = x,
-                CurrentSale = x.SaleEventProducts.FirstOrDefault(y => y.SaleEvent!.StartUtc <= now && now <= y.SaleEvent.EndUtc)
+                CurrentSale = x.SaleEventProducts.FirstOrDefault(y => y.SaleEvent!.StartUtc <= now && now <= y.SaleEvent.EndUtc),
             })
             .Select(x => new ProductDto
             {
@@ -153,7 +221,8 @@ public class ProductsController : ControllerBase
                 Price = x.Product.Price,
                 SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
-                PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName
+                PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
+                Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
 
             });
     }
