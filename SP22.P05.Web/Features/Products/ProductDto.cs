@@ -19,5 +19,7 @@ public class ProductDto
 
     public DateTimeOffset? SaleEndUtc { get; set; }
     public string? PublisherName { get; set; }
+    public string[] Tags { get; set; } = Array.Empty<string>();
+
 
 }
