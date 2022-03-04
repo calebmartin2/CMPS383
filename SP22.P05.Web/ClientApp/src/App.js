@@ -7,6 +7,8 @@ import { PublisherPortal } from "./components/Publisher/PublisherPortal";
 import "./App.css"
 import SignUp from "./components/SignUp";
 import { Container } from "react-bootstrap";
+import { AdminPortal } from "./components/Admin/AdminPortal";
+import { AdminAddTags } from "./components/Admin/AdminAddTags";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/publisher" element={<PublisherPortal />} />
+          <Route path="/admin" element={<AdminPortal />} />
+          <Route exact path="/admin/add-tags" element={<AdminAddTags />} />
         </Routes>
         </Container>
     </div>
