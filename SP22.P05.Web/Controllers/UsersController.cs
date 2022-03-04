@@ -146,11 +146,26 @@ public class UsersController : ControllerBase
     }
     [HttpGet("get-pending-publishers")]
     [Authorize(Roles = RoleNames.Admin)]
-    public async Task<ActionResult<List<PublisherDto>>> GetPublishers(int id, bool approve)
+    public async Task<ActionResult<List<PublisherDto>>> GetPublishers()
     {
         var pendingPublishers = await userManager.GetUsersInRoleAsync(RoleNames.PendingPublisher);
-        // TODO, actually return the publishers, pendingPublishers gets the correct users
-        return Ok();
+        var publisherInfo = dataContext.Set<PublisherInfo>();
+        var publisherDto = new List<PublisherDto>();
+        // Probably a built in way, don't know how else to fix at the moment
+        foreach (var publisher in pendingPublishers)
+        {
+            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            {
+                return BadRequest("Publisher does not have info.");
+            }
+            publisherDto.Add(new PublisherDto
+            {
+                Id = publisher.Id,
+                UserName = publisher.UserName,
+                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+            });
+        }
+        return Ok(publisherDto);
     }
 
     //[HttpPost("verify-publisher")]
