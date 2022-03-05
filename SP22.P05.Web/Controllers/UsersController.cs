@@ -168,10 +168,23 @@ public class UsersController : ControllerBase
         return Ok(publisherDto);
     }
 
-    //[HttpPost("verify-publisher")]
-    //[Authorize(Roles = RoleNames.Admin)]
-    //public async Task<ActionResult> VerifyPublisher(int id, bool approve) 
-    //{
-    //    // Check if user exists
-    //}
+    [HttpPost("verify-publisher")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<UserDto>> VerifyPublisher(int id)
+    {
+        var currentUser = userManager.Users.FirstOrDefault(x => x.Id == id);
+        if (currentUser == null)
+        {
+            return BadRequest("User does not exist.");
+        }
+        await userManager.RemoveFromRoleAsync(currentUser, RoleNames.PendingPublisher);
+        await userManager.AddToRoleAsync(currentUser, RoleNames.Publisher);
+        UserDto returnDto = new UserDto()
+        {
+            Id = currentUser.Id,
+            UserName = currentUser.UserName,
+            Roles = new string[] { RoleNames.Publisher },
+        };
+        return Ok(returnDto);
+    }
 }
