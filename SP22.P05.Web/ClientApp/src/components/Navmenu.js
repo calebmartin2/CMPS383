@@ -29,9 +29,9 @@ export function Navmenu() {
     } else if (loggedInUser) {
       return (
         <>
-        <NavDropdown title={JSON.parse(loggedInUser).userName.toUpperCase()} id="navbarScrollingDropdown">
-          <NavDropdown.Item to="/" onClick={handleLogout}>LOGOUT</NavDropdown.Item>
-        </NavDropdown>
+          <NavDropdown title={JSON.parse(loggedInUser).userName.toUpperCase()} id="navbarScrollingDropdown">
+            <NavDropdown.Item to="/" onClick={handleLogout}>LOGOUT</NavDropdown.Item>
+          </NavDropdown>
         </>
       )
     }
@@ -52,8 +52,8 @@ export function Navmenu() {
             <Nav.Link as={Link} to="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
           </Nav>
           <Nav>
-            <Nav.Item style={{backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.5em", paddingLeft: "0.5em", marginRight: "1em"}}>{checkForRole("PendingPublisher") ? null : "PUBLISHER STATUS PENDING"}</Nav.Item>
-          {renderLoginButton()}
+            {checkForRole("PendingPublisher") ? null : <Nav.Item style={{ backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.5em", paddingLeft: "0.5em", marginRight: "1em" }}>PUBLISHER STATUS PENDING</Nav.Item>}
+            {renderLoginButton()}
           </Nav>
         </Container>
       </Navbar>
