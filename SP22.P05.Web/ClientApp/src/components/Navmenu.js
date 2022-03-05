@@ -11,11 +11,11 @@ export function Navmenu() {
   let navigate = useNavigate();
 
   function handleLogout() {
+    localStorage.removeItem('user');
     axios.post('/api/authentication/logout', {
     })
       .then(function (response) {
         console.log(response.data);
-        localStorage.removeItem('user')
         navigate("/", { replace: true });
       })
       .catch(function (error) {
@@ -52,6 +52,7 @@ export function Navmenu() {
             <Nav.Link as={Link} to="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
           </Nav>
           <Nav>
+            <Nav.Item style={{backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.5em", paddingLeft: "0.5em", marginRight: "1em"}}>{checkForRole("PendingPublisher") ? null : "PUBLISHER STATUS PENDING"}</Nav.Item>
           {renderLoginButton()}
           </Nav>
         </Container>
