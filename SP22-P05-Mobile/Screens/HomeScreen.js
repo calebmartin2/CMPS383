@@ -51,11 +51,13 @@ const styles = StyleSheet.create({
 
     },
     price: {
+        fontSize: 20,
         fontWeight: "700",
         textAlign: 'right',
         color: 'rgb(255,255,255)'
     },
     title: {
+        fontSize: 20,
         textAlign: 'left',
         color: 'rgb(255,255,255)'
     },
