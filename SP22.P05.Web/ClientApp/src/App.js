@@ -11,6 +11,7 @@ import { AdminPortal } from "./components/Admin/AdminPortal";
 import { AdminAddTags } from "./components/Admin/AdminAddTags";
 import PublisherSignUp from "./components/Publisher/PublisherSignUp";
 import axios from "axios";
+import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 
 function App() {
 
@@ -19,15 +20,15 @@ function App() {
     axios.get('/api/authentication/me', {
     })
       .then(function (response) {
-        console.log(response.data);
-        console.log(localStorage.getItem('user'));
+        // console.log(response.data);
+        // console.log(localStorage.getItem('user'));
 
         if (!(localStorage.getItem('user') === response.data)) {
           localStorage.removeItem('user');
           localStorage.setItem('user', JSON.stringify(response.data))
-          console.error("User data different, refreshing.")
+          // console.error("User data different, refreshing.")
         }
-        console.warn("User data same, skipping.")
+        // console.warn("User data same, skipping.")
         // localStorage.setItem('user', JSON.stringify(response.data))
       })
       .catch(function (error) {
@@ -51,6 +52,7 @@ function App() {
           <Route path="/publisher/signup" element={<PublisherSignUp />} />
           <Route path="/admin" element={<AdminPortal />} />
           <Route exact path="/admin/add-tags" element={<AdminAddTags />} />
+          <Route exact path="/admin/verify-publishers" element={<AdminVerifyPublishers />} />
         </Routes>
       </Container>
     </div>

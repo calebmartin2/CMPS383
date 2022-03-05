@@ -1,3 +1,5 @@
+import { Breadcrumb } from "react-bootstrap"
+import { Link } from "react-router-dom"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Table } from "react-bootstrap";
@@ -25,20 +27,25 @@ export function AdminAddTags() {
 
     return (
         <>
-        {checkForRole("Admin")}
-        <Table striped bordered hover variant="dark">
+            {checkForRole("Admin")}
+            <Breadcrumb>
+                <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Portal</Breadcrumb.Item>
+                <Breadcrumb.Item active>Add Tags</Breadcrumb.Item>
+            </Breadcrumb>
+            <h1>Add Tags</h1>
+            <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
                         <th>Name</th>
                     </tr>
                 </thead>
                 <tbody>
-                {tags.map((tag) => (
-                    <tr key={tag.id}>
-                        <td>{tag.name}</td>
-                    </tr>
-                ))
-                }
+                    {tags.map((tag) => (
+                        <tr key={tag.id}>
+                            <td>{tag.name}</td>
+                        </tr>
+                    ))
+                    }
                 </tbody>
             </Table>
         </>
