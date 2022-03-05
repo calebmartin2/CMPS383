@@ -50,6 +50,7 @@ export function Navmenu() {
           <Navbar.Brand as={Link} to="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
+            <Nav.Link as={Link} to="/admin">{checkForRole("Admin") ? null : "ADMIN"}</Nav.Link>
           </Nav>
           <Nav>
             {checkForRole("PendingPublisher") ? null : <Nav.Item style={{ backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.5em", paddingLeft: "0.5em", marginRight: "1em" }}>PUBLISHER STATUS PENDING</Nav.Item>}
