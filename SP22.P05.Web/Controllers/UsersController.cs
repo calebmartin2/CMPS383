@@ -170,7 +170,7 @@ public class UsersController : ControllerBase
 
     [HttpPost("verify-publisher")]
     [Authorize(Roles = RoleNames.Admin)]
-    public async Task<ActionResult<UserDto>> VerifyPublisher(int id)
+    public async Task<ActionResult<UserDto>> VerifyPublisher([FromForm] int id)
     {
         var currentUser = userManager.Users.FirstOrDefault(x => x.Id == id);
         if (currentUser == null)
