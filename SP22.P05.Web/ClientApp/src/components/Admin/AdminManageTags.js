@@ -6,7 +6,7 @@ import { Table } from "react-bootstrap";
 import { checkForRole } from "../checkForRole";
 
 
-export function AdminAddTags() {
+export function AdminManageTags() {
     const [tags, setTags] = useState([]);
 
     useEffect(() => {
@@ -29,7 +29,7 @@ export function AdminAddTags() {
         <>
             {checkForRole("Admin")}
             <Breadcrumb>
-                <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Portal</Breadcrumb.Item>
+                <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Add Tags</Breadcrumb.Item>
             </Breadcrumb>
             <h1>Add Tags</h1>
