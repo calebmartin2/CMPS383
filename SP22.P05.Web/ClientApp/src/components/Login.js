@@ -63,13 +63,11 @@ export function Login() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
-                <Button variant="primary" onClick={handleLogin}>
+                <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleLogin}>
                     LOGIN
                 </Button>
-                <Link to="/SignUp">
-                    <p>
+                <Link to="/SignUp" style={{color: "#679bbb"}}><br/>
                         New to ICE?
-                    </p>
                 </Link>
             </Form>
             <AlertPassword />

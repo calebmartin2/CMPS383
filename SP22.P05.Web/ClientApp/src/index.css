@@ -13,3 +13,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.custom-primary-btn {
+  background-color: #178b00 !important;
+  border: #fff !important;
+}
