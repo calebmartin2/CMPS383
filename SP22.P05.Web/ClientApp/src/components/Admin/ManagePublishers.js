@@ -9,7 +9,7 @@ export function ManagePublishers() {
     useEffect(() => {
         document.title = "ICE - Manage Publishers"
         async function fetchProducts() {
-            axios.get('/api/users/get-all-publishers')
+            axios.get('/api/users/get-approved-publishers')
                 .then(function (response) {
                     console.log(response.data);
                     const data = response.data;
