@@ -18,3 +18,10 @@ code {
   background-color: #178b00 !important;
   border: #fff !important;
 }
+
+.breadcrumb-item a {
+  color: #aaaaaa !important;
+}
+.active {
+  color: #53ddff !important;
+}

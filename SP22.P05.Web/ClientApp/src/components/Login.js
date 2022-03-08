@@ -66,7 +66,7 @@ export function Login() {
                 <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleLogin}>
                     LOGIN
                 </Button>
-                <Link to="/SignUp" style={{color: "#679bbb"}}><br/>
+                <Link to="/SignUp" style={{color: "#84AEC8"}}><br/>
                         New to ICE?
                 </Link>
             </Form>

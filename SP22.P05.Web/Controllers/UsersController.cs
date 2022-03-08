@@ -145,7 +145,7 @@ public class UsersController : ControllerBase
         });
     }
 
-    [HttpDelete("delete-publisher")]
+    [HttpDelete("delete-publisher/{id}")]
     [Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult> DeletePublisher(int id)
     {

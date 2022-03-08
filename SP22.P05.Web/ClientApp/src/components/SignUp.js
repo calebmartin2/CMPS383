@@ -83,7 +83,7 @@ export function SignUp() {
                 <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
                     SIGN UP
                 </Button>
-                <Link to="/Login" style={{color: "#679bbb"}}><br/>
+                <Link to="/Login" style={{color: "#84AEC8"}}><br/>
                     Already a Member?
                 </Link>
             </Form>
