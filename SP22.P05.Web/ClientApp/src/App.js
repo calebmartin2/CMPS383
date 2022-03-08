@@ -3,12 +3,12 @@ import { Home } from "./components/Home";
 import { Navmenu } from "./components/Navmenu";
 import NotFoundPage from "./components/NotFoundPage";
 import Login from "./components/Login";
-import { PublisherPortal } from "./components/Publisher/PublisherPortal";
+import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
 import "./App.css"
 import SignUp from "./components/SignUp";
 import { Container } from "react-bootstrap";
-import { AdminPortal } from "./components/Admin/AdminPortal";
-import { AdminAddTags } from "./components/Admin/AdminAddTags";
+import { AdminDashboard } from "./components/Admin/AdminDashboard";
+import { AdminManageTags } from "./components/Admin/AdminManageTags";
 import PublisherSignUp from "./components/Publisher/PublisherSignUp";
 import axios from "axios";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
@@ -48,10 +48,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFoundPage />} />
-          <Route path="/publisher" element={<PublisherPortal />} />
+          <Route path="/publisher" element={<PublisherDashboard />} />
           <Route path="/publisher/signup" element={<PublisherSignUp />} />
-          <Route path="/admin" element={<AdminPortal />} />
-          <Route exact path="/admin/add-tags" element={<AdminAddTags />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route exact path="/admin/manage-tags" element={<AdminManageTags />} />
           <Route exact path="/admin/verify-publishers" element={<AdminVerifyPublishers />} />
         </Routes>
       </Container>

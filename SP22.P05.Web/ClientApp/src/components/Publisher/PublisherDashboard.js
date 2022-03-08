@@ -1,11 +1,11 @@
 import { checkForRole } from "../checkForRole";
 import PublisherProductList from "./PublisherProductList"
 
-export function PublisherPortal() {
+export function PublisherDashboard() {
     return (
         <>
             {checkForRole("Publisher")}
-            <h1>Publisher Portal</h1>
+            <h1>Publisher Dashboard</h1>
             <PublisherProductList/>
         </>
     )

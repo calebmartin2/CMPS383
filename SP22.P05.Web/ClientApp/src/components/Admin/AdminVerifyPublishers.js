@@ -47,7 +47,7 @@ export function AdminVerifyPublishers() {
         <>
             {checkForRole("Admin")}
             <Breadcrumb>
-                <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Portal</Breadcrumb.Item>
+                <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Verify Incoming Publishers</Breadcrumb.Item>
             </Breadcrumb>
             <h1>Verify Incoming Publishers</h1>
