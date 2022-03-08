@@ -215,6 +215,31 @@ public class UsersController : ControllerBase
         return Ok(publisherDto);
     }
 
+    [HttpGet("get-approved-publishers")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<List<PublisherDto>>> GetApprovedPubilshers()
+    {
+        var approvedPublishers = await userManager.GetUsersInRoleAsync(RoleNames.Publisher);
+        var publisherInfo = dataContext.Set<PublisherInfo>();
+        var publisherDto = new List<PublisherDto>();
+        // Probably a built in way, don't know how else to fix at the moment
+        foreach (var publisher in approvedPublishers)
+        {
+            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            {
+                return BadRequest("Publisher does not have info.");
+            }
+            publisherDto.Add(new PublisherDto
+            {
+                Id = publisher.Id,
+                UserName = publisher.UserName,
+                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                IsApproved = true
+            });
+        }
+        return Ok(publisherDto);
+    }
+
     [HttpPost("verify-publisher")]
     [Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<UserDto>> VerifyPublisher([FromForm] int id)
