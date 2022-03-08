@@ -6,7 +6,7 @@ export default function PublisherProductList() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        document.title = "ICE - Publisher Portal"
+        document.title = "ICE - Publisher Dashboard"
         async function fetchProducts() {
             axios.get('/api/publisher/products')
                 .then(function (response) {
