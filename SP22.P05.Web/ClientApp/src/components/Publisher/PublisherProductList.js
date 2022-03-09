@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form } from "react-bootstrap";
+import { Table, Button, Modal, Form, InputGroup } from "react-bootstrap";
 
 export default function PublisherProductList() {
     const [products, setProducts] = useState([]);
@@ -30,7 +30,7 @@ export default function PublisherProductList() {
         fetchProducts();
     }, [])
 
-    function handleAdd() {
+    const handleAdd = (e) => {
         axios.post('/api/products', {
             name: name,
             description: description,
@@ -51,21 +51,23 @@ export default function PublisherProductList() {
                 Add Product
             </Button>
             <Modal show={show} onHide={handleClose}>
-                <Form>
+                <Form onSubmit={handleAdd}>
                     <Form.Group controlId="formBasicName">
-                        <Form.Label>name</Form.Label>
-                        <Form.Control type="text" placeholder="Enter Name" value={name}  onChange={(e) => setName(e.target.value)}/>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control required type="text" placeholder="Enter Name" value={name}  onChange={(e) => setName(e.target.value)}/>
                     </Form.Group>
-
                     <Form.Group controlId="formBasicDescription">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control type="text" placeholder="Description" value={description}  onChange={(e) => setDescription(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Description" value={description}  onChange={(e) => setDescription(e.target.value)} />
                     </Form.Group>
                     <Form.Group controlId="formBasicPrice">
                     <Form.Label>Price</Form.Label>
-                        <Form.Control type="number" placeholder="$0.00" value={price}  onChange={(e) => setPrice(e.target.value)} />
+                    <InputGroup>
+                    <InputGroup.Text>$</InputGroup.Text>
+                        <Form.Control required min="0.01" type="number" placeholder="0.00" value={price}  onChange={(e) => setPrice(e.target.value)} />
+                        </InputGroup>
                     </Form.Group>
-                    <Button variant="primary" type="submit" onClick={() => handleAdd()}>
+                    <Button variant="primary" type="submit">
                         Add
                     </Button>
                 </Form>

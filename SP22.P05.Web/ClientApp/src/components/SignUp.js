@@ -18,7 +18,9 @@ export function SignUp() {
         document.title = "ICE - Sign Up"
      }, []);
 
-    function handleSignUp() {
+    const handleSignUp = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         if (userName === "" || password === "") {
             setisSignUpFail(true);
         }
@@ -45,18 +47,18 @@ export function SignUp() {
 
     function AlertPassword() {
         if (isSignUpFail) {
-            return (
-                <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
-                <Alert.Heading>Need Username and Password.</Alert.Heading>
-            </Alert>
-            )
+            // return (
+            //     <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
+            //     <Alert.Heading>Need Username and Password.</Alert.Heading>
+            // </Alert>
+            // )
         } else if (signUpSuccess) {
             return <Navigate to="/Login" />
         }
         return <></>
     }
 
-    const handleKeypress = e => {
+    const handleKeypress = (e) => {
         setShow(false);
         setisSignUpFail(false);
         if (e.code === "Enter" || e.code === "NumpadEnter") {
@@ -66,23 +68,26 @@ export function SignUp() {
 
     return (
         <>
-            <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
+            <Form style={{ maxWidth: "20em", margin: "0em auto" }} onSubmit={handleSignUp}>
                 <h1>SIGN UP</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                     <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
-                <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
+                {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
                     SIGN UP
-                </Button>
+                </Button> */}
+                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
+                    SIGN UP
+                    </Button>
                 <Link to="/Login" style={{color: "#84AEC8"}}><br/>
                     Already a Member?
                 </Link>
