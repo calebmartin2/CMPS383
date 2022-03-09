@@ -13,6 +13,7 @@ import PublisherSignUp from "./components/Publisher/PublisherSignUp";
 import axios from "axios";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 import { ManagePublishers } from "./components/Admin/ManagePublishers";
+import { TermsOfAgreement } from "./TermsOfAgreement";
 
 function App() {
 
@@ -55,6 +56,7 @@ function App() {
           <Route exact path="/admin/manage-tags" element={<AdminManageTags />} />
           <Route exact path="/admin/verify-publishers" element={<AdminVerifyPublishers />} />
           <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
+          <Route path="/terms" element={<TermsOfAgreement/>} />
         </Routes>
       </Container>
     </div>
