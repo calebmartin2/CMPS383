@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Table, Breadcrumb } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { checkForRole } from "../checkForRole";
 
 export function ManagePublishers() {
     const [publishers, setPublishers] = useState([]);
@@ -24,6 +25,7 @@ export function ManagePublishers() {
 
     return (
         <>
+            {checkForRole("Admin")}
             <Breadcrumb>
                 <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Manage Publishers</Breadcrumb.Item>
