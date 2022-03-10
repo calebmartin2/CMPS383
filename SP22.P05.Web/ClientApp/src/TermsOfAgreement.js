@@ -3,9 +3,8 @@ export function TermsOfAgreement() {
         <>
             <h1>Terms and Conditions for ICE</h1>
             <h2>Introduction</h2>
-            <p>These Website Standard Terms and Conditions written on this webpage shall manage your use of our website, ICE accessible at https://localhost:3000/terms.</p>
+            <p>These Website Standard Terms and Conditions written on this webpage shall manage your use of our website, ICE accessible at https://selu383-sp22-p05-g01.azurewebsites.net/terms.</p>
             <p>These Terms will be applied fully and affect to your use of this Website. By using this Website, you agreed to accept all terms and conditions written in here. You must not use this Website if you disagree with any of these Website Standard Terms and Conditions. These Terms and Conditions have been generated with the help of the Terms And Conditiions Sample Generator.</p>
-            <p>Minors or people below 18 years old are not allowed to use this Website.</p>
             <h2>Intellectual Property Rights</h2>
             <p>Other than the content you own, under these Terms, VidCo and/or its licensors own all the intellectual property rights and materials contained in this Website.</p>
             <p>You are granted limited license only for purposes of viewing the material contained on this Website.</p>

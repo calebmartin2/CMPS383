@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 export function PublisherSignUp() {
@@ -87,6 +88,9 @@ export function PublisherSignUp() {
                 <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                    <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>}/> 
                 </Form.Group>
                 <Button variant="primary" type="submit" className="custom-primary-btn">
                     SIGN UP
