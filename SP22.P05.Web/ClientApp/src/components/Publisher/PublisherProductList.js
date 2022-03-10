@@ -64,7 +64,7 @@ export default function PublisherProductList() {
                     <Form.Label>Price</Form.Label>
                     <InputGroup>
                     <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Control required min="0.01" type="number" placeholder="0.00" value={price}  onChange={(e) => setPrice(e.target.value)} />
+                        <Form.Control required min="0.01" step="0.01" type="number" placeholder="0.00" value={price}  onChange={(e) => setPrice(e.target.value)} />
                         </InputGroup>
                     </Form.Group>
                     <Button variant="primary" type="submit">
