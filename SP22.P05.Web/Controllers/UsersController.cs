@@ -101,7 +101,6 @@ public class UsersController : ControllerBase
         });
     }
     [HttpPost("create-publisher")]
-    [Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<UserDto>> CreatePublisher(CreatePublisherDto dto)
     {
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
@@ -118,7 +117,7 @@ public class UsersController : ControllerBase
 
         try
         {
-            var roleResult = await userManager.AddToRoleAsync(newPublisher, RoleNames.Publisher);
+            var roleResult = await userManager.AddToRoleAsync(newPublisher, RoleNames.PendingPublisher);
             if (!roleResult.Succeeded)
             {
                 return BadRequest("Cannot add user to role");
@@ -144,5 +143,120 @@ public class UsersController : ControllerBase
             UserName = newPublisher.UserName,
             CompanyName = dto.CompanyName,
         });
+    }
+
+    [HttpDelete("delete-publisher/{id}")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult> DeletePublisher(int id)
+    {
+        var publisher = userManager.Users.FirstOrDefault(x => x.Id == id);
+        if (publisher == null)
+        {
+            return NotFound("Publisher does not exist");
+        }
+
+        var deleteResult = await userManager.DeleteAsync(publisher);
+        if (!deleteResult.Succeeded)
+        {
+            return BadRequest("Cannot delete publisher.");
+        }
+
+        return Ok();
+    }
+
+    [HttpGet("get-all-publishers")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<List<PublisherDto>>> GetAllPublishers()
+    {
+        var pendingPublishers = await userManager.GetUsersInRoleAsync(RoleNames.PendingPublisher);
+        var approvedPublishers = await userManager.GetUsersInRoleAsync(RoleNames.Publisher);
+        var allPublishers = Enumerable.Concat(pendingPublishers, approvedPublishers);
+        var publisherInfo = dataContext.Set<PublisherInfo>();
+        var publisherDto = new List<PublisherDto>();
+        // Probably a built in way, don't know how else to fix at the moment
+        foreach (var publisher in allPublishers)
+        {
+            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            {
+                return BadRequest("Publisher does not have info.");
+            }
+            publisherDto.Add(new PublisherDto
+            {
+                Id = publisher.Id,
+                UserName = publisher.UserName,
+                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                IsApproved = approvedPublishers.Contains(publisher),
+            });
+        }
+        return Ok(publisherDto);
+    }
+
+    [HttpGet("get-pending-publishers")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<List<PublisherDto>>> GetPendingPublishers()
+    {
+        var pendingPublishers = await userManager.GetUsersInRoleAsync(RoleNames.PendingPublisher);
+        var publisherInfo = dataContext.Set<PublisherInfo>();
+        var publisherDto = new List<PublisherDto>();
+        // Probably a built in way, don't know how else to fix at the moment
+        foreach (var publisher in pendingPublishers)
+        {
+            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            {
+                return BadRequest("Publisher does not have info.");
+            }
+            publisherDto.Add(new PublisherDto
+            {
+                Id = publisher.Id,
+                UserName = publisher.UserName,
+                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+            });
+        }
+        return Ok(publisherDto);
+    }
+
+    [HttpGet("get-approved-publishers")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<List<PublisherDto>>> GetApprovedPubilshers()
+    {
+        var approvedPublishers = await userManager.GetUsersInRoleAsync(RoleNames.Publisher);
+        var publisherInfo = dataContext.Set<PublisherInfo>();
+        var publisherDto = new List<PublisherDto>();
+        // Probably a built in way, don't know how else to fix at the moment
+        foreach (var publisher in approvedPublishers)
+        {
+            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            {
+                return BadRequest("Publisher does not have info.");
+            }
+            publisherDto.Add(new PublisherDto
+            {
+                Id = publisher.Id,
+                UserName = publisher.UserName,
+                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                IsApproved = true
+            });
+        }
+        return Ok(publisherDto);
+    }
+
+    [HttpPost("verify-publisher")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<UserDto>> VerifyPublisher([FromForm] int id)
+    {
+        var currentUser = userManager.Users.FirstOrDefault(x => x.Id == id);
+        if (currentUser == null)
+        {
+            return BadRequest("User does not exist.");
+        }
+        await userManager.RemoveFromRoleAsync(currentUser, RoleNames.PendingPublisher);
+        await userManager.AddToRoleAsync(currentUser, RoleNames.Publisher);
+        UserDto returnDto = new UserDto()
+        {
+            Id = currentUser.Id,
+            UserName = currentUser.UserName,
+            Roles = new string[] { RoleNames.Publisher },
+        };
+        return Ok(returnDto);
     }
 }

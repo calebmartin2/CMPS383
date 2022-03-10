@@ -13,9 +13,11 @@ export function Login() {
 
     useEffect(() => {
         document.title = "ICE - Login"
-     }, []);
+    }, []);
 
-    function handleLogin() {
+    const handleLogin = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         axios.post('/api/authentication/login', {
             userName: userName,
             password: password
@@ -40,36 +42,37 @@ export function Login() {
                 </Alert>
             )
         } else if (loginSuccess) {
-            return <Navigate to="/"/>
+            return <Navigate to="/" />
         }
         return <></>
     }
 
     const handleKeypress = e => {
-      if (e.code === "Enter" || e.code === "NumpadEnter") {
-        handleLogin();
-      }
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
+            // handleLogin();
+        }
     };
 
     return (
         <>
-            <Form style={{ maxWidth: "20em", margin: "0em auto" }}>
-            <h1>LOGIN</h1>
+            <Form style={{ maxWidth: "20em", margin: "0em auto" }} onSubmit={handleLogin}>
+                <h1>LOGIN</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
-                <Button variant="primary" onClick={handleLogin}>
+                {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleLogin}>
+                    LOGIN
+                </Button> */}
+                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
                     LOGIN
                 </Button>
-                <Link to="/SignUp">
-                    <p>
-                        New to ICE?
-                    </p>
+                <Link to="/SignUp" style={{ color: "#84AEC8" }}><br />
+                    New to ICE?
                 </Link>
             </Form>
             <AlertPassword />

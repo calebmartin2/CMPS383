@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import axios from "axios";
 import baseUrl from '../BaseUrl';
 import { Text, Card } from 'react-native-elements';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -25,38 +25,44 @@ export default function HomeScreen() {
     }, [])
 
     return (
-        <ScrollView>
-
-        <View style={styles.container}>
-            <StatusBar style="auto" />
-                
-
-            {products.map((product) => (
-                <Card key={product.id}>
-                    <Card.Title style={styles.productPrice}>{product.name}</Card.Title>
-                    <Text>{product.description}</Text>
-                    <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                </Card>
-
-            ))
-            }
-        </View>
-        </ScrollView>
-
+        <ScrollView style={styles.scrollView}>
+            <View style={styles.container}>
+                <StatusBar style="light" />
+                {products.map((product) => (
+                    <TouchableOpacity key={product.id} onPress={() => navigation.navigate('ProductInfo', {product: product})}>
+                        <Card containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
+                            <Card.Title style={styles.title}>{product.name}</Card.Title>
+                            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                        </Card>
+                    </TouchableOpacity>
+                ))
+                }
+            </View>
+        </ScrollView >
     );
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: 'rgb(19,24,27)',
 
     },
     price: {
+        fontSize: 20,
         fontWeight: "700",
-        textAlign: 'right'
+        textAlign: 'right',
+        color: 'rgb(255,255,255)'
     },
-    productPrice: {
-        textAlign: 'left'
-    }
+    title: {
+        fontSize: 20,
+        textAlign: 'left',
+        color: 'rgb(255,255,255)'
+    },
+    scrollView: {
+        backgroundColor: 'rgb(19,24,27)',
+    },
 });
+

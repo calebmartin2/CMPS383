@@ -1,27 +1,28 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 
-export function SignUp() {
+export function PublisherSignUp() {
 
-    const [userName, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
+    const [userName, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [isSignUpFail, setisSignUpFail] = useState(false);
     const [signUpSuccess, setSignUpSuccess] = useState(false);
     const [show, setShow] = useState(false);
 
 
     useEffect(() => {
-        document.title = "ICE - Sign Up"
+        document.title = "ICE - Publisher Sign Up"
      }, []);
 
-    const handleSignUp = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (userName === "" || password === "") {
+    const handleSignUp = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (userName === "" || password === "" || companyName === "") {
             setisSignUpFail(true);
         }
 
@@ -30,9 +31,10 @@ export function SignUp() {
             return;
         }
 
-        axios.post('/api/users/sign-up', {
+        axios.post('/api/users/create-publisher', {
             userName: userName,
-            password: password
+            password: password,
+            companyName: companyName,
         })
             .then(function (response) {
                 console.log(response.data);
@@ -47,18 +49,18 @@ export function SignUp() {
 
     function AlertPassword() {
         if (isSignUpFail) {
-            // return (
-            //     <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
-            //     <Alert.Heading>Need Username and Password.</Alert.Heading>
-            // </Alert>
-            // )
+            return (
+                <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
+                <Alert.Heading>Need Username and Password.</Alert.Heading>
+            </Alert>
+            )
         } else if (signUpSuccess) {
-            return <Navigate to="/Login" />
+            return <Navigate to="/login" />
         }
         return <></>
     }
 
-    const handleKeypress = (e) => {
+    const handleKeypress = e => {
         setShow(false);
         setisSignUpFail(false);
         if (e.code === "Enter" || e.code === "NumpadEnter") {
@@ -69,10 +71,14 @@ export function SignUp() {
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }} onSubmit={handleSignUp}>
-                <h1>SIGN UP</h1>
+                <h1>PUBLISHER <br/>SIGN UP</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
                     <Form.Control required type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicCompanyName">
+                    <Form.Label>Company Name</Form.Label>
+                    <Form.Control required type="text" placeholder="Company Name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
@@ -82,15 +88,9 @@ export function SignUp() {
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
-                {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
+                <Button variant="primary" type="submit" className="custom-primary-btn">
                     SIGN UP
-                </Button> */}
-                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
-                    SIGN UP
-                    </Button>
-                <Link to="/Login" style={{color: "#84AEC8"}}><br/>
-                    Already a Member?
-                </Link>
+                </Button>
             </Form>
             <AlertPassword />
             <Alert style={{ maxWidth: "25em", margin: "1em auto" }} show={show} variant="danger">
@@ -100,4 +100,4 @@ export function SignUp() {
     )
 }
 
-export default SignUp;
+export default PublisherSignUp;

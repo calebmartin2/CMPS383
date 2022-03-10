@@ -15,6 +15,7 @@ public class Product
 
     public virtual ICollection<SaleEventProduct> SaleEventProducts { get; set; } = new List<SaleEventProduct>();
     public virtual ICollection<ProductUserInfo> UserInfos { get; set; } = new List<ProductUserInfo>();
+    public virtual ICollection<ProductTag> Tags { get; set; } = new List<ProductTag>();
     public virtual PublisherInfo? Publisher { get; set; }
     public int PublisherId { get; set; }
 
