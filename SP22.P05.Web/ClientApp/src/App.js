@@ -16,24 +16,24 @@ import { ManagePublishers } from "./components/Admin/ManagePublishers";
 import { TermsOfAgreement } from "./TermsOfAgreement";
 
 function App() {
+  var _ = require('lodash');
 
- // TODO: fix this nonsense, it sort of refreshes user data, but it's very shaky. Refreshing twice will update the state
+ // this is nonsense, but we're stuck with it
   function refreshUserInfo() {
     axios.get('/api/authentication/me', {
     })
       .then(function (response) {
-        // console.log(response.data);
-        // console.log(localStorage.getItem('user'));
-
-        if (!(localStorage.getItem('user') === response.data)) {
+        if (!_.isEqual(JSON.parse(localStorage.getItem('user')), response.data)) {
           localStorage.removeItem('user');
           localStorage.setItem('user', JSON.stringify(response.data))
-          // console.error("User data different, refreshing.")
+          console.error("User data different, refreshing.")
+          window.location.reload(false);
         }
-        // console.warn("User data same, skipping.")
-        // localStorage.setItem('user', JSON.stringify(response.data))
       })
       .catch(function (error) {
+        if (localStorage.getItem('user')) {
+          window.location.reload(false);
+        }
         localStorage.removeItem('user');
         console.log(error);
       });
