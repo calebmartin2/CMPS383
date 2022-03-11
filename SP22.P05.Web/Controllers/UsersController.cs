@@ -249,6 +249,10 @@ public class UsersController : ControllerBase
         {
             return BadRequest("User does not exist.");
         }
+        if (!await userManager.IsInRoleAsync(currentUser, RoleNames.PendingPublisher))
+        {
+            return BadRequest("User is not a pending publisher");
+        }
         await userManager.RemoveFromRoleAsync(currentUser, RoleNames.PendingPublisher);
         await userManager.AddToRoleAsync(currentUser, RoleNames.Publisher);
         UserDto returnDto = new UserDto()
