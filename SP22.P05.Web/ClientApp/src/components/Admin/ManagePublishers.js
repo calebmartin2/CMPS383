@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Breadcrumb } from "react-bootstrap";
+import { Table, Breadcrumb, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../checkForRole";
 
@@ -9,19 +9,30 @@ export function ManagePublishers() {
 
     useEffect(() => {
         document.title = "ICE - Manage Publishers"
-        async function fetchProducts() {
-            axios.get('/api/users/get-approved-publishers')
-                .then(function (response) {
-                    console.log(response.data);
-                    const data = response.data;
-                    setPublishers(data);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        }
-        fetchProducts();
+        fetchPublishers();
     }, [])
+
+    async function fetchPublishers() {
+        axios.get('/api/users/get-approved-publishers')
+            .then(function (response) {
+                console.log(response.data);
+                const data = response.data;
+                setPublishers(data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    function deletePublisher(id) {
+        axios.delete('/api/users/delete-publisher/' + id)
+            .then(function (response) {
+                fetchPublishers();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     return (
         <>
@@ -35,6 +46,8 @@ export function ManagePublishers() {
                     <tr>
                         <th>Username</th>
                         <th>Company Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +55,8 @@ export function ManagePublishers() {
                         <tr key={publisher.id}>
                             <td>{publisher.userName}</td>
                             <td>{publisher.companyName}</td>
+                            <td><a style={{ color: "#FFFFFF" }} href={"mailto:" + publisher.email}>{publisher.email}</a></td>
+                            <td><Button variant="danger" onClick={() => { if (window.confirm('Remove ' +  publisher.userName + ' of company ' + publisher.companyName + ' to not be a publsher anymore?'))deletePublisher(publisher.id)}}>Remove</Button></td>
                         </tr>
                     ))
                     }

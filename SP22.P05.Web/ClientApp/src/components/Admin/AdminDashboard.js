@@ -11,10 +11,7 @@ export function AdminDashboard() {
     return (
         <>
             {checkForRole("Admin")}
-
-            <Breadcrumb>
-                <Breadcrumb.Item active>Admin Dashboard</Breadcrumb.Item>
-            </Breadcrumb>
+            
             <h1>Admin Dashboard</h1>
             <Row xs={1} md={3} className="g-4 text-center">
                 {/* <Col>

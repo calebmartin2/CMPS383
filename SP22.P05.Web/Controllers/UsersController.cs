@@ -238,7 +238,8 @@ public class UsersController : ControllerBase
                 Id = publisher.Id,
                 UserName = publisher.UserName,
                 CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
-                IsApproved = true
+                IsApproved = true,
+                Email = publisher.Email
             });
         }
         return Ok(publisherDto);
