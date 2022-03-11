@@ -108,6 +108,7 @@ public class UsersController : ControllerBase
         var newPublisher = new User
         {
             UserName = dto.UserName,
+            Email = dto.Email,
         };
         var createResult = await userManager.CreateAsync(newPublisher, dto.Password);
         if (!createResult.Succeeded)
@@ -142,6 +143,7 @@ public class UsersController : ControllerBase
             Id = newPublisher.Id,
             UserName = newPublisher.UserName,
             CompanyName = dto.CompanyName,
+            Email = newPublisher.Email
         });
     }
 
@@ -186,6 +188,7 @@ public class UsersController : ControllerBase
                 UserName = publisher.UserName,
                 CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
                 IsApproved = approvedPublishers.Contains(publisher),
+                Email = publisher.Email
             });
         }
         return Ok(publisherDto);
@@ -210,6 +213,7 @@ public class UsersController : ControllerBase
                 Id = publisher.Id,
                 UserName = publisher.UserName,
                 CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                Email = publisher.Email
             });
         }
         return Ok(publisherDto);
