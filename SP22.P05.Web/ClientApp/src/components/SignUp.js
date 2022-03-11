@@ -16,7 +16,7 @@ export function SignUp() {
 
     useEffect(() => {
         document.title = "ICE - Sign Up"
-     }, []);
+    }, []);
 
     const handleSignUp = (event) => {
         event.preventDefault();
@@ -82,13 +82,16 @@ export function SignUp() {
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                    <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>}/> 
+                </Form.Group>
                 {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
                     SIGN UP
                 </Button> */}
                 <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
                     SIGN UP
-                    </Button>
-                <Link to="/Login" style={{color: "#84AEC8"}}><br/>
+                </Button>
+                <Link to="/Login" style={{ color: "#84AEC8" }}><br />
                     Already a Member?
                 </Link>
             </Form>
