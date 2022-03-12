@@ -25,12 +25,13 @@ public class ProductsController : ControllerBase
         return GetProductDtos(products).ToArray();
     }
 
-    //[HttpGet("get-products-by-tags")]
-    //public ProductDto[] GetProductsByTags(int[] tags)
-    //{
-    //    var products = dataContext.Set<Product>();
-    //    return GetProductDtos(products).ToArray();
-    //}
+    [HttpGet("manage")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public ProductDto[] GetManageAllProducts()
+    {
+        var products = dataContext.Set<Product>();
+        return GetProductDtos(products).ToArray();
+    }
 
     [HttpGet]
     [Route("{id}")]
