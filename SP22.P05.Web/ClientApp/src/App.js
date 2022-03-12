@@ -1,20 +1,21 @@
-import { Routes, Route } from "react-router-dom";
-import { Home } from "./components/Home";
-import { Navmenu } from "./components/Navmenu";
-import NotFoundPage from "./components/NotFoundPage";
-import Login from "./components/Login";
-import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
-import "./App.css"
-import SignUp from "./components/SignUp";
-import { Container } from "react-bootstrap";
-import { AdminDashboard } from "./components/Admin/AdminDashboard";
-import { AdminManageTags } from "./components/Admin/AdminManageTags";
-import PublisherSignUp from "./components/Publisher/PublisherSignUp";
 import axios from "axios";
+import { Container } from "react-bootstrap";
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import { AdminDashboard } from "./components/Admin/AdminDashboard";
+import { AdminManageProducts } from "./components/Admin/AdminManageProducts";
+import { AdminManageTags } from "./components/Admin/AdminManageTags";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 import { ManagePublishers } from "./components/Admin/ManagePublishers";
+import { Home } from "./components/Home";
+import Login from "./components/Login";
+import { Navmenu } from "./components/Navmenu";
+import NotFoundPage from "./components/NotFoundPage";
+import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
+import PublisherManageProducts from "./components/Publisher/PublisherManageProducts";
+import PublisherSignUp from "./components/Publisher/PublisherSignUp";
+import SignUp from "./components/SignUp";
 import { TermsOfAgreement } from "./TermsOfAgreement";
-import PublisherManageProducts from "./components/Publisher/PublisherManageProducts"
 
 function App() {
   var _ = require('lodash');
@@ -58,6 +59,7 @@ function App() {
           <Route exact path="/admin/manage-tags" element={<AdminManageTags />} />
           <Route exact path="/admin/verify-publishers" element={<AdminVerifyPublishers />} />
           <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
+          <Route path="/admin/manage-products" element={<AdminManageProducts />} />
           <Route path="/terms" element={<TermsOfAgreement/>} />
         </Routes>
       </Container>
