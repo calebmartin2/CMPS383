@@ -8,8 +8,9 @@ import { Link } from "react-router-dom";
 export function PublisherSignUp() {
 
     const [userName, setUsername] = useState("");
-    const [password, setPassword] = useState("");
     const [companyName, setCompanyName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isSignUpFail, setisSignUpFail] = useState(false);
     const [signUpSuccess, setSignUpSuccess] = useState(false);
@@ -36,6 +37,7 @@ export function PublisherSignUp() {
             userName: userName,
             password: password,
             companyName: companyName,
+            email: email
         })
             .then(function (response) {
                 console.log(response.data);
@@ -80,6 +82,10 @@ export function PublisherSignUp() {
                 <Form.Group className="mb-3" controlId="formBasicCompanyName">
                     <Form.Label>Company Name</Form.Label>
                     <Form.Control required type="text" placeholder="Company Name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onKeyPress={handleKeypress} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control required type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>

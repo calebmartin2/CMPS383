@@ -1,4 +1,4 @@
-import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import "./Navmenu.css";
 import iceLogo from '../content/ice_logo.png';
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -53,7 +53,13 @@ export function Navmenu() {
             <Nav.Link as={Link} to="/admin">{checkForRole("Admin") ? null : "ADMIN"}</Nav.Link>
           </Nav>
           <Nav>
-            {checkForRole("PendingPublisher") ? null : <Nav.Item style={{ backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.5em", paddingLeft: "0.5em", marginRight: "1em" }}>PUBLISHER STATUS PENDING</Nav.Item>}
+            {checkForRole("PendingPublisher") ?
+              null :
+              <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="publisherPending">The status is pending and will send email.</Tooltip>}>
+                <Nav.Item style={{ backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.5em", paddingLeft: "0.5em", marginRight: "1em" }}>PUBLISHER STATUS PENDING</Nav.Item>
+              </OverlayTrigger>}
             {renderLoginButton()}
           </Nav>
         </Container>
