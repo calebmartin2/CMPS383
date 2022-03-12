@@ -11,8 +11,13 @@ public class Product
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public bool IsActive { get; set; }
-
+    public enum StatusType
+    {
+        Active,
+        Hidden,
+        Inactive
+    }
+    public StatusType Status { get; set; }
     public virtual ICollection<SaleEventProduct> SaleEventProducts { get; set; } = new List<SaleEventProduct>();
     public virtual ICollection<ProductUserInfo> UserInfos { get; set; } = new List<ProductUserInfo>();
     public virtual ICollection<ProductTag> Tags { get; set; } = new List<ProductTag>();
@@ -32,9 +37,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Description)
             .IsRequired();
 
-        builder.Property(x => x.IsActive)
-           .HasDefaultValue(true)
-           .IsRequired();
 
         builder.Property(x => x.PublisherId)
             .HasDefaultValue(1);
