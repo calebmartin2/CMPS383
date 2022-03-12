@@ -75,6 +75,9 @@ export function SignUp() {
                 <Link to="/Login" style={{ color: "#84AEC8" }}><br />
                     Already a Member?
                 </Link>
+                <Link to="/publisher/signup" style={{ color: "#84AEC8" }}><br />
+                    Publisher Sign Up
+                </Link>
             </Form>
             <Alert style={{ maxWidth: "25em", margin: "1em auto" }} show={show} variant="danger">
                 <Alert.Heading>Passwords must match.</Alert.Heading>

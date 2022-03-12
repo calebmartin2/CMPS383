@@ -1,8 +1,9 @@
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, InputGroup } from "react-bootstrap";
+import { Table, Button, Modal, Form, InputGroup, Breadcrumb } from "react-bootstrap";
 
-export default function PublisherProductList() {
+export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
     const [show, setShow] = useState(false);
 
@@ -47,6 +48,10 @@ export default function PublisherProductList() {
 
     return (
         <>
+        <Breadcrumb>
+                <Breadcrumb.Item linkAs={Link} to="/publisher" linkProps={{ to: "/publisher" }}>Publisher Dashboard</Breadcrumb.Item>
+                <Breadcrumb.Item active>Manage Products</Breadcrumb.Item>
+            </Breadcrumb>
             <Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
                 Add Product
             </Button>
@@ -60,7 +65,7 @@ export default function PublisherProductList() {
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formBasicDescription">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control required type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                        <Form.Control required as="textarea" rows={5} placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-4" controlId="formBasicPrice">
                         <Form.Label>Price</Form.Label>

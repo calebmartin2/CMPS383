@@ -14,6 +14,7 @@ import axios from "axios";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 import { ManagePublishers } from "./components/Admin/ManagePublishers";
 import { TermsOfAgreement } from "./TermsOfAgreement";
+import PublisherManageProducts from "./components/Publisher/PublisherManageProducts"
 
 function App() {
   var _ = require('lodash');
@@ -52,6 +53,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/publisher" element={<PublisherDashboard />} />
           <Route path="/publisher/signup" element={<PublisherSignUp />} />
+          <Route path="/publisher/manage-products" element={<PublisherManageProducts />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route exact path="/admin/manage-tags" element={<AdminManageTags />} />
           <Route exact path="/admin/verify-publishers" element={<AdminVerifyPublishers />} />
