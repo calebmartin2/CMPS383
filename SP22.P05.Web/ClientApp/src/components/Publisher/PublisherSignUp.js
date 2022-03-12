@@ -85,7 +85,7 @@ export function PublisherSignUp() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control required type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="email" placeholder="user@example.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
