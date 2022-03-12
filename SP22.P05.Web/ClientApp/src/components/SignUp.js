@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export function SignUp() {
+    let navigate = useNavigate();
 
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
-    const [isSignUpFail, setisSignUpFail] = useState(false);
-    const [signUpSuccess, setSignUpSuccess] = useState(false);
     const [show, setShow] = useState(false);
 
 
@@ -21,9 +20,6 @@ export function SignUp() {
     const handleSignUp = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (userName === "" || password === "") {
-            setisSignUpFail(true);
-        }
 
         if (password !== confirmPassword) {
             setShow(true);
@@ -36,31 +32,16 @@ export function SignUp() {
         })
             .then(function (response) {
                 console.log(response.data);
-                setisSignUpFail(false);
-                setSignUpSuccess(true);
+                navigate("/Login", { replace: true });
             })
             .catch(function (error) {
-                setisSignUpFail(true)
                 console.log(error);
             });
     }
 
-    function AlertPassword() {
-        if (isSignUpFail) {
-            // return (
-            //     <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
-            //     <Alert.Heading>Need Username and Password.</Alert.Heading>
-            // </Alert>
-            // )
-        } else if (signUpSuccess) {
-            return <Navigate to="/Login" />
-        }
-        return <></>
-    }
 
     const handleKeypress = (e) => {
         setShow(false);
-        setisSignUpFail(false);
         if (e.code === "Enter" || e.code === "NumpadEnter") {
             handleSignUp();
         }
@@ -95,7 +76,6 @@ export function SignUp() {
                     Already a Member?
                 </Link>
             </Form>
-            <AlertPassword />
             <Alert style={{ maxWidth: "25em", margin: "1em auto" }} show={show} variant="danger">
                 <Alert.Heading>Passwords must match.</Alert.Heading>
             </Alert>
