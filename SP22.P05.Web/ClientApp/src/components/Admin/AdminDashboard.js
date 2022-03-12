@@ -22,14 +22,14 @@ export function AdminDashboard() {
                     </Card>
                 </Col> */}
                 <Col>
-                    <Card bg='dark' className="h-100">
+                    <Card bg='dark' className="h-100 blue-border">
                         <Card.Body as={Link} to="./verify-publishers" style={linkStyle}>
                             Verify Incoming Publishers
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col>
-                    <Card bg='dark' className="h-100">
+                    <Card bg='dark' className="h-100 blue-border">
                         <Card.Body as={Link} to="./manage-publishers" style={linkStyle}>
                             Manage Publishers
                         </Card.Body>

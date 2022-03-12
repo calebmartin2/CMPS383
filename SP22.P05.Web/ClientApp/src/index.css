@@ -25,3 +25,15 @@ code {
 .active {
   color: #53ddff !important;
 }
+
+.blue-border {
+  border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+  border-image: linear-gradient( #212529, rgb(6, 165, 228), #212529) 1 !important;
+}
+
+.modal-content { 
+  background-color: #13181b !important;
+  color: #ffffff !important;
+  border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+  border-color: #929292 !important;
+}
