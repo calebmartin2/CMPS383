@@ -21,15 +21,16 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public ProductDto[] GetAllProducts()
     {
-        var products = dataContext.Set<Product>();
-        return GetProductDtos(products.Where(x => x.IsActive)).ToArray();
+        var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
+        return GetProductDtos(products).ToArray();
     }
 
-    [HttpGet("get-products-by-tags")]
-    public ProductDto[] GetProductsByTags(int[] tags)
+    [HttpGet("manage")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public ProductDto[] GetManageAllProducts()
     {
         var products = dataContext.Set<Product>();
-        return GetProductDtos(products.Where(x => x.IsActive)).ToArray();
+        return GetProductDtos(products).ToArray();
     }
 
     [HttpGet]
@@ -71,7 +72,8 @@ public class ProductsController : ControllerBase
             Name = productDto.Name,
             Description = productDto.Description,
             Price = productDto.Price,
-            PublisherId = (int)publisherId
+            PublisherId = (int)publisherId,
+            Status = Product.StatusType.Active
         };
 
         dataContext.Add(product);
@@ -102,7 +104,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = RoleNames.AdminOrPublisher)]
+    [Authorize(Roles = RoleNames.Admin)]
     public ActionResult<ProductDto> DeleteProduct(int id)
     {
         var products = dataContext.Set<Product>();
@@ -111,35 +113,26 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
-        else if (!current.IsActive)
-        {
-            return BadRequest("Product is already inactive.");
-        }
 
-        current.IsActive = false;
+        products.Remove(current);
         dataContext.SaveChanges();
 
         return Ok();
     }
 
-    [HttpPut("UnDeleteProduct/{id}")]
-    [Authorize(Roles = RoleNames.AdminOrPublisher)]
-    public ActionResult<ProductDto> UnDeleteProduct(int id)
+
+    [HttpPut("change-status")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public ActionResult ChangeStatus(int id, int status)
     {
-        var products = dataContext.Set<Product>();
-        var current = products.FirstOrDefault(x => x.Id == id);
-        if (current == null)
+        var product = dataContext.Set<Product>().FirstOrDefault(x => x.Id == id);
+        if (product == null)
         {
             return NotFound();
         }
-        else if (current.IsActive)
-        {
-            return BadRequest("Product is already active.");
-        }
-
-        current.IsActive = true;
+        product.Status = (Product.StatusType)status;
         dataContext.SaveChanges();
-
+        // TODO: better return
         return Ok();
     }
 
@@ -150,7 +143,7 @@ public class ProductsController : ControllerBase
         var returnDto = tags.Select(x => new
         {
             Tag = x,
-        }).Select (x => new TagDto
+        }).Select(x => new TagDto
         {
             Id = x.Tag.Id,
             Name = x.Tag.Name,
@@ -195,7 +188,7 @@ public class ProductsController : ControllerBase
         {
             ProductId = productId,
             TagId = tagId
-            
+
         };
         dataContext.Add(newProductTag);
         dataContext.SaveChanges();
@@ -223,6 +216,7 @@ public class ProductsController : ControllerBase
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
                 PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
+                Status = (int)x.Product.Status
 
             });
     }
