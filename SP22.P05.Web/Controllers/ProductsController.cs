@@ -119,55 +119,21 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
-    //[HttpPost("change-status")]
-    //[Authorize(Roles = RoleNames.Admin)]
-    //public ActionResult<ProductDto> ChangeStatus(int id, int status)
-    //{
 
-    //}
-
-
-    //[HttpDelete("{id}")]
-    //[Authorize(Roles = RoleNames.AdminOrPublisher)]
-    //public ActionResult<ProductDto> DeleteProduct(int id)
-    //{
-    //    var products = dataContext.Set<Product>();
-    //    var current = products.FirstOrDefault(x => x.Id == id);
-    //    if (current == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    else if (!current.IsActive)
-    //    {
-    //        return BadRequest("Product is already inactive.");
-    //    }
-
-    //    current.IsActive = false;
-    //    dataContext.SaveChanges();
-
-    //    return Ok();
-    //}
-
-    //[HttpPut("UnDeleteProduct/{id}")]
-    //[Authorize(Roles = RoleNames.AdminOrPublisher)]
-    //public ActionResult<ProductDto> UnDeleteProduct(int id)
-    //{
-    //    var products = dataContext.Set<Product>();
-    //    var current = products.FirstOrDefault(x => x.Id == id);
-    //    if (current == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    else if (current.IsActive)
-    //    {
-    //        return BadRequest("Product is already active.");
-    //    }
-
-    //    current.IsActive = true;
-    //    dataContext.SaveChanges();
-
-    //    return Ok();
-    //}
+    [HttpPut("change-status")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public ActionResult ChangeStatus(int id, int status)
+    {
+        var product = dataContext.Set<Product>().FirstOrDefault(x => x.Id == id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+        product.Status = (Product.StatusType)status;
+        dataContext.SaveChanges();
+        // TODO: better return
+        return Ok();
+    }
 
     [HttpGet("get-tags")]
     public ActionResult<TagDto[]> GetTags()
