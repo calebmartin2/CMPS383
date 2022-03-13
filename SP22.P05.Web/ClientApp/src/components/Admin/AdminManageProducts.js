@@ -8,8 +8,6 @@ export function AdminManageProducts() {
     const [products, setProducts] = useState([]);
     const [id, setId] = useState([]);
     const [status, setStatus] = useState([]);
-    console.log(id);
-    console.log(status);
 
     useEffect(() => {
         document.title = "ICE - Manage Products"
@@ -26,12 +24,10 @@ export function AdminManageProducts() {
                 console.log(error);
             });
     }
-    
-    async function changeStatus() {
-        axios.put('/api/products/change-status', {
-            id: id,
-            status: status
-        })
+
+    async function changeStatus(customId, customStatus) {
+        customStatus = parseInt(customStatus);
+        axios.put('/api/products/change-status/' + customId + '/' + customStatus)
             .then(function (response) {
                 console.log(response.data);
             })
@@ -61,7 +57,7 @@ export function AdminManageProducts() {
                             <td>{products.name}</td>
                             <td>{products.publisherName}</td>
                             <td><Form>
-                                <div className="mb-3" onChange={(e) => {setStatus(e.target.id); setId(products.id)}}>
+                                <div className="mb-3" onChange={(e) => { setStatus(e.target.id); setId(products.id); changeStatus(products.id, e.target.id) }}>
                                     <Form.Check
                                         inline
                                         label="Active"

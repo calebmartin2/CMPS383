@@ -121,7 +121,7 @@ public class ProductsController : ControllerBase
     }
 
 
-    [HttpPut("change-status")]
+    [HttpPut("change-status/{id}/{status}")]
     [Authorize(Roles = RoleNames.Admin)]
     public ActionResult ChangeStatus(int id, int status)
     {
