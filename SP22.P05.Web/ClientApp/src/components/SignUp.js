@@ -17,10 +17,9 @@ export function SignUp() {
         document.title = "ICE - Sign Up"
     }, []);
 
-    const handleSignUp = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
+    const handleSignUp = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (password !== confirmPassword) {
             setShow(true);
             return;
@@ -57,14 +56,16 @@ export function SignUp() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Password" value={password} pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$"
+                        title="Minimum 8 characters, at least one number, at least one upper case, at least one lower case, and at least one special character."
+                        onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                     <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value) } onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>}/> 
+                    <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>} />
                 </Form.Group>
                 {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
                     SIGN UP
