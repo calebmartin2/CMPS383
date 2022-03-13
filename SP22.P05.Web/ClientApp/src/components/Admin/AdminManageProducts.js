@@ -6,11 +6,9 @@ import { checkForRole } from "../checkForRole";
 
 export function AdminManageProducts() {
     const [products, setProducts] = useState([]);
-    const [id, setId] = useState([]);
-    const [status, setStatus] = useState([]);
 
     useEffect(() => {
-        document.title = "ICE - Manage Products"
+        document.title = "Admin - Manage Products"
         fetchProducts();
     }, [])
     async function fetchProducts() {
@@ -25,9 +23,8 @@ export function AdminManageProducts() {
             });
     }
 
-    async function changeStatus(customId, customStatus) {
-        customStatus = parseInt(customStatus);
-        axios.put('/api/products/change-status/' + customId + '/' + customStatus)
+    async function changeStatus(id, status) {
+        axios.put('/api/products/change-status/' + id + '/' + status)
             .then(function (response) {
                 console.log(response.data);
             })
@@ -57,13 +54,14 @@ export function AdminManageProducts() {
                             <td>{products.name}</td>
                             <td>{products.publisherName}</td>
                             <td><Form>
-                                <div className="mb-3" onChange={(e) => { setStatus(e.target.id); setId(products.id); changeStatus(products.id, e.target.id) }}>
+                                <div className="mb-3" onChange={(e) => {changeStatus(products.id, e.target.id) }}>
                                     <Form.Check
                                         inline
                                         label="Active"
                                         name="group1"
                                         type={'radio'}
                                         id={`0`}
+                                        defaultChecked={products.status === 0}
                                     />
                                     <Form.Check
                                         inline
@@ -71,6 +69,7 @@ export function AdminManageProducts() {
                                         name="group1"
                                         type={'radio'}
                                         id={`1`}
+                                        defaultChecked={products.status === 1}
                                     />
                                     <Form.Check
                                         inline
@@ -78,6 +77,7 @@ export function AdminManageProducts() {
                                         name="group1"
                                         type={'radio'}
                                         id={`2`}
+                                        defaultChecked={products.status === 2}
                                     />
                                 </div>
                             </Form></td>

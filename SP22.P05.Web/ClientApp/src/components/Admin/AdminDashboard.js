@@ -38,7 +38,7 @@ export function AdminDashboard() {
                     <Col>
                     <Card bg='dark' className="h-100 blue-border">
                         <Card.Body as={Link} to="./manage-products" style={linkStyle}>
-                            Manage Publishers
+                            Manage Products
                         </Card.Body>
                     </Card>
                 </Col>
