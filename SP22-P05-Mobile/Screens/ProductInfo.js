@@ -10,12 +10,12 @@ export default function ProductInfo({ route }) {
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.publisherName}>Publisher: {product.publisherName}</Text>
                 <Text style={styles.description}>{product.description}</Text>
-                <View style={styles.tagList}>
+                {/* <View style={styles.tagList}>
                     <Text style={styles.tags}>Tags: </Text>
                     {product.tags.map((tags, index) => (
                         <Text key={tags} style={styles.tags}>{(index ? ', ' : '') + tags }</Text>
                     ))}
-                </View>
+                </View> */}
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
             </View>
         </>
