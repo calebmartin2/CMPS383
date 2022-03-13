@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Table, Form } from "react-bootstrap";
+import { Breadcrumb, Table, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../checkForRole";
 
@@ -8,7 +8,7 @@ export function AdminManageProducts() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        document.title = "Admin - Manage Products"
+        document.title = "ICE - Manage Products"
         fetchProducts();
     }, [])
     async function fetchProducts() {
@@ -33,6 +33,17 @@ export function AdminManageProducts() {
             });
     }
 
+    
+    function deleteProudct(id) {
+        axios.delete('/api/products/' + id)
+            .then(function (response) {
+                fetchProducts();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
     return (
         <>
             {checkForRole("Admin")}
@@ -46,22 +57,23 @@ export function AdminManageProducts() {
                         <th>Name</th>
                         <th>Publisher</th>
                         <th>Status</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((products) => (
-                        <tr key={products.id}>
-                            <td>{products.name}</td>
-                            <td>{products.publisherName}</td>
+                    {products.map((product) => (
+                        <tr key={product.id}>
+                            <td>{product.name}</td>
+                            <td>{product.publisherName}</td>
                             <td><Form>
-                                <div className="mb-3" onChange={(e) => {changeStatus(products.id, e.target.id) }}>
+                                <div className="mb-3" onChange={(e) => {changeStatus(product.id, e.target.id) }}>
                                     <Form.Check
                                         inline
                                         label="Active"
                                         name="group1"
                                         type={'radio'}
                                         id={`0`}
-                                        defaultChecked={products.status === 0}
+                                        defaultChecked={product.status === 0}
                                     />
                                     <Form.Check
                                         inline
@@ -69,7 +81,7 @@ export function AdminManageProducts() {
                                         name="group1"
                                         type={'radio'}
                                         id={`1`}
-                                        defaultChecked={products.status === 1}
+                                        defaultChecked={product.status === 1}
                                     />
                                     <Form.Check
                                         inline
@@ -77,10 +89,11 @@ export function AdminManageProducts() {
                                         name="group1"
                                         type={'radio'}
                                         id={`2`}
-                                        defaultChecked={products.status === 2}
+                                        defaultChecked={product.status === 2}
                                     />
                                 </div>
                             </Form></td>
+                            { <td><Button variant="danger" onClick={() => { if (window.confirm('Delete ' +  product.name + ' to not be part of the store anymore?'))deleteProudct(product.id)}}>Delete</Button></td> }
                         </tr>
                     ))
                     }

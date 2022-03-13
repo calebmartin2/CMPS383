@@ -29,7 +29,7 @@ export function AdminVerifyPublishers() {
     }
 
     useEffect(() => {
-        document.title = "Admin - Verify Publishers"
+        document.title = "ICE - Verify Publishers"
         fetchPendingPublisher();
     }, []);
 

@@ -1,6 +1,7 @@
 import { checkForRole } from "../checkForRole";
 import { Card, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 
 export function PublisherDashboard() {
@@ -8,6 +9,12 @@ export function PublisherDashboard() {
         textDecoration: "none",
         color: 'white'
     };
+
+
+    useEffect(() => {
+        document.title = "ICE - Publisher Dashboard"
+    }, [])
+
     return (
         <>
             {checkForRole("Publisher")}

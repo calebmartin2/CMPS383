@@ -26,7 +26,7 @@ export default function PublisherManageProducts() {
     }
 
     useEffect(() => {
-        document.title = "ICE - Publisher Dashboard"
+        document.title = "ICE - Manage Products"
 
         fetchProducts();
     }, [])

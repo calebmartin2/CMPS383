@@ -10,7 +10,7 @@ export function AdminManageTags() {
     const [tags, setTags] = useState([]);
 
     useEffect(() => {
-        document.title = "Admin - Add Tags"
+        document.title = "ICE - Add Tags"
         async function fetchTags() {
             axios.get('/api/products/get-tags')
                 .then(function (response) {

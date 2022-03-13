@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
 import { checkForRole } from "../checkForRole";
 import { Card, Row, Col } from "react-bootstrap";
+import { useEffect } from "react";
 
 export function AdminDashboard() {
     const linkStyle = {
         textDecoration: "none",
         color: 'white'
     };
+
+    useEffect(() => {
+        document.title = "ICE - Admin Dashboard"
+    }, [])
 
     return (
         <>
