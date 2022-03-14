@@ -108,6 +108,7 @@ public class UsersController : ControllerBase
         var newPublisher = new User
         {
             UserName = dto.UserName,
+            Email = dto.Email,
         };
         var createResult = await userManager.CreateAsync(newPublisher, dto.Password);
         if (!createResult.Succeeded)
@@ -142,6 +143,7 @@ public class UsersController : ControllerBase
             Id = newPublisher.Id,
             UserName = newPublisher.UserName,
             CompanyName = dto.CompanyName,
+            Email = newPublisher.Email
         });
     }
 
@@ -186,6 +188,7 @@ public class UsersController : ControllerBase
                 UserName = publisher.UserName,
                 CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
                 IsApproved = approvedPublishers.Contains(publisher),
+                Email = publisher.Email
             });
         }
         return Ok(publisherDto);
@@ -210,6 +213,7 @@ public class UsersController : ControllerBase
                 Id = publisher.Id,
                 UserName = publisher.UserName,
                 CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                Email = publisher.Email
             });
         }
         return Ok(publisherDto);
@@ -234,7 +238,8 @@ public class UsersController : ControllerBase
                 Id = publisher.Id,
                 UserName = publisher.UserName,
                 CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
-                IsApproved = true
+                IsApproved = true,
+                Email = publisher.Email
             });
         }
         return Ok(publisherDto);
@@ -248,6 +253,10 @@ public class UsersController : ControllerBase
         if (currentUser == null)
         {
             return BadRequest("User does not exist.");
+        }
+        if (!await userManager.IsInRoleAsync(currentUser, RoleNames.PendingPublisher))
+        {
+            return BadRequest("User is not a pending publisher");
         }
         await userManager.RemoveFromRoleAsync(currentUser, RoleNames.PendingPublisher);
         await userManager.AddToRoleAsync(currentUser, RoleNames.Publisher);

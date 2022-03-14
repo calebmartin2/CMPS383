@@ -1,8 +1,9 @@
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, InputGroup } from "react-bootstrap";
+import { Table, Button, Modal, Form, InputGroup, Breadcrumb } from "react-bootstrap";
 
-export default function PublisherProductList() {
+export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
     const [show, setShow] = useState(false);
 
@@ -25,8 +26,8 @@ export default function PublisherProductList() {
     }
 
     useEffect(() => {
-        document.title = "ICE - Publisher Dashboard"
-   
+        document.title = "ICE - Manage Products"
+
         fetchProducts();
     }, [])
 
@@ -36,41 +37,48 @@ export default function PublisherProductList() {
             description: description,
             price: price
         })
-        .then(function (response) {
-            fetchProducts();
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
+            .then(function (response) {
+                fetchProducts();
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
 
     }
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
+        <Breadcrumb>
+                <Breadcrumb.Item linkAs={Link} to="/publisher" linkProps={{ to: "/publisher" }}>Publisher Dashboard</Breadcrumb.Item>
+                <Breadcrumb.Item active>Manage Products</Breadcrumb.Item>
+            </Breadcrumb>
+            <Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
                 Add Product
             </Button>
             <Modal show={show} onHide={handleClose}>
+                <Modal.Header><Modal.Title>Add Product</Modal.Title></Modal.Header>
+                <Modal.Body>
                 <Form onSubmit={handleAdd}>
-                    <Form.Group controlId="formBasicName">
+                    <Form.Group className="mb-2" controlId="formBasicName">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control required type="text" placeholder="Enter Name" value={name}  onChange={(e) => setName(e.target.value)}/>
+                        <Form.Control required type="text" placeholder="Enter Name" value={name} onChange={(e) => setName(e.target.value)} />
                     </Form.Group>
-                    <Form.Group controlId="formBasicDescription">
+                    <Form.Group className="mb-2" controlId="formBasicDescription">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control required type="text" placeholder="Description" value={description}  onChange={(e) => setDescription(e.target.value)} />
+                        <Form.Control required as="textarea" rows={5} placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </Form.Group>
-                    <Form.Group controlId="formBasicPrice">
-                    <Form.Label>Price</Form.Label>
-                    <InputGroup>
-                    <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Control required min="0.01" step="0.01" type="number" placeholder="0.00" value={price}  onChange={(e) => setPrice(e.target.value)} />
+                    <Form.Group className="mb-4" controlId="formBasicPrice">
+                        <Form.Label>Price</Form.Label>
+                        <InputGroup>
+                            <InputGroup.Text>$</InputGroup.Text>
+                            <Form.Control required min="0.01" step="0.01" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
                         </InputGroup>
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button className="custom-primary-btn" variant="primary" type="submit">
                         Add
                     </Button>
                 </Form>
+                </Modal.Body>
             </Modal>
             <Table striped bordered hover variant="dark">
                 <thead>

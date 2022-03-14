@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { checkForRole } from "../checkForRole";
-import { Breadcrumb, Card, Row, Col } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
+import { useEffect } from "react";
 
 export function AdminDashboard() {
     const linkStyle = {
@@ -8,13 +9,14 @@ export function AdminDashboard() {
         color: 'white'
     };
 
+    useEffect(() => {
+        document.title = "ICE - Admin Dashboard"
+    }, [])
+
     return (
         <>
             {checkForRole("Admin")}
 
-            <Breadcrumb>
-                <Breadcrumb.Item active>Admin Dashboard</Breadcrumb.Item>
-            </Breadcrumb>
             <h1>Admin Dashboard</h1>
             <Row xs={1} md={3} className="g-4 text-center">
                 {/* <Col>
@@ -25,16 +27,23 @@ export function AdminDashboard() {
                     </Card>
                 </Col> */}
                 <Col>
-                    <Card bg='dark' className="h-100">
+                    <Card bg='dark' className="h-100 blue-border">
                         <Card.Body as={Link} to="./verify-publishers" style={linkStyle}>
                             Verify Incoming Publishers
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col>
-                    <Card bg='dark' className="h-100">
+                    <Card bg='dark' className="h-100 blue-border">
                         <Card.Body as={Link} to="./manage-publishers" style={linkStyle}>
                             Manage Publishers
+                        </Card.Body>
+                    </Card>
+                    </Col>
+                    <Col>
+                    <Card bg='dark' className="h-100 blue-border">
+                        <Card.Body as={Link} to="./manage-products" style={linkStyle}>
+                            Manage Products
                         </Card.Body>
                     </Card>
                 </Col>

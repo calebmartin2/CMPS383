@@ -1,30 +1,25 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export function SignUp() {
+    let navigate = useNavigate();
 
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
-    const [isSignUpFail, setisSignUpFail] = useState(false);
-    const [signUpSuccess, setSignUpSuccess] = useState(false);
     const [show, setShow] = useState(false);
 
 
     useEffect(() => {
         document.title = "ICE - Sign Up"
-     }, []);
+    }, []);
 
-    const handleSignUp = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (userName === "" || password === "") {
-            setisSignUpFail(true);
-        }
-
+    const handleSignUp = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (password !== confirmPassword) {
             setShow(true);
             return;
@@ -36,31 +31,16 @@ export function SignUp() {
         })
             .then(function (response) {
                 console.log(response.data);
-                setisSignUpFail(false);
-                setSignUpSuccess(true);
+                navigate("/Login", { replace: true });
             })
             .catch(function (error) {
-                setisSignUpFail(true)
                 console.log(error);
             });
     }
 
-    function AlertPassword() {
-        if (isSignUpFail) {
-            // return (
-            //     <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
-            //     <Alert.Heading>Need Username and Password.</Alert.Heading>
-            // </Alert>
-            // )
-        } else if (signUpSuccess) {
-            return <Navigate to="/Login" />
-        }
-        return <></>
-    }
 
     const handleKeypress = (e) => {
         setShow(false);
-        setisSignUpFail(false);
         if (e.code === "Enter" || e.code === "NumpadEnter") {
             handleSignUp();
         }
@@ -76,23 +56,30 @@ export function SignUp() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Password" value={password} pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$"
+                        title="Minimum 8 characters, at least one number, at least one upper case, at least one lower case, and at least one special character."
+                        onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                     <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value) } onKeyPress={handleKeypress} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                    <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>} />
                 </Form.Group>
                 {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
                     SIGN UP
                 </Button> */}
                 <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
                     SIGN UP
-                    </Button>
-                <Link to="/Login" style={{color: "#84AEC8"}}><br/>
+                </Button>
+                <Link to="/Login" style={{ color: "#84AEC8" }}><br />
                     Already a Member?
                 </Link>
+                <Link to="/publisher/signup" style={{ color: "#84AEC8" }}><br />
+                    Publisher Sign Up
+                </Link>
             </Form>
-            <AlertPassword />
             <Alert style={{ maxWidth: "25em", margin: "1em auto" }} show={show} variant="danger">
                 <Alert.Heading>Passwords must match.</Alert.Heading>
             </Alert>

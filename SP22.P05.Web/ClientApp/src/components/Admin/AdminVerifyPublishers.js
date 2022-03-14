@@ -29,7 +29,7 @@ export function AdminVerifyPublishers() {
     }
 
     useEffect(() => {
-        document.title = "Admin - Verify Publishers"
+        document.title = "ICE - Verify Publishers"
         fetchPendingPublisher();
     }, []);
 
@@ -67,6 +67,7 @@ export function AdminVerifyPublishers() {
                     <tr>
                         <th>Username</th>
                         <th>Company Name</th>
+                        <th>Email</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -75,8 +76,11 @@ export function AdminVerifyPublishers() {
                         <tr key={pendingPublisher.id}>
                             <td>{pendingPublisher.userName}</td>
                             <td>{pendingPublisher.companyName}</td>
-                            <td><Button variant="primary" onClick={() => { if (window.confirm('Verify ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + ' to be a publisher?')) VerifyPublisher(pendingPublisher.id) }}>Add</Button> 
-                            <Button variant="danger" onClick={() => { if (window.confirm('Delete ' +  pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + 'to not be a publsher?'))deletePendingPublisher(pendingPublisher.id)}}>Deny</Button></td>
+                            <td><a style={{ color: "#FFFFFF" }} href={"mailto:" + pendingPublisher.email}>{pendingPublisher.email}</a></td>
+                            <td>
+                                <Button variant="primary" className="custom-primary-btn" onClick={() => { if (window.confirm('Verify ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + ' to be a publisher?')) VerifyPublisher(pendingPublisher.id) }}>Approve</Button>
+                                <Button variant="danger" style={{marginLeft: "1em"}} onClick={() => { if (window.confirm('Deny ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + 'to not be a publsher?')) deletePendingPublisher(pendingPublisher.id) }}>Deny</Button>
+                            </td>
                         </tr>
                     ))
                     }
