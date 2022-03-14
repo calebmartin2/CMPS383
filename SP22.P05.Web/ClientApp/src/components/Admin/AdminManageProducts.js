@@ -93,7 +93,7 @@ export function AdminManageProducts() {
                                     />
                                 </div>
                             </Form></td>
-                            { <td><Button variant="danger" onClick={() => { if (window.confirm('Delete ' +  product.name + ' to not be part of the store anymore?'))deleteProudct(product.id)}}>Delete</Button></td> }
+                            { <td><Button variant="danger" onClick={() => { if (window.confirm('Delete ' +  product.name + ' from the system? THIS ACTION IS IRREVERSABLE.'))deleteProudct(product.id)}}>Delete</Button></td> }
                         </tr>
                     ))
                     }

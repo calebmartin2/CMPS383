@@ -49,8 +49,8 @@ export function Navmenu() {
         <Container>
           <Navbar.Brand as={Link} to="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/publisher">{checkForRole("Publisher") ? null : "PUBLISHER"}</Nav.Link>
-            <Nav.Link as={Link} to="/admin">{checkForRole("Admin") ? null : "ADMIN"}</Nav.Link>
+          {checkForRole("Publisher") ? null : <Nav.Link as={Link} to="/publisher">PUBLISHER</Nav.Link>}
+          {checkForRole("Admin") ? null : <Nav.Link as={Link} to="/admin">ADMIN</Nav.Link>}
           </Nav>
           <Nav>
             {checkForRole("PendingPublisher") ?
