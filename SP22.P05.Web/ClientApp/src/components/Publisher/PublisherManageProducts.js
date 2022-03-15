@@ -92,6 +92,7 @@ export default function PublisherManageProducts() {
                             <tr>
                                 <th>Name</th>
                                 <th>Price</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,6 +100,8 @@ export default function PublisherManageProducts() {
                                 <tr key={product.id}>
                                     <td>{product.name}</td>
                                     <td>${product.price.toFixed(2)}</td>
+                                    {/* Shouldn't be hardcoding this, stuck with it for now */}
+                                    <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
                                 </tr>
                             ))
                             }
