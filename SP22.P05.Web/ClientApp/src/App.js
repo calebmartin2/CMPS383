@@ -11,6 +11,7 @@ import { Home } from "./components/Home";
 import Login from "./components/Login";
 import { Navmenu } from "./components/Navmenu";
 import NotFoundPage from "./components/NotFoundPage";
+import { ProductDetail } from "./components/ProductDetail";
 import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
 import PublisherManageProducts from "./components/Publisher/PublisherManageProducts";
 import PublisherSignUp from "./components/Publisher/PublisherSignUp";
@@ -61,6 +62,7 @@ function App() {
           <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
           <Route path="/admin/manage-products" element={<AdminManageProducts />} />
           <Route path="/terms" element={<TermsOfAgreement/>} />
+          <Route path="/product/:productId" element={<ProductDetail />} />
         </Routes>
       </Container>
     </div>

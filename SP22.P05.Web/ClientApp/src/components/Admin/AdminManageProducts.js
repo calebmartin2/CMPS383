@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Table, Form, Button } from "react-bootstrap";
+import { Breadcrumb, Table, Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../checkForRole";
 
@@ -33,7 +33,7 @@ export function AdminManageProducts() {
             });
     }
 
-    
+
     function deleteProudct(id) {
         axios.delete('/api/products/' + id)
             .then(function (response) {
@@ -57,7 +57,7 @@ export function AdminManageProducts() {
                         <th>Name</th>
                         <th>Publisher</th>
                         <th>Status</th>
-                        <th>Delete</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,7 +66,7 @@ export function AdminManageProducts() {
                             <td>{product.name}</td>
                             <td>{product.publisherName}</td>
                             <td><Form>
-                                <div className="mb-3" onChange={(e) => {changeStatus(product.id, e.target.id) }}>
+                                <div className="mb-3" onChange={(e) => { changeStatus(product.id, e.target.id) }}>
                                     <Form.Check
                                         inline
                                         label="Active"
@@ -93,7 +93,12 @@ export function AdminManageProducts() {
                                     />
                                 </div>
                             </Form></td>
-                            { <td><Button variant="danger" onClick={() => { if (window.confirm('Delete ' +  product.name + ' from the system? THIS ACTION IS IRREVERSABLE.'))deleteProudct(product.id)}}>Delete</Button></td> }
+                            {<td>
+                                <DropdownButton id="dropdown-item-button" title="Actions">
+                                    <Dropdown.Item as="button"><Link to={`/product/${product.id}`} style={{textDecoration: "none"}}>Go to Store Page</Link></Dropdown.Item>
+                                    <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProudct(product.id) }}>Delete</Dropdown.Item>
+                                </DropdownButton>
+                            </td>}
                         </tr>
                     ))
                     }
