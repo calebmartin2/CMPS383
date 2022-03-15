@@ -9,7 +9,10 @@
     font-weight: 700; */
     text-align: right;
 }
+.ProductCard:hover {
+    border-image: linear-gradient( #212529, rgb(6, 247, 255), #212529) 1 !important;
 
+}
 .card-body {
     background-color: #212529 !important;
 }

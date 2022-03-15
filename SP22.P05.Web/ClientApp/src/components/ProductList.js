@@ -6,15 +6,18 @@ import './ProductList.css'
 
 export function ProductList() {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         document.title = "ICE - Store"
+        setLoading(true);
         async function fetchProducts() {
             axios.get('/api/products')
                 .then(function (response) {
                     console.log(response.data);
                     const data = response.data;
                     setProducts(data);
+                    setLoading(false);
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -25,14 +28,16 @@ export function ProductList() {
 
     return (
         <>
-            <div className="ProductList mx-auto text-break">
-                <Row xs={2} md={3} className="g-4" >
-                    {products.map((product) => (
-                        <ProductCard key={product.id} myProduct={product} />
-                    ))
-                    }
-                </Row>
-            </div>
+            {loading
+            ? <h2>Loading...</h2>
+                : <div className="ProductList mx-auto text-break">
+                    <Row xs={2} md={3} className="g-4" >
+                        {products.map((product) => (
+                            <ProductCard key={product.id} myProduct={product} />
+                        ))
+                        }
+                    </Row>
+                </div>}
         </>
     );
 }

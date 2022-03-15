@@ -38,7 +38,7 @@ public class ProductsController : ControllerBase
     public ActionResult<ProductDto> GetProductById(int id)
     {
         var products = dataContext.Set<Product>();
-        var result = GetProductDtos(products).FirstOrDefault(x => x.Id == id);
+        var result = GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
         if (result == null)
         {
             return NotFound();

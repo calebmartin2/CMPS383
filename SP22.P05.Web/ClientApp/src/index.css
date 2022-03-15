@@ -31,6 +31,11 @@ code {
   border-image: linear-gradient( #212529, rgb(6, 165, 228), #212529) 1 !important;
 }
 
+.blue-border:hover {
+  border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+  border-image: linear-gradient( #212529, rgb(6, 247, 255), #212529) 1 !important;
+}
+
 .modal-content { 
   background-color: #13181b !important;
   color: #ffffff !important;

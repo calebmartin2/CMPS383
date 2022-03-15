@@ -51,7 +51,8 @@ namespace SP22.P05.Web.Controllers
                     Price = x.Product.Price,
                     SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                     SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
-                    PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName
+                    PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
+                    Status = (int)x.Product.Status
 
                 });
         }
