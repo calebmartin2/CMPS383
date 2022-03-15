@@ -67,6 +67,7 @@ public static class MigrateAndSeed
             UserName = "alice"
         };
         await userManager.CreateAsync(aliceUser, defaultPassword);
+        await userManager.SetEmailAsync(aliceUser, "alice@example.com");
         await userManager.AddToRoleAsync(aliceUser, RoleNames.Publisher);
     }
 
