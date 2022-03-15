@@ -6,12 +6,15 @@ import { checkForRole } from "../checkForRole";
 
 export function AdminVerifyPublishers() {
     const [pendingPublisher, setPendingPublisher] = useState([]);
+    const [loading, setLoading] = useState(false);
+
     async function fetchPendingPublisher() {
         axios.get('/api/users/get-pending-publishers')
             .then(function (response) {
                 console.log(response.data);
                 const data = response.data;
                 setPendingPublisher(data);
+                setLoading(true);
             })
             .catch(function (error) {
                 console.log(error);
@@ -61,31 +64,33 @@ export function AdminVerifyPublishers() {
                 <Breadcrumb.Item active>Verify Incoming Publishers</Breadcrumb.Item>
             </Breadcrumb>
             <h1>Verify Incoming Publishers</h1>
-
-            <Table striped bordered hover variant="dark">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Company Name</th>
-                        <th>Email</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {pendingPublisher.map((pendingPublisher) => (
-                        <tr key={pendingPublisher.id}>
-                            <td>{pendingPublisher.userName}</td>
-                            <td>{pendingPublisher.companyName}</td>
-                            <td><a style={{ color: "#FFFFFF" }} href={"mailto:" + pendingPublisher.email}>{pendingPublisher.email}</a></td>
-                            <td>
-                                <Button variant="primary" className="custom-primary-btn" onClick={() => { if (window.confirm('Verify ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + ' to be a publisher?')) VerifyPublisher(pendingPublisher.id) }}>Approve</Button>
-                                <Button variant="danger" style={{marginLeft: "1em"}} onClick={() => { if (window.confirm('Deny ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + 'to not be a publsher?')) deletePendingPublisher(pendingPublisher.id) }}>Deny</Button>
-                            </td>
+            {!loading ? "Loading" : pendingPublisher.length > 0 && loading ?
+                <Table striped bordered hover variant="dark">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Company Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
                         </tr>
-                    ))
-                    }
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {pendingPublisher.map((pendingPublisher) => (
+                            <tr key={pendingPublisher.id}>
+                                <td>{pendingPublisher.userName}</td>
+                                <td>{pendingPublisher.companyName}</td>
+                                <td><a style={{ color: "#FFFFFF" }} href={"mailto:" + pendingPublisher.email}>{pendingPublisher.email}</a></td>
+                                <td>
+                                    <Button variant="primary" className="custom-primary-btn" onClick={() => { if (window.confirm('Verify ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + ' to be a publisher?')) VerifyPublisher(pendingPublisher.id) }}>Approve</Button>
+                                    <Button variant="danger" style={{ marginLeft: "1em" }} onClick={() => { if (window.confirm('Deny ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + 'to not be a publsher?')) deletePendingPublisher(pendingPublisher.id) }}>Deny</Button>
+                                </td>
+                            </tr>
+                        ))
+                        }
+                    </tbody>
+                </Table>
+                : <h1>No incoming publishers</h1>}
+
         </>
 
     )
