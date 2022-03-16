@@ -15,6 +15,7 @@ export function ProductDetail() {
                 const data = response.data;
                 setProduct(data);
                 setLoading(false);
+                document.title = response.data.name;
             })
             .catch(function (error) {
                 console.log(error);
