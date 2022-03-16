@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
+import { Breadcrumb } from "react-bootstrap";
+import { Link } from "react-router-dom";
 export function ProductDetail() {
     let { productId } = useParams();
     const [product, setProduct] = useState();
@@ -27,13 +29,17 @@ export function ProductDetail() {
         <>
             {loading ? "Loading..." : product ?
                 <>
-                    <h1 style={{fontWeight: "700"}}>{product.name}</h1>
+                    <Breadcrumb>
+                        <Breadcrumb.Item linkAs={Link} to="/" linkProps={{ to: "/" }}>Store</Breadcrumb.Item>
+                        <Breadcrumb.Item active>{product.name}</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <h1 style={{ fontWeight: "700" }}>{product.name}</h1>
                     <p>Publisher: {product.publisherName}</p>
                     <p>{product.description}</p>
                     <p>${product.price.toFixed(2)}</p>
                 </>
 
-                : <NotFoundPage/>}
+                : <NotFoundPage />}
         </>
 
     )
