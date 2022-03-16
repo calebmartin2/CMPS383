@@ -89,7 +89,7 @@ export function AdminVerifyPublishers() {
                         }
                     </tbody>
                 </Table>
-                : <h1>No incoming publishers</h1>}
+                : <h3 style={{color: "#cccccc"}}>No incoming publishers</h3>}
 
         </>
 

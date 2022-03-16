@@ -1,31 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableOpacity,RefreshControl } from 'react-native';
 import axios from "axios";
 import baseUrl from '../BaseUrl';
 import { Text, Card } from 'react-native-elements';
 
 export default function HomeScreen({ navigation }) {
     const [products, setProducts] = useState([]);
+    const [refreshing, setRefreshing] = React.useState(false);
+    const wait = timeout => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+      };
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+      fetchProducts();
+      wait(1000).then(() => setRefreshing(false));
+    }, []);
 
+    async function fetchProducts() {
+        axios.get(baseUrl + '/api/products')
+            .then(function (response) {
+                console.log(response.data);
+                const data = response.data;
+                setProducts(data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
     useEffect(() => {
-        async function fetchProducts() {
-            axios.get(baseUrl + '/api/products')
-                .then(function (response) {
-                    console.log(response.data);
-                    const data = response.data;
-                    setProducts(data);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        }
+        
         fetchProducts();
         console.log(products)
     }, [])
 
     return (
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.container}>
                 <StatusBar style="light" />
                 {products.map((product) => (
