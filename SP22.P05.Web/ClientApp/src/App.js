@@ -7,6 +7,7 @@ import { AdminManageProducts } from "./components/Admin/AdminManageProducts";
 import { AdminManageTags } from "./components/Admin/AdminManageTags";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 import { ManagePublishers } from "./components/Admin/ManagePublishers";
+import Cart from "./components/Cart";
 import { Home } from "./components/Home";
 import Login from "./components/Login";
 import { Navmenu } from "./components/Navmenu";
@@ -63,6 +64,7 @@ function App() {
           <Route path="/admin/manage-products" element={<AdminManageProducts />} />
           <Route path="/terms" element={<TermsOfAgreement/>} />
           <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </Container>
     </div>

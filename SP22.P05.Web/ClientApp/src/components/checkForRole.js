@@ -10,3 +10,25 @@ export function checkForRole(string) {
         return <Navigate to="/" />;
     }
 }
+
+export function checkForRoleBool(string) {
+    if (JSON.parse(localStorage.getItem("user") === null)) {
+        return true;
+    }
+    const rolesArray = JSON.parse(localStorage.getItem("user")).roles;
+    if (!rolesArray.includes(string)) {
+        return false;
+    }
+    return true;
+}
+
+export function handleCartView(string) {
+    if (JSON.parse(localStorage.getItem("user") === null)) {
+        return;
+    }
+    const rolesArray = JSON.parse(localStorage.getItem("user")).roles;
+    if (rolesArray.includes("User")) {
+        return;
+    }
+    return <Navigate to="/" />;
+}

@@ -30,6 +30,9 @@ export function Navmenu() {
     } else if (loggedInUser) {
       return (
         <>
+        {!checkForRole("User") ? <Nav.Link as={Link} to="/cart">CART</Nav.Link> : null}
+       
+
           <NavDropdown title={JSON.parse(loggedInUser).userName.toUpperCase()} id="navbarScrollingDropdown">
             <NavDropdown.Item to="/" onClick={handleLogout}>LOGOUT</NavDropdown.Item>
           </NavDropdown>
@@ -38,6 +41,7 @@ export function Navmenu() {
     }
     return (
       <>
+       <Nav.Link as={Link} to="/cart">CART</Nav.Link>
         <Nav.Link as={Link} to="/Login">LOGIN</Nav.Link>
         <Nav.Link as={Link} to="/SignUp">SIGN UP</Nav.Link>
       </>

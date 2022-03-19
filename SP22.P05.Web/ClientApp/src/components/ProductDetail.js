@@ -4,6 +4,7 @@ import { Breadcrumb, Button } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
 import { useNavigate } from "react-router-dom";
+import { checkForRoleBool } from "./checkForRole";
 export function ProductDetail() {
     let navigate = useNavigate();
 
@@ -65,7 +66,7 @@ export function ProductDetail() {
                     <p>{product.description}</p>
                     <p>${product.price.toFixed(2)}</p>
                     {/* <Button variant="primary" onClick={() => localStorage.setItem("cart", JSON.stringify(localStorage.setItem(product.id)))}>Add to cart</Button> */}
-                    {inCart ? <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button> : <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button>}
+                    {checkForRoleBool("User") ? inCart ? <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button> : <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button> : null}
 
                 </>
 
