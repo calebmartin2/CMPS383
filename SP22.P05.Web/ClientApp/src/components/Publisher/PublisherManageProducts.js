@@ -17,8 +17,11 @@ export default function PublisherManageProducts() {
         setAddProductError(false);
         setShow(false);
     }
-    const handleShow = () => setShow(true);
-
+    // const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setName("HAHAHHA");
+        setShow(true)
+    }
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
@@ -94,7 +97,7 @@ export default function PublisherManageProducts() {
                         <Button variant="danger" onClick={handleClose}>
                             Discard
                         </Button>
-                        {addProductError ? <p style={{ marginTop: "1em", background: "#500000", padding: "1em"}}>Invalid Submission</p> : null}
+                        {addProductError ? <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p> : null}
                     </Form>
                 </Modal.Body>
             </Modal>

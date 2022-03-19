@@ -5,14 +5,14 @@ import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
 import { useNavigate } from "react-router-dom";
 import { checkForRoleBool } from "./checkForRole";
-export function ProductDetail() {
+export function ProductDetail({ setAmountCart }) {
     let navigate = useNavigate();
 
     let { productId } = useParams();
     const [product, setProduct] = useState();
     const [loading, setLoading] = useState(true);
     const [inCart, setInCart] = useState(false);
-  var _ = require('lodash');
+    var _ = require('lodash');
 
 
     useEffect(() => {
@@ -43,13 +43,14 @@ export function ProductDetail() {
         if (allCart == null) {
             localStorage.setItem("cart", JSON.stringify([productId]));
             setInCart(true);
-            return
+            setAmountCart(1);
+            return;
         }
         allCart.push(productId);
         //https://stackoverflow.com/questions/31740155/lodash-remove-duplicates-from-array
         localStorage.setItem("cart", JSON.stringify(_.uniqWith(allCart, _.isEqual)));
         setInCart(true);
-
+        setAmountCart(allCart.length);
     }
 
 
@@ -61,7 +62,7 @@ export function ProductDetail() {
                         <Breadcrumb.Item linkAs={Link} to="/" linkProps={{ to: "/" }}>Store</Breadcrumb.Item>
                         <Breadcrumb.Item active>{product.name}</Breadcrumb.Item>
                     </Breadcrumb>
-                    <h1 style={{ fontWeight: "700", overflowWrap: "break-word"}}>{product.name}</h1>
+                    <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
                     <p>Publisher: {product.publisherName}</p>
                     <p>{product.description}</p>
                     <p>${product.price.toFixed(2)}</p>

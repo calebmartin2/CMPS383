@@ -5,7 +5,7 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { checkForRole } from "./checkForRole";
 
-export function Navmenu() {
+export function Navmenu({ amountCart, setAmountCart }) {
   let location = useLocation()
   const loggedInUser = localStorage.getItem("user");
   let navigate = useNavigate();
@@ -18,6 +18,7 @@ export function Navmenu() {
       .then(function (response) {
         console.log(response.data);
         navigate("/", { replace: true });
+        setAmountCart(0);
       })
       .catch(function (error) {
         console.log(error);
@@ -30,9 +31,7 @@ export function Navmenu() {
     } else if (loggedInUser) {
       return (
         <>
-        {!checkForRole("User") ? <Nav.Link as={Link} to="/cart">CART</Nav.Link> : null}
-       
-
+          {!checkForRole("User") ? <Nav.Link as={Link} to="/cart">CART ({amountCart})</Nav.Link> : null}
           <NavDropdown title={JSON.parse(loggedInUser).userName.toUpperCase()} id="navbarScrollingDropdown">
             <NavDropdown.Item to="/" onClick={handleLogout}>LOGOUT</NavDropdown.Item>
           </NavDropdown>
@@ -41,7 +40,7 @@ export function Navmenu() {
     }
     return (
       <>
-       <Nav.Link as={Link} to="/cart">CART</Nav.Link>
+        <Nav.Link as={Link} to="/cart">CART ({amountCart})</Nav.Link>
         <Nav.Link as={Link} to="/Login">LOGIN</Nav.Link>
         <Nav.Link as={Link} to="/SignUp">SIGN UP</Nav.Link>
       </>
@@ -54,8 +53,8 @@ export function Navmenu() {
         <Container>
           <Navbar.Brand as={Link} to="/" ><img className="navbar-image" src={iceLogo} alt={"ICE Logo"} /></Navbar.Brand>
           <Nav className="me-auto">
-          {checkForRole("Publisher") ? null : <Nav.Link as={Link} to="/publisher">PUBLISHER</Nav.Link>}
-          {checkForRole("Admin") ? null : <Nav.Link as={Link} to="/admin">ADMIN</Nav.Link>}
+            {checkForRole("Publisher") ? null : <Nav.Link as={Link} to="/publisher">PUBLISHER</Nav.Link>}
+            {checkForRole("Admin") ? null : <Nav.Link as={Link} to="/admin">ADMIN</Nav.Link>}
           </Nav>
           <Nav>
             {checkForRole("PendingPublisher") ?
