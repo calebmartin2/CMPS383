@@ -12,6 +12,7 @@ export function Navmenu() {
 
   function handleLogout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('cart');
     axios.post('/api/authentication/logout', {
     })
       .then(function (response) {
@@ -57,7 +58,7 @@ export function Navmenu() {
               null :
               <OverlayTrigger
                 placement="bottom"
-                overlay={<Tooltip id="publisherPending">Your request to publish software has been submitted. You will soon get an email from vidco@example.com.</Tooltip>}>
+                overlay={<Tooltip id="publisherPending">Your request to publish software has been submitted. You will soon get an email from 383@envoc.com.</Tooltip>}>
                 <Nav.Item style={{ backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.5em", paddingLeft: "0.5em", marginRight: "1em" }}>PUBLISHER STATUS PENDING</Nav.Item>
               </OverlayTrigger>}
             {renderLoginButton()}

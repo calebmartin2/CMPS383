@@ -7,8 +7,16 @@ export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [addProductError, setAddProductError] = useState(false);
 
-    const handleClose = () => setShow(false);
+
+    const handleClose = () => {
+        setName("");
+        setDescription("");
+        setPrice("");
+        setAddProductError(false);
+        setShow(false);
+    }
     const handleShow = () => setShow(true);
 
     const [name, setName] = useState("");
@@ -35,6 +43,8 @@ export default function PublisherManageProducts() {
     }, [])
 
     const handleAdd = (e) => {
+        e.preventDefault();
+
         axios.post('/api/products', {
             name: name,
             description: description,
@@ -42,8 +52,10 @@ export default function PublisherManageProducts() {
         })
             .then(function (response) {
                 fetchProducts();
+                handleClose();
             })
             .catch(function (error) {
+                setAddProductError(true);
                 console.log(error);
             })
 
@@ -63,22 +75,26 @@ export default function PublisherManageProducts() {
                     <Form onSubmit={handleAdd}>
                         <Form.Group className="mb-2" controlId="formBasicName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control required type="text" placeholder="Enter Name" value={name} onChange={(e) => setName(e.target.value)} />
+                            <Form.Control required type="text" placeholder="Enter Name" maxLength="120" value={name} onChange={(e) => setName(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-2" controlId="formBasicDescription">
                             <Form.Label>Description</Form.Label>
-                            <Form.Control required as="textarea" rows={5} placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                            <Form.Control required as="textarea" rows={5} placeholder="Description" maxLength="2000" value={description} onChange={(e) => setDescription(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-4" controlId="formBasicPrice">
                             <Form.Label>Price</Form.Label>
                             <InputGroup>
                                 <InputGroup.Text>$</InputGroup.Text>
-                                <Form.Control required min="0.01" step="0.01" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
+                                <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
                             </InputGroup>
                         </Form.Group>
                         <Button className="custom-primary-btn" variant="primary" type="submit">
                             Add
                         </Button>
+                        <Button variant="danger" onClick={handleClose}>
+                            Discard
+                        </Button>
+                        {addProductError ? <p style={{ marginTop: "1em", background: "#500000", padding: "1em"}}>Invalid Submission</p> : null}
                     </Form>
                 </Modal.Body>
             </Modal>
