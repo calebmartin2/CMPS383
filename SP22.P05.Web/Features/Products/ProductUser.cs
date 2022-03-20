@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SP22.P05.Web.Features.Products;
 
@@ -11,6 +10,7 @@ public class ProductUser
     public int UserId { get; set; }
     public virtual Product? Product { get; set; }
     public int ProductId { get; set; }
+    public virtual Order? Order { get; set; }
 
 }
 

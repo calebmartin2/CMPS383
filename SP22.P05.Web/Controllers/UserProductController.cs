@@ -26,23 +26,34 @@ public class UserProductController : Controller
     [Authorize(Roles = RoleNames.User)]
     public ActionResult AddToAccount(int[] productId)
     {
+        var products = dataContext.Set<Product>();
+        var totalAmount = products.Where(x => productId.Contains(x.Id)).Sum(x => x.Price);
+
         int? userId = User.GetCurrentUserId();
         if (userId == null)
         {
             return BadRequest("User invalid, doesn't exist?");
         }
         ICollection<ProductUser> addItem = new List<ProductUser>(){};
+        Order order = new Order()
+        {
+            UserId = (int)userId,
+            Amount = totalAmount,
+        };
         foreach (int id in productId)
         {
             addItem.Add(new ProductUser
             {
                 UserId = (int)userId,
-                ProductId = id
+                ProductId = id,
+                Order = order
             });
         }
+
         try
         {
             dataContext.AddRange(addItem);
+            dataContext.Add(order);
             dataContext.SaveChanges();
             return Ok();
 
