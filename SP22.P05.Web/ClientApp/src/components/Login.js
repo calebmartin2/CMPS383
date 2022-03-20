@@ -26,7 +26,8 @@ export function Login() {
                 console.log(response.data);
                 setisLoginFail(false);
                 setLoginSuccess(true);
-                localStorage.setItem('user', JSON.stringify(response.data))
+                localStorage.setItem('user', JSON.stringify(response.data));
+                console.log(!response.data.roles.includes('User'));
             })
             .catch(function (error) {
                 setisLoginFail(true)

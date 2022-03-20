@@ -7,6 +7,7 @@ import { AdminManageProducts } from "./components/Admin/AdminManageProducts";
 import { AdminManageTags } from "./components/Admin/AdminManageTags";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 import { ManagePublishers } from "./components/Admin/ManagePublishers";
+import Cart from "./components/Cart";
 import { Home } from "./components/Home";
 import Login from "./components/Login";
 import { Navmenu } from "./components/Navmenu";
@@ -17,11 +18,14 @@ import PublisherManageProducts from "./components/Publisher/PublisherManageProdu
 import PublisherSignUp from "./components/Publisher/PublisherSignUp";
 import SignUp from "./components/SignUp";
 import { TermsOfAgreement } from "./TermsOfAgreement";
+import { useEffect, useState } from "react";
 
 function App() {
   var _ = require('lodash');
+  const [amountCart, setAmountCart] = useState(0);
 
- // this is nonsense, but we're stuck with it
+
+  // this is nonsense, but we're stuck with it
   function refreshUserInfo() {
     axios.get('/api/authentication/me', {
     })
@@ -41,12 +45,23 @@ function App() {
         console.log(error);
       });
   }
+  useEffect(() => {
+    populateCart()
+  }, []);
+
+  function populateCart() {
+    var allCart = JSON.parse(localStorage.getItem("cart"));
+    if (allCart == null) {
+      return;
+    }
+    setAmountCart(allCart.length);
+  }
 
 
   return (
     <div className="App text-white">
       {refreshUserInfo()}
-      <Navmenu />
+      <Navmenu amountCart={amountCart} setAmountCart={setAmountCart} />
       <Container>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -61,8 +76,9 @@ function App() {
           <Route exact path="/admin/verify-publishers" element={<AdminVerifyPublishers />} />
           <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
           <Route path="/admin/manage-products" element={<AdminManageProducts />} />
-          <Route path="/terms" element={<TermsOfAgreement/>} />
-          <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/terms" element={<TermsOfAgreement />} />
+          <Route path="/product/:productId" element={<ProductDetail setAmountCart={setAmountCart} />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </Container>
     </div>
