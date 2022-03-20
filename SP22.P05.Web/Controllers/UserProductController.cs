@@ -42,11 +42,17 @@ public class UserProductController : Controller
         };
         foreach (int id in productId)
         {
+            var product = products.FirstOrDefault(x => x.Id == id);
+            if (product == null)
+            {
+                return BadRequest();
+            }
             addItem.Add(new ProductUser
             {
                 UserId = (int)userId,
                 ProductId = id,
-                Order = order
+                Order = order,
+                Price = product.Price //doesn't account for sales, would be done here
             });
         }
 
