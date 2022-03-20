@@ -196,6 +196,34 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("/api/publisher/products")]
+    [Authorize(Roles = RoleNames.Publisher)]
+    public ProductDto[] GetPublisherProducts()
+    {
+        var products = dataContext.Set<Product>();
+        var publisherId = User.GetCurrentUserId();
+
+        return GetProductDtos(products.Where(x => x.PublisherId == publisherId)).ToArray();
+    }
+
+    [HttpGet("library")]
+    [Authorize(Roles = RoleNames.User)]
+    public ActionResult<ProductDto> GetLibrary()
+    {
+        int? userId = User.GetCurrentUserId();
+        if (userId == null)
+        {
+            return BadRequest();
+        }
+        var products = dataContext.Set<ProductUser>().Where(x => x.UserId == userId).Select(x => x.Product);
+        if (products == null)
+        {
+            return NotFound();
+        }
+        return Ok(GetProductDtos(products));
+
+    }
+
 
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {

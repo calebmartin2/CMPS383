@@ -10,5 +10,4 @@ public class User : IdentityUser<int>
     public virtual UserInfo? UserInfo { get; set; }
     public virtual ICollection<ProductUser> Products { get; set; } = new List<ProductUser>();
 
-
 }
