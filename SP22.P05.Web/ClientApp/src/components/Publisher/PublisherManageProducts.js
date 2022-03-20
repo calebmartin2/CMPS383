@@ -1,7 +1,7 @@
 import axios from "axios";
+import { useEffect, useState } from 'react';
+import { Breadcrumb, Button, Dropdown, DropdownButton, Form, InputGroup, Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, InputGroup, Breadcrumb } from "react-bootstrap";
 
 export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
@@ -13,8 +13,6 @@ export default function PublisherManageProducts() {
     const [price, setPrice] = useState("");
     const [isEdit, setIsEdit] = useState(false);
     const [productId, setProductId] = useState("");
-    
-
 
     const handleClose = () => {
         setName("");
@@ -25,11 +23,7 @@ export default function PublisherManageProducts() {
         setIsEdit(false);
     }
     const handleShow = () => setShow(true);
-    // const handleShow = () => {
-    //     setName("HAHAHHA");
-    //     setShow(true)
-    // }
- 
+
     async function fetchProducts() {
         axios.get('/api/publisher/products')
             .then(function (response) {
@@ -88,7 +82,7 @@ export default function PublisherManageProducts() {
 
     }
 
-    function handleEditShow(product){
+    function handleEditShow(product) {
         setName(product.name);
         setDescription(product.description);
         setPrice(product.price);
@@ -97,8 +91,6 @@ export default function PublisherManageProducts() {
         handleShow();
     }
 
- 
-
     return (
         <>
             <Breadcrumb>
@@ -106,9 +98,8 @@ export default function PublisherManageProducts() {
                 <Breadcrumb.Item active>Manage Products</Breadcrumb.Item>
             </Breadcrumb>
 
-
             <Modal show={show} onHide={handleClose}>
-                <Modal.Header><Modal.Title>{isEdit ?  <>Edit Product</> : <>Add Product</>}</Modal.Title></Modal.Header>
+                <Modal.Header><Modal.Title>{isEdit ? <>Edit Product</> : <>Add Product</>}</Modal.Title></Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={isEdit ? handleEdit : handleAdd}>
                         <Form.Group className="mb-2" controlId="formBasicName">
@@ -127,7 +118,7 @@ export default function PublisherManageProducts() {
                             </InputGroup>
                         </Form.Group>
                         <Button className="custom-primary-btn" variant="primary" type="submit">
-                        {isEdit ? <>Edit</>: <>Add</>}
+                            {isEdit ? <>Save Changes</> : <>Add</>}
                         </Button>
                         <Button variant="danger" onClick={handleClose}>
                             Discard
@@ -147,7 +138,7 @@ export default function PublisherManageProducts() {
                                 <th>Name</th>
                                 <th>Price</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -157,7 +148,12 @@ export default function PublisherManageProducts() {
                                     <td>${product.price.toFixed(2)}</td>
                                     {/* Shouldn't be hardcoding this, stuck with it for now */}
                                     <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
-                                    <td> <Button variant="success" onClick={()=> handleEditShow(product)} >Edit</Button></td>
+                                    <td>
+                                        <DropdownButton id="dropdown-item-button" title="Actions">
+                                            <Dropdown.Item as="button"><Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link></Dropdown.Item>
+                                            <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit</Dropdown.Item>
+                                        </DropdownButton>
+                                    </td>
                                 </tr>
                             ))
                             }

@@ -30,7 +30,7 @@ export function ProductDetail({ setAmountCart }) {
                 const data = response.data;
                 setProduct(data);
                 setLoading(false);
-                document.title = response.data.name;
+                document.title = "ICE - " + response.data.name
             })
             .catch(function (error) {
                 console.log(error);
