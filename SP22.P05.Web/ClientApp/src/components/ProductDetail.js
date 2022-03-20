@@ -68,7 +68,7 @@ export function ProductDetail({ setAmountCart }) {
                     <p>${product.price.toFixed(2)}</p>
                     {/* <Button variant="primary" onClick={() => localStorage.setItem("cart", JSON.stringify(localStorage.setItem(product.id)))}>Add to cart</Button> */}
                     {checkForRoleBool("User") ? inCart ? <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button> : <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button> : null}
-
+                    {product.isInLibrary && "IN LIBRARY"}
                 </>
 
                 : <NotFoundPage />}

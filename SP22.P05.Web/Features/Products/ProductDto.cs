@@ -21,6 +21,7 @@ public class ProductDto
     public string? PublisherName { get; set; }
     public int Status { get; set; }
     public string[] Tags { get; set; } = Array.Empty<string>();
+    public bool IsInLibrary { get; set; }
 
 
 }

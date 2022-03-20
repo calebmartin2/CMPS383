@@ -37,13 +37,15 @@ public class ProductsController : ControllerBase
     [Route("{id}")]
     public ActionResult<ProductDto> GetProductById(int id)
     {
+        int? userId = User.GetCurrentUserId();
         var products = dataContext.Set<Product>();
         var result = GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
         if (result == null)
         {
             return NotFound();
         }
-
+        var productUsers = dataContext.Set<ProductUser>();
+        result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
         return Ok(result);
     }
 
@@ -234,6 +236,7 @@ public class ProductsController : ControllerBase
 
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
+
         var now = DateTimeOffset.UtcNow;
         return products
             .Select(x => new
@@ -251,8 +254,10 @@ public class ProductsController : ControllerBase
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
                 PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
-                Status = (int)x.Product.Status
+                Status = (int)x.Product.Status,
 
             });
     }
+
+
 }
