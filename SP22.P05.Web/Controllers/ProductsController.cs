@@ -47,6 +47,13 @@ public class ProductsController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("select")]
+    public ProductDto[] GetAllProducts(int[] id)
+    {
+        var products = dataContext.Set<Product>().Where(x => id.Contains(x.Id));
+        return GetProductDtos(products).ToArray();
+    }
+
     [HttpGet]
     [Route("sales")]
     public ProductDto[] GetProductsOnSale()

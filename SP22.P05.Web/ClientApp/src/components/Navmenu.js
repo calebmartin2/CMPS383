@@ -31,7 +31,7 @@ export function Navmenu({ amountCart, setAmountCart }) {
     } else if (loggedInUser) {
       return (
         <>
-          {!checkForRole("User") ? <Nav.Link as={Link} to="/cart">CART ({amountCart})</Nav.Link> : null}
+          {!checkForRole("User") && <Nav.Link as={Link} to="/cart">CART ({amountCart})</Nav.Link>}
           <NavDropdown title={JSON.parse(loggedInUser).userName.toUpperCase()} id="navbarScrollingDropdown">
             <NavDropdown.Item to="/" onClick={handleLogout}>LOGOUT</NavDropdown.Item>
           </NavDropdown>
@@ -55,6 +55,7 @@ export function Navmenu({ amountCart, setAmountCart }) {
           <Nav className="me-auto">
             {checkForRole("Publisher") ? null : <Nav.Link as={Link} to="/publisher">PUBLISHER</Nav.Link>}
             {checkForRole("Admin") ? null : <Nav.Link as={Link} to="/admin">ADMIN</Nav.Link>}
+            {checkForRole("User") ? null : <Nav.Link as={Link} to="/library">LIBRARY</Nav.Link>}
           </Nav>
           <Nav>
             {checkForRole("PendingPublisher") ?

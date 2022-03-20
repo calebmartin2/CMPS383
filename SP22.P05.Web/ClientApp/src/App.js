@@ -19,6 +19,7 @@ import PublisherSignUp from "./components/Publisher/PublisherSignUp";
 import SignUp from "./components/SignUp";
 import { TermsOfAgreement } from "./TermsOfAgreement";
 import { useEffect, useState } from "react";
+import UserLibrary from "./components/User/UserLibrary";
 
 function App() {
   var _ = require('lodash');
@@ -79,6 +80,7 @@ function App() {
           <Route path="/terms" element={<TermsOfAgreement />} />
           <Route path="/product/:productId" element={<ProductDetail setAmountCart={setAmountCart} />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/library" element={<UserLibrary />} />
         </Routes>
       </Container>
     </div>
