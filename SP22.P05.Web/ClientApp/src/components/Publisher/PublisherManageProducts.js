@@ -8,6 +8,12 @@ export default function PublisherManageProducts() {
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(true);
     const [addProductError, setAddProductError] = useState(false);
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [price, setPrice] = useState("");
+    const [isEdit, setIsEdit] = useState(false);
+    const [productId, setProductId] = useState("");
+    
 
 
     const handleClose = () => {
@@ -16,15 +22,14 @@ export default function PublisherManageProducts() {
         setPrice("");
         setAddProductError(false);
         setShow(false);
+        setIsEdit(false);
     }
-    // const handleShow = () => setShow(true);
-    const handleShow = () => {
-        setName("HAHAHHA");
-        setShow(true)
-    }
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [price, setPrice] = useState("");
+    const handleShow = () => setShow(true);
+    // const handleShow = () => {
+    //     setName("HAHAHHA");
+    //     setShow(true)
+    // }
+ 
     async function fetchProducts() {
         axios.get('/api/publisher/products')
             .then(function (response) {
@@ -64,6 +69,36 @@ export default function PublisherManageProducts() {
 
     }
 
+    const handleEdit = (e) => {
+        e.preventDefault();
+        console.log(productId);
+        axios.put('/api/products/' + productId, {
+            name: name,
+            description: description,
+            price: price
+        })
+            .then(function (response) {
+                fetchProducts();
+                handleClose();
+            })
+            .catch(function (error) {
+                setAddProductError(true);
+                console.log(error);
+            })
+
+    }
+
+    function handleEditShow(product){
+        setName(product.name);
+        setDescription(product.description);
+        setPrice(product.price);
+        setProductId(product.id);
+        setIsEdit(true);
+        handleShow();
+    }
+
+ 
+
     return (
         <>
             <Breadcrumb>
@@ -73,9 +108,9 @@ export default function PublisherManageProducts() {
 
 
             <Modal show={show} onHide={handleClose}>
-                <Modal.Header><Modal.Title>Add Product</Modal.Title></Modal.Header>
+                <Modal.Header><Modal.Title>{isEdit ?  <>Edit Product</> : <>Add Product</>}</Modal.Title></Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handleAdd}>
+                    <Form onSubmit={isEdit ? handleEdit : handleAdd}>
                         <Form.Group className="mb-2" controlId="formBasicName">
                             <Form.Label>Name</Form.Label>
                             <Form.Control required type="text" placeholder="Enter Name" maxLength="120" value={name} onChange={(e) => setName(e.target.value)} />
@@ -92,7 +127,7 @@ export default function PublisherManageProducts() {
                             </InputGroup>
                         </Form.Group>
                         <Button className="custom-primary-btn" variant="primary" type="submit">
-                            Add
+                        {isEdit ? <>Edit</>: <>Add</>}
                         </Button>
                         <Button variant="danger" onClick={handleClose}>
                             Discard
@@ -112,6 +147,7 @@ export default function PublisherManageProducts() {
                                 <th>Name</th>
                                 <th>Price</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -121,6 +157,7 @@ export default function PublisherManageProducts() {
                                     <td>${product.price.toFixed(2)}</td>
                                     {/* Shouldn't be hardcoding this, stuck with it for now */}
                                     <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
+                                    <td> <Button variant="success" onClick={()=> handleEditShow(product)} >Edit</Button></td>
                                 </tr>
                             ))
                             }
