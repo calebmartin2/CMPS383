@@ -1,4 +1,8 @@
+import { useEffect } from "react";
 export function TermsOfAgreement() {
+    useEffect(() => {
+        document.title = "ICE - Terms and Conditions"
+     }, []);
     return (
         <>
             <h1>Terms and Conditions for ICE</h1>

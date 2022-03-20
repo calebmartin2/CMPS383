@@ -5,7 +5,7 @@ import axios from "axios";
 export default function Cart() {
     const cart = localStorage.getItem('cart');
     const [products, setProducts] = useState([]);
-
+	document.title = "ICE - Cart"
     useEffect(() => {
         var tempCart = JSON.parse(cart);
         axios({
@@ -21,7 +21,6 @@ export default function Cart() {
             });
 
     }, [cart]); //might need to change dependency array
-
     return (
         <>
             {/* Bad idea to hardcode, fix later */}
