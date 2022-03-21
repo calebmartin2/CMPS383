@@ -40,23 +40,51 @@ export default function Cart({ setAmountCart }) {
         setAmountCart(0);
 
     }
+    function calculateTotal() {
+        var sum = 0;
+        products.forEach(element => {
+            sum += element.price;
+        });
+        return sum.toFixed(2);
+    }
+
+    function buyItems() {
+        var tempCart = JSON.parse(cart);
+        // Need to convert array of string to array of int
+        // tempCart = tempCart.split(',').map(Number)
+        axios({
+            url: '/api/user-proudcts/add-to-account',
+            method: 'post',
+            data: tempCart
+        })
+            .then(function (response) {
+                console.log(response);
+                // Redirect to receipt screen
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
     return (
         <>
             {/* Bad idea to hardcode, fix later */}
             {handleCartView()}
             <h1>CART</h1>
             {products.length !== 0 ?
-            <div>
-                {products.map((product) => (
-                    <div key={product.id}>
-                        <p>{product.name} {product.price.toFixed(2)}</p>
-                        <Button variant="danger" onClick={() => removeItemCart(product.id)}>Remove Item</Button>
-                    </div>
-                ))
-                }
-                <Button variant="danger" onClick={() => removeAllItemCart()}>Remove All Items</Button>
-            </div>
-            : <p>No items in cart</p>}
+                <div>
+                    {products.map((product) => (
+                        <div key={product.id}>
+                            <p>{product.name} ${product.price.toFixed(2)}</p>
+                            <Button variant="danger" onClick={() => removeItemCart(product.id)}>Remove Item</Button>
+                        </div>
+                    ))
+                    }
+                    <Button variant="danger" onClick={() => removeAllItemCart()}>Remove All Items</Button>
+                    <Button onClick={() => buyItems()}>Buy Items</Button>
+                    <p>Total Amount: ${calculateTotal()}</p>
+
+                </div>
+                : <p>No items in cart</p>}
             {/* API endpoint to buy is /api/user-products-add-to-account. Use same type of call as /api/products/select */}
         </>
     )
