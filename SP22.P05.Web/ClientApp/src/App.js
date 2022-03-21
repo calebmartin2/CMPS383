@@ -79,7 +79,7 @@ function App() {
           <Route path="/admin/manage-products" element={<AdminManageProducts />} />
           <Route path="/terms" element={<TermsOfAgreement />} />
           <Route path="/product/:productId" element={<ProductDetail setAmountCart={setAmountCart} />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={<Cart setAmountCart={setAmountCart}/>} />
           <Route path="/library" element={<UserLibrary />} />
         </Routes>
       </Container>
