@@ -75,7 +75,7 @@ public class UserProductController : Controller
 
     [HttpPost("sync-cart")]
     [Authorize(Roles = RoleNames.User)]
-    public ActionResult SyncCart(int[] cart)
+    public ActionResult<int[]> SyncCart(int[] cart)
     {
  
         int? userId = User.GetCurrentUserId();
@@ -94,21 +94,12 @@ public class UserProductController : Controller
 
         foreach (int id in cart)
         {
-             // if product doesn't exist (or not active), do not add, attempt to delete
-            if (products.FirstOrDefault(x => cart.Contains(x.Id)) == null)
+            if (products.FirstOrDefault(x => x.Id == id) == null)
             {
-                if (userCart.FirstOrDefault(x => x.ProductId.Equals(id)) != null) {
-                    dataContext.Remove(userCart.First(x => x.ProductId.Equals(id)));
-                }
                 continue;
             }
-            // if in library do not add, attempt to delete
             if (userLibrary.FirstOrDefault(x => x.ProductId == id) != null)
             {
-                if (userCart.FirstOrDefault(x => x.ProductId.Equals(id)) != null)
-                {
-                    dataContext.Remove(userCart.First(x => x.ProductId.Equals(id)));
-                }
                 continue;
             }
             dataContext.Add(new CartProduct()
@@ -129,7 +120,28 @@ public class UserProductController : Controller
 
     }
 
-
+    [HttpGet("get-cart")]
+    [Authorize(Roles = RoleNames.User)]
+    public ActionResult<int[]> GetCart()
+    {
+        int? userId = User.GetCurrentUserId();
+        if (userId == null)
+        {
+            return BadRequest();
+        }
+        var userCart = dataContext.Set<CartProduct>().Where(x => x.UserId == userId);
+        var retVal = new List<int>();
+        //return userCart.Select(x => new CartDto()
+        //{
+        //    ProductId = x.ProductId,
+        //    UserId = (int)userId,
+        //}).ToList();
+        foreach (var item in userCart)
+        {
+            retVal.Add(item.ProductId);
+        }
+        return Ok(retVal);
+    }
 
 }
 
