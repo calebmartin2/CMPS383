@@ -1,12 +1,10 @@
 .ProductCard {
-    border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+    border-width: 0.2em !important;
     border-image: linear-gradient( #212529, rgb(9, 118, 161), #212529) 1 !important;
 }
 
 .ProductCard .card-footer {
     background-color: #32383e;
-    /* color: black;
-    font-weight: 700; */
     text-align: right;
 }
 .ProductCard:hover {

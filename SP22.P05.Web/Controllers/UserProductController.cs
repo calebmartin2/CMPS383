@@ -5,6 +5,7 @@ using SP22.P05.Web.Data;
 using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
+using SP22.P05.Web.Features.Transactions;
 
 namespace SP22.P05.Web.Controllers;
 
@@ -22,6 +23,7 @@ public class UserProductController : Controller
     {
         this.dataContext = dataContext;
     }
+
     [HttpPost("add-to-account")]
     [Authorize(Roles = RoleNames.User)]
     public ActionResult AddToAccount(int[] productId)
@@ -39,6 +41,7 @@ public class UserProductController : Controller
         {
             UserId = (int)userId,
             Amount = totalAmount,
+            Date = DateTimeOffset.Now,
         };
         foreach (int id in productId)
         {
@@ -53,6 +56,7 @@ public class UserProductController : Controller
                 ProductId = id,
                 Order = order,
                 Price = product.Price //doesn't account for sales, would be done here
+                
             });
         }
 
@@ -69,7 +73,15 @@ public class UserProductController : Controller
             return BadRequest();
         }
     }
-   
+
+    [HttpPost("add-to-cart")]
+    [Authorize(Roles = RoleNames.User)]
+    public ActionResult AddToCart()
+    {
+
+    }
+
+
 
 }
 

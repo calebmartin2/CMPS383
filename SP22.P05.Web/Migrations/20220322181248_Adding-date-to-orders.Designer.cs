@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SP22.P05.Web.Data;
 
@@ -11,9 +12,10 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220322181248_Adding-date-to-orders")]
+    partial class Addingdatetoorders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,6 +283,30 @@ namespace SP22.P03.Web.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("SP22.P05.Web.Features.Products.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Order");
+                });
+
             modelBuilder.Entity("SP22.P05.Web.Features.Products.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -399,45 +425,6 @@ namespace SP22.P03.Web.Migrations
                     b.ToTable("SaleEventProduct");
                 });
 
-            modelBuilder.Entity("SP22.P05.Web.Features.Transactions.CartProduct", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CartProduct");
-                });
-
-            modelBuilder.Entity("SP22.P05.Web.Features.Transactions.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Order");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("SP22.P05.Web.Features.Authorization.Role", null)
@@ -476,7 +463,7 @@ namespace SP22.P03.Web.Migrations
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.ProductUser", b =>
                 {
-                    b.HasOne("SP22.P05.Web.Features.Transactions.Order", "Order")
+                    b.HasOne("SP22.P05.Web.Features.Products.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId");
 
@@ -540,6 +527,17 @@ namespace SP22.P03.Web.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SP22.P05.Web.Features.Products.Order", b =>
+                {
+                    b.HasOne("SP22.P05.Web.Features.Authorization.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SP22.P05.Web.Features.Products.Product", b =>
                 {
                     b.HasOne("SP22.P05.Web.Features.Authorization.PublisherInfo", "Publisher")
@@ -587,36 +585,6 @@ namespace SP22.P03.Web.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("SaleEvent");
-                });
-
-            modelBuilder.Entity("SP22.P05.Web.Features.Transactions.CartProduct", b =>
-                {
-                    b.HasOne("SP22.P05.Web.Features.Products.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SP22.P05.Web.Features.Authorization.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SP22.P05.Web.Features.Transactions.Order", b =>
-                {
-                    b.HasOne("SP22.P05.Web.Features.Authorization.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.Role", b =>
