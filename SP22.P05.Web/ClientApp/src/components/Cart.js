@@ -1,11 +1,14 @@
-import { handleCartView } from "./checkForRole";
+import { checkForRole, handleCartView } from "./checkForRole";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart({ setAmountCart }) {
     const cart = localStorage.getItem('cart');
     const [products, setProducts] = useState([]);
+    let navigate = useNavigate();
+
     document.title = "ICE - Cart"
     useEffect(() => {
         var tempCart = JSON.parse(cart);
@@ -38,6 +41,7 @@ export default function Cart({ setAmountCart }) {
     function removeAllItemCart() {
         localStorage.removeItem("cart")
         setAmountCart(0);
+        setProducts([]);
 
     }
     function calculateTotal() {
@@ -50,16 +54,18 @@ export default function Cart({ setAmountCart }) {
 
     function buyItems() {
         var tempCart = JSON.parse(cart);
-        // Need to convert array of string to array of int
-        // tempCart = tempCart.split(',').map(Number)
+        if(checkForRole('User')){
+            navigate("/Login", { replace: true });
+        }
         axios({
-            url: '/api/user-proudcts/add-to-account',
+            url: '/api/user-products/add-to-account',
             method: 'post',
             data: tempCart
         })
             .then(function (response) {
                 console.log(response);
                 // Redirect to receipt screen
+                removeAllItemCart()
             })
             .catch(function (error) {
                 console.log(error);
