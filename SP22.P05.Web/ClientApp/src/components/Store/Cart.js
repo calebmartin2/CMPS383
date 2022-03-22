@@ -1,8 +1,8 @@
-import { checkForRole, handleCartView } from "../Auth/checkForRole";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Button, Card, CloseButton } from "react-bootstrap";
+import { useNavigate, Link } from "react-router-dom";
+import { checkForRole, handleCartView } from "../Auth/checkForRole";
 
 export default function Cart({ setAmountCart }) {
     const cart = localStorage.getItem('cart');
@@ -54,7 +54,7 @@ export default function Cart({ setAmountCart }) {
 
     function buyItems() {
         var tempCart = JSON.parse(cart);
-        if(checkForRole('User')){
+        if (checkForRole('User')) {
             navigate("/Login", { replace: true });
         }
         axios({
@@ -71,6 +71,14 @@ export default function Cart({ setAmountCart }) {
                 console.log(error);
             });
     }
+    function RenderNoItems() {
+        return (
+            <>
+                <p>No items in cart</p>
+                <Button onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button>
+            </>
+        )
+    }
     return (
         <>
             {/* Bad idea to hardcode, fix later */}
@@ -80,18 +88,25 @@ export default function Cart({ setAmountCart }) {
                 <div>
                     {products.map((product) => (
                         <div key={product.id}>
-                            <p>{product.name} ${product.price.toFixed(2)}</p>
-                            <Button variant="danger" onClick={() => removeItemCart(product.id)}>Remove Item</Button>
+                            <Card style={{ margin: "1em" }} className="blue-border" bg="black" text="white">
+                                <Card.Body><Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: '#FFF'  }}>{product.name}</Link>
+                                    <span style={{ float: "right" }}>${product.price.toFixed(2)}
+                                        <CloseButton style={{ float: "right" }} variant="white" onClick={() => removeItemCart(product.id)}></CloseButton>
+                                    </span>
+                                </Card.Body>
+                            </Card>
                         </div>
                     ))
                     }
-                    <Button variant="danger" onClick={() => removeAllItemCart()}>Remove All Items</Button>
-                    <Button onClick={() => buyItems()}>Buy Items</Button>
-                    <p>Total Amount: ${calculateTotal()}</p>
-
+                    <Card bg="black" text="white" >
+                        <Card.Body> <span style={{ float: "right" }}>Total: ${calculateTotal()} </span></Card.Body>
+                    </Card>
+                    <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() => buyItems()}>Buy Now</Button>
+                    <Button style={{ float: "right", margin: "1em" }} onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button>
+                    <p style={{ color: "#888", textDecoration: "underline" }} onClick={() => removeAllItemCart()}>Remove All Items</p>
                 </div>
-                : <p>No items in cart</p>}
-            {/* API endpoint to buy is /api/user-products-add-to-account. Use same type of call as /api/products/select */}
+                : <RenderNoItems />
+            }
         </>
     )
 }
