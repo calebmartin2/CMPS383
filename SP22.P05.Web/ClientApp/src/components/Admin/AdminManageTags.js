@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Table } from "react-bootstrap";
-import { checkForRole } from "../checkForRole";
+import { checkForRole } from "../Auth/checkForRole";
 
 
 export function AdminManageTags() {

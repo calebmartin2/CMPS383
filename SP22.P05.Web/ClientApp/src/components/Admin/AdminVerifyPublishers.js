@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Table, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { checkForRole } from "../checkForRole";
+import { checkForRole } from "../Auth/checkForRole";
 
 export function AdminVerifyPublishers() {
     const [pendingPublisher, setPendingPublisher] = useState([]);

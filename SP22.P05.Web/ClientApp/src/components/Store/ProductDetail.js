@@ -2,9 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import NotFoundPage from "./NotFoundPage";
+import NotFoundPage from "../NotFoundPage";
 import { useNavigate } from "react-router-dom";
-import { checkForRoleBool } from "./checkForRole";
+import { checkForRole } from "../Auth/checkForRole";
 export function ProductDetail({ setAmountCart }) {
     let navigate = useNavigate();
 
@@ -14,19 +14,16 @@ export function ProductDetail({ setAmountCart }) {
     const [inCart, setInCart] = useState(false);
     var _ = require('lodash');
 
-
     useEffect(() => {
         var allCart = JSON.parse(localStorage.getItem("cart"));
         if (!allCart) {
-            console.error("ERROR");
+            // If nothing is in cart, do nothing.
         } else if (allCart.includes(productId)) {
-            console.log("HAS IN CART");
             setInCart(true);
         }
         axios.get('/api/products/' + productId)
             .then(function (response) {
                 setLoading(true);
-                console.log(response.data);
                 const data = response.data;
                 setProduct(data);
                 setLoading(false);
@@ -53,6 +50,20 @@ export function ProductDetail({ setAmountCart }) {
         setAmountCart(allCart.length);
     }
 
+    function AddToCartButton() {
+        if (product.isInLibrary) {
+            return <Button variant="success" onClick={() => navigate("/library", { replace: true })}>In Library</Button>
+        }
+        if (!checkForRole("User")) {
+            if (inCart) {
+                return <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button>
+            } else {
+                return <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button>
+            }
+        }
+        return null
+
+    }
 
     return (
         <>
@@ -66,9 +77,7 @@ export function ProductDetail({ setAmountCart }) {
                     <p>Publisher: {product.publisherName}</p>
                     <p>{product.description}</p>
                     <p>${product.price.toFixed(2)}</p>
-                    {/* <Button variant="primary" onClick={() => localStorage.setItem("cart", JSON.stringify(localStorage.setItem(product.id)))}>Add to cart</Button> */}
-                    {checkForRoleBool("User") ? inCart ? <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button> : <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button> : null}
-                    {product.isInLibrary && "IN LIBRARY"}
+                    <AddToCartButton />
                 </>
 
                 : <NotFoundPage />}

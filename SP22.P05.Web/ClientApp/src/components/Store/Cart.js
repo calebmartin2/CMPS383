@@ -1,4 +1,4 @@
-import { checkForRole, handleCartView } from "./checkForRole";
+import { checkForRole, handleCartView } from "../Auth/checkForRole";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "react-bootstrap";

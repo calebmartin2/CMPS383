@@ -67,9 +67,6 @@ export function SignUp() {
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>} />
                 </Form.Group>
-                {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleSignUp}>
-                    SIGN UP
-                </Button> */}
                 <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
                     SIGN UP
                 </Button>

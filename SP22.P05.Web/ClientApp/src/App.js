@@ -1,51 +1,29 @@
-import axios from "axios";
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
 import { AdminDashboard } from "./components/Admin/AdminDashboard";
 import { AdminManageProducts } from "./components/Admin/AdminManageProducts";
 import { AdminManageTags } from "./components/Admin/AdminManageTags";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 import { ManagePublishers } from "./components/Admin/ManagePublishers";
-import Cart from "./components/Cart";
-import { Home } from "./components/Home";
-import Login from "./components/Login";
+import Cart from "./components/Store/Cart";
+import { Home } from "./components/Store/Store";
+import Login from "./components/Auth/Login";
 import { Navmenu } from "./components/Navmenu";
 import NotFoundPage from "./components/NotFoundPage";
-import { ProductDetail } from "./components/ProductDetail";
+import { ProductDetail } from "./components/Store/ProductDetail";
 import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
 import PublisherManageProducts from "./components/Publisher/PublisherManageProducts";
-import PublisherSignUp from "./components/Publisher/PublisherSignUp";
-import SignUp from "./components/SignUp";
+import PublisherSignUp from "./components/Auth/PublisherSignUp";
+import SignUp from "./components/Auth/SignUp";
 import { TermsOfAgreement } from "./TermsOfAgreement";
 import { useEffect, useState } from "react";
 import UserLibrary from "./components/User/UserLibrary";
+import { refreshUserInfo } from "./refreshUserInfo";
 
 function App() {
-  var _ = require('lodash');
+  
   const [amountCart, setAmountCart] = useState(0);
-
-
-  // this is nonsense, but we're stuck with it
-  function refreshUserInfo() {
-    axios.get('/api/authentication/me', {
-    })
-      .then(function (response) {
-        if (!_.isEqual(JSON.parse(localStorage.getItem('user')), response.data)) {
-          localStorage.removeItem('user');
-          localStorage.setItem('user', JSON.stringify(response.data))
-          console.error("User data different, refreshing.")
-          window.location.reload(false);
-        }
-      })
-      .catch(function (error) {
-        if (localStorage.getItem('user')) {
-          window.location.reload(false);
-        }
-        localStorage.removeItem('user');
-        console.log(error);
-      });
-  }
+  
   useEffect(() => {
     populateCart()
   }, []);
@@ -57,7 +35,6 @@ function App() {
     }
     setAmountCart(allCart.length);
   }
-
 
   return (
     <div className="App text-white">

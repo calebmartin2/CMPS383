@@ -3,7 +3,7 @@ import "./Navmenu.css";
 import iceLogo from '../content/ice_logo.png';
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { checkForRole } from "./checkForRole";
+import { checkForRole } from "./Auth/checkForRole";
 
 export function Navmenu({ amountCart, setAmountCart }) {
   let location = useLocation()
