@@ -36,7 +36,7 @@ public class UserProductController : Controller
         {
             return BadRequest("User invalid, doesn't exist?");
         }
-        ICollection<ProductUser> addItem = new List<ProductUser>(){};
+        ICollection<ProductUser> addList = new List<ProductUser>() { };
         Order order = new Order()
         {
             UserId = (int)userId,
@@ -50,19 +50,18 @@ public class UserProductController : Controller
             {
                 return BadRequest();
             }
-            addItem.Add(new ProductUser
+            addList.Add(new ProductUser
             {
                 UserId = (int)userId,
                 ProductId = id,
                 Order = order,
                 Price = product.Price //doesn't account for sales, would be done here
-                
             });
         }
 
         try
         {
-            dataContext.AddRange(addItem);
+            dataContext.AddRange(addList);
             dataContext.Add(order);
             dataContext.SaveChanges();
             return Ok();
@@ -74,10 +73,59 @@ public class UserProductController : Controller
         }
     }
 
-    [HttpPost("add-to-cart")]
+    [HttpPost("sync-cart")]
     [Authorize(Roles = RoleNames.User)]
-    public ActionResult AddToCart()
+    public ActionResult SyncCart(int[] cart)
     {
+ 
+        int? userId = User.GetCurrentUserId();
+        if (userId == null)
+        {
+            return BadRequest();
+        }
+
+        var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active); // filter products that exist
+        var userCart = dataContext.Set<CartProduct>().Where(x => x.UserId == userId);
+        var userLibrary = dataContext.Set<ProductUser>().Where(x => x.UserId == userId);
+        var cartToAdd = new List<int>();
+
+        //don't know a better way, just set everything to remove
+        dataContext.RemoveRange(userCart);
+
+        foreach (int id in cart)
+        {
+             // if product doesn't exist (or not active), do not add, attempt to delete
+            if (products.FirstOrDefault(x => cart.Contains(x.Id)) == null)
+            {
+                if (userCart.FirstOrDefault(x => x.ProductId.Equals(id)) != null) {
+                    dataContext.Remove(userCart.First(x => x.ProductId.Equals(id)));
+                }
+                continue;
+            }
+            // if in library do not add, attempt to delete
+            if (userLibrary.FirstOrDefault(x => x.ProductId == id) != null)
+            {
+                if (userCart.FirstOrDefault(x => x.ProductId.Equals(id)) != null)
+                {
+                    dataContext.Remove(userCart.First(x => x.ProductId.Equals(id)));
+                }
+                continue;
+            }
+            dataContext.Add(new CartProduct()
+            {
+                UserId = (int)userId,
+                ProductId = id,
+            });
+        }
+
+        dataContext.SaveChanges();
+
+        foreach(var item in userCart)
+        {
+            cartToAdd.Add(item.ProductId);
+        }
+
+        return Ok(cartToAdd);
 
     }
 
