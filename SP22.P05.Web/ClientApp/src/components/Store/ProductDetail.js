@@ -54,7 +54,7 @@ export function ProductDetail({ setAmountCart }) {
         if (product.isInLibrary) {
             return <Button variant="success" onClick={() => navigate("/library", { replace: true })}>In Library</Button>
         }
-        if (!checkForRole("User")) {
+        if (!checkForRole("User") || localStorage.getItem("User") === null) {
             if (inCart) {
                 return <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button>
             } else {
