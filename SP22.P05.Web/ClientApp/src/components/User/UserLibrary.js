@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { Row } from "react-bootstrap";
+import { ProductCard } from "../Store/ProductCard";
 export default function UserLibrary() {
     const [products, setProducts] = useState([]);
 
@@ -20,11 +22,13 @@ export default function UserLibrary() {
     return (
         <>
             <h1>LIBRARY</h1>
-            <div>
-                {products.map((product) => (
-                    <p key={product.id}>{product.name} {product.price.toFixed(2)}</p>
-                ))
-                }
+                <div className="ProductList mx-auto text-break">
+                    <Row xs={2} md={3} className="g-4" >
+                        {products.map((product) => (
+                            <ProductCard key={product.id} myProduct={product} />
+                        ))
+                        }
+                    </Row>
             </div>
         </>
     )

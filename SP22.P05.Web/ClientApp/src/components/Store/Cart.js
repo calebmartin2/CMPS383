@@ -101,7 +101,7 @@ export default function Cart({ setAmountCart }) {
                     <Card bg="black" text="white" >
                         <Card.Body> <span style={{ float: "right" }}>Total: ${calculateTotal()} </span></Card.Body>
                     </Card>
-                    <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() => buyItems()}>Buy Now</Button>
+                    <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() =>{ if (window.confirm("Are you sure you want to purchase these items for $" + calculateTotal() + "?"))buyItems()}}>Buy Now</Button>
                     <Button style={{ float: "right", margin: "1em" }} onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button>
                     <p style={{ color: "#888", textDecoration: "underline" }} onClick={() => removeAllItemCart()}>Remove All Items</p>
                 </div>
