@@ -19,6 +19,7 @@ import { TermsOfAgreement } from "./TermsOfAgreement";
 import { useEffect, useState } from "react";
 import UserLibrary from "./components/User/UserLibrary";
 import { refreshUserInfo } from "./refreshUserInfo";
+import Receipt from "./components/Store/Receipt";
 
 function App() {
   
@@ -58,6 +59,7 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetail setAmountCart={setAmountCart} />} />
           <Route path="/cart" element={<Cart setAmountCart={setAmountCart}/>} />
           <Route path="/library" element={<UserLibrary />} />
+          <Route path='/receipt' element={<Receipt />} />
         </Routes>
       </Container>
     </div>

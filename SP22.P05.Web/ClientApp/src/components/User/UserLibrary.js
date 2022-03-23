@@ -2,10 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Row } from "react-bootstrap";
 import { ProductCard } from "../Store/ProductCard";
+import { handleCartView } from "../Auth/checkForRole";
 export default function UserLibrary() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
+        document.title = "ICE - Library"
         axios({
             url: '/api/products/library',
             method: 'get',
@@ -21,14 +23,16 @@ export default function UserLibrary() {
 
     return (
         <>
+            {handleCartView()}
+
             <h1>LIBRARY</h1>
-                <div className="ProductList mx-auto text-break">
-                    <Row xs={2} md={3} className="g-4" >
-                        {products.map((product) => (
-                            <ProductCard key={product.id} myProduct={product} />
-                        ))
-                        }
-                    </Row>
+            <div className="ProductList mx-auto text-break">
+                <Row xs={2} md={3} className="g-4" >
+                    {products.map((product) => (
+                        <ProductCard key={product.id} myProduct={product} />
+                    ))
+                    }
+                </Row>
             </div>
         </>
     )

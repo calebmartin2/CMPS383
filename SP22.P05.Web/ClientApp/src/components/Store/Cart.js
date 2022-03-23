@@ -64,8 +64,9 @@ export default function Cart({ setAmountCart }) {
         })
             .then(function (response) {
                 console.log(response);
-                // Redirect to receipt screen
                 removeAllItemCart()
+                navigate( '/receipt', {state: { products: products}} ); 
+
             })
             .catch(function (error) {
                 console.log(error);
