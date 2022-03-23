@@ -4,6 +4,7 @@ using SP22.P05.Web.Data;
 using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
+using SP22.P05.Web.Features.Transactions;
 
 namespace SP22.P05.Web.Controllers;
 
@@ -135,11 +136,18 @@ public class ProductsController : ControllerBase
     public ActionResult ChangeStatus(int id, int status)
     {
         var product = dataContext.Set<Product>().FirstOrDefault(x => x.Id == id);
+        
         if (product == null)
         {
             return NotFound();
         }
         product.Status = (Product.StatusType)status;
+        // if status not active, delete cart items
+        if (status != (int)Product.StatusType.Active)
+        {
+            var allCart = dataContext.Set<CartProduct>().Where(x => x.ProductId == id);
+            dataContext.RemoveRange(allCart);
+        }
         dataContext.SaveChanges();
         // TODO: better return
         return Ok();

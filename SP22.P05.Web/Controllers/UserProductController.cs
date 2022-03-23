@@ -130,7 +130,7 @@ public class UserProductController : Controller
             return BadRequest();
         }
         var userCart = dataContext.Set<CartProduct>().Where(x => x.UserId == userId);
-        List<int>? retVal = new List<int>();
+        var retVal = new List<int>();
         foreach (var item in userCart)
         {
             retVal.Add(item.ProductId);
