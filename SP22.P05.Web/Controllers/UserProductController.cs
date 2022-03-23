@@ -61,6 +61,8 @@ public class UserProductController : Controller
 
         try
         {
+            var cartItems = dataContext.Set<CartProduct>().Where(x => x.UserId == userId);
+            dataContext.RemoveRange(cartItems);
             dataContext.AddRange(addList);
             dataContext.Add(order);
             dataContext.SaveChanges();
