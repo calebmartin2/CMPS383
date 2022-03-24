@@ -23,8 +23,6 @@ export function Login() {
         setisLoginFail(false);
     }, [password, userName]);
     
-    // const handleClick = () => setLoading(true);
-
 
     const handleLogin = (e) => {
         e.preventDefault();
