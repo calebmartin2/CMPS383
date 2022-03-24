@@ -4,7 +4,7 @@ import { Form, Button, Alert } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
 import getCart from "../User/getCart";
 
-export function Login() {
+export function Login({setAmountCart}) {
 
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")

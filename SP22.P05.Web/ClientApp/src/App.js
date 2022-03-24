@@ -20,6 +20,9 @@ import { useEffect, useState } from "react";
 import UserLibrary from "./components/User/UserLibrary";
 import { refreshUserInfo } from "./refreshUserInfo";
 import Receipt from "./components/Store/Receipt";
+import { checkForRole } from "./components/Auth/checkForRole";
+import getCart from "./components/User/getCart";
+import syncCart from "./components/User/syncCart";
 
 function App() {
   
@@ -27,10 +30,13 @@ function App() {
   
   useEffect(() => {
     populateCart()
-  }, []);
+    refreshUserInfo()
+      syncCart(JSON.parse(localStorage.getItem("cart")));
+  }, [amountCart]);
 
   function populateCart() {
     var allCart = JSON.parse(localStorage.getItem("cart"));
+
     if (allCart == null) {
       return;
     }
@@ -39,12 +45,11 @@ function App() {
 
   return (
     <div className="App text-white">
-      {refreshUserInfo()}
       <Navmenu amountCart={amountCart} setAmountCart={setAmountCart} />
       <Container>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setAmountCart={setAmountCart}/>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/publisher" element={<PublisherDashboard />} />
