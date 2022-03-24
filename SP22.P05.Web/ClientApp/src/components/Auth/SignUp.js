@@ -33,8 +33,8 @@ export function SignUp() {
         })
             .then(function (response) {
                 console.log(response.data);
-                navigate("/Login", { replace: true });
                 setLoading(false);
+                navigate("/Login", { replace: true });
             })
             .catch(function (error) {
                 console.log(error);

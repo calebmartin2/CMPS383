@@ -20,18 +20,16 @@ import { useEffect, useState } from "react";
 import UserLibrary from "./components/User/UserLibrary";
 import { refreshUserInfo } from "./refreshUserInfo";
 import Receipt from "./components/Store/Receipt";
-import { checkForRole } from "./components/Auth/checkForRole";
-import getCart from "./components/User/getCart";
 import syncCart from "./components/User/syncCart";
 
 function App() {
-  
+
   const [amountCart, setAmountCart] = useState(0);
-  
+
   useEffect(() => {
     populateCart()
     refreshUserInfo()
-      syncCart(JSON.parse(localStorage.getItem("cart")));
+    syncCart(JSON.parse(localStorage.getItem("cart")));
   }, [amountCart]);
 
   function populateCart() {
@@ -49,7 +47,7 @@ function App() {
       <Container>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login setAmountCart={setAmountCart}/>} />
+          <Route path="/login" element={<Login setAmountCart={setAmountCart} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/publisher" element={<PublisherDashboard />} />
@@ -62,7 +60,7 @@ function App() {
           <Route path="/admin/manage-products" element={<AdminManageProducts />} />
           <Route path="/terms" element={<TermsOfAgreement />} />
           <Route path="/product/:productId" element={<ProductDetail setAmountCart={setAmountCart} />} />
-          <Route path="/cart" element={<Cart setAmountCart={setAmountCart}/>} />
+          <Route path="/cart" element={<Cart setAmountCart={setAmountCart} />} />
           <Route path="/library" element={<UserLibrary />} />
           <Route path='/receipt' element={<Receipt />} />
         </Routes>

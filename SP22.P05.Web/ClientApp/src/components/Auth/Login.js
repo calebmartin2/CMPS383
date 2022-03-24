@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
-import getCart from "../User/getCart";
 
-export function Login({setAmountCart}) {
+export function Login({ setAmountCart }) {
 
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -22,7 +21,7 @@ export function Login({setAmountCart}) {
         }
         setisLoginFail(false);
     }, [password, userName]);
-    
+
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -33,17 +32,11 @@ export function Login({setAmountCart}) {
             password: password
         })
             .then(function (response) {
-                console.log(response.data);
-                // Only if the user is not admin/publisher
-                if (response.data.roles.includes('User')) {
-                    getCart();
-                }
+                intializeCart(response, setAmountCart);
                 setisLoginFail(false);
                 setLoginSuccess(true);
                 localStorage.setItem('user', JSON.stringify(response.data));
-                // console.log(!response.data.roles.includes('User'));
                 setLoading(false);
-
             })
             .catch(function (error) {
                 setisLoginFail(true)
@@ -51,7 +44,7 @@ export function Login({setAmountCart}) {
                 setLoading(false);
 
             });
-            
+
     }
 
     function AlertPassword() {
@@ -91,3 +84,33 @@ export function Login({setAmountCart}) {
 }
 
 export default Login;
+
+function intializeCart(response, setAmountCart) {
+    // Only if the user is not admin/publisher
+    if (response.data.roles.includes('User')) {
+        //https://stackoverflow.com/questions/65084192/how-can-i-wait-until-the-functions-finish-in-reactjs
+        var totalCart = [];
+        axios.get('/api/user-products/get-cart')
+            .then(function (response) {
+                totalCart = response.data.concat(JSON.parse(localStorage.getItem('cart')));
+                //https://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
+                var filtered = totalCart.filter(function (el) {
+                    return el != null;
+                });
+                filtered = filtered.map(String);
+                filtered = [...new Set(filtered)];
+                axios({
+                    url: '/api/user-products/sync-cart',
+                    method: 'post',
+                    data: filtered
+                })
+                    .then(function (response) {
+                        localStorage.setItem("cart", JSON.stringify(response.data.map(String)));
+                        setAmountCart(response.data.length);
+                    })
+                    .catch(function (error) {
+                    });
+            }).catch(function (error) {
+            });
+    }
+}
