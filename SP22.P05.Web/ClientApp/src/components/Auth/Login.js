@@ -10,14 +10,26 @@ export function Login() {
     const [password, setPassword] = useState("")
     const [isLoginFail, setisLoginFail] = useState(false);
     const [loginSuccess, setLoginSuccess] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+
 
     useEffect(() => {
         document.title = "ICE - Login"
     }, []);
+    useEffect(() => {
+        if (!password || !userName) {
+            return;
+        }
+        setisLoginFail(false);
+    }, [password, userName]);
+    
+    // const handleClick = () => setLoading(true);
+
 
     const handleLogin = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        setLoading(true);
         axios.post('/api/authentication/login', {
             userName: userName,
             password: password
@@ -28,11 +40,16 @@ export function Login() {
                 setLoginSuccess(true);
                 localStorage.setItem('user', JSON.stringify(response.data));
                 console.log(!response.data.roles.includes('User'));
+                setLoading(false);
+
             })
             .catch(function (error) {
                 setisLoginFail(true)
                 console.log(error);
+                setLoading(false);
+
             });
+            
     }
 
     function AlertPassword() {
@@ -48,12 +65,6 @@ export function Login() {
         return <></>
     }
 
-    const handleKeypress = e => {
-        if (e.code === "Enter" || e.code === "NumpadEnter") {
-            // handleLogin();
-        }
-    };
-
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }} onSubmit={handleLogin}>
@@ -64,13 +75,9 @@ export function Login() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
-                {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleLogin}>
-                    LOGIN
-                </Button> */}
-                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
-                    LOGIN
+                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }} disabled={isLoading}>LOGIN
                 </Button>
                 <Link to="/SignUp" style={{ color: "#84AEC8" }}><br />
                     New to ICE?
