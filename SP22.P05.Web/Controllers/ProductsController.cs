@@ -4,6 +4,7 @@ using SP22.P05.Web.Data;
 using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
+using SP22.P05.Web.Features.Transactions;
 
 namespace SP22.P05.Web.Controllers;
 
@@ -37,14 +38,23 @@ public class ProductsController : ControllerBase
     [Route("{id}")]
     public ActionResult<ProductDto> GetProductById(int id)
     {
+        int? userId = User.GetCurrentUserId();
         var products = dataContext.Set<Product>();
         var result = GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
         if (result == null)
         {
             return NotFound();
         }
-
+        var productUsers = dataContext.Set<ProductUser>();
+        result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
         return Ok(result);
+    }
+
+    [HttpPost("select")]
+    public ProductDto[] GetAllProducts(int[] id)
+    {
+        var products = dataContext.Set<Product>().Where(x => id.Contains(x.Id));
+        return GetProductDtos(products).ToArray();
     }
 
     [HttpGet]
@@ -126,11 +136,18 @@ public class ProductsController : ControllerBase
     public ActionResult ChangeStatus(int id, int status)
     {
         var product = dataContext.Set<Product>().FirstOrDefault(x => x.Id == id);
+        
         if (product == null)
         {
             return NotFound();
         }
         product.Status = (Product.StatusType)status;
+        // if status not active, delete cart items
+        if (status != (int)Product.StatusType.Active)
+        {
+            var allCart = dataContext.Set<CartProduct>().Where(x => x.ProductId == id);
+            dataContext.RemoveRange(allCart);
+        }
         dataContext.SaveChanges();
         // TODO: better return
         return Ok();
@@ -196,9 +213,38 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("/api/publisher/products")]
+    [Authorize(Roles = RoleNames.Publisher)]
+    public ProductDto[] GetPublisherProducts()
+    {
+        var products = dataContext.Set<Product>();
+        var publisherId = User.GetCurrentUserId();
+
+        return GetProductDtos(products.Where(x => x.PublisherId == publisherId)).ToArray();
+    }
+
+    [HttpGet("library")]
+    [Authorize(Roles = RoleNames.User)]
+    public ActionResult<ProductDto> GetLibrary()
+    {
+        int? userId = User.GetCurrentUserId();
+        if (userId == null)
+        {
+            return BadRequest();
+        }
+        var products = dataContext.Set<ProductUser>().Where(x => x.UserId == userId).Select(x => x.Product);
+        if (products == null)
+        {
+            return NotFound();
+        }
+        return Ok(GetProductDtos(products));
+
+    }
+
 
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
+
         var now = DateTimeOffset.UtcNow;
         return products
             .Select(x => new
@@ -216,8 +262,10 @@ public class ProductsController : ControllerBase
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
                 PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
-                Status = (int)x.Product.Status
+                Status = (int)x.Product.Status,
 
             });
     }
+
+
 }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { checkForRole } from "../checkForRole";
+import { checkForRole } from "../Auth/checkForRole";
 import { Card, Row, Col } from "react-bootstrap";
 import { useEffect } from "react";
 

@@ -3,35 +3,48 @@ import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
 
-
-export function Login() {
+export function Login({ setAmountCart }) {
 
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [isLoginFail, setisLoginFail] = useState(false);
     const [loginSuccess, setLoginSuccess] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+
 
     useEffect(() => {
         document.title = "ICE - Login"
     }, []);
+    useEffect(() => {
+        if (!password || !userName) {
+            return;
+        }
+        setisLoginFail(false);
+    }, [password, userName]);
+
 
     const handleLogin = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        setLoading(true);
         axios.post('/api/authentication/login', {
             userName: userName,
             password: password
         })
             .then(function (response) {
-                console.log(response.data);
+                intializeCart(response, setAmountCart);
                 setisLoginFail(false);
                 setLoginSuccess(true);
-                localStorage.setItem('user', JSON.stringify(response.data))
+                localStorage.setItem('user', JSON.stringify(response.data));
+                setLoading(false);
             })
             .catch(function (error) {
                 setisLoginFail(true)
                 console.log(error);
+                setLoading(false);
+
             });
+
     }
 
     function AlertPassword() {
@@ -47,12 +60,6 @@ export function Login() {
         return <></>
     }
 
-    const handleKeypress = e => {
-        if (e.code === "Enter" || e.code === "NumpadEnter") {
-            // handleLogin();
-        }
-    };
-
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }} onSubmit={handleLogin}>
@@ -63,13 +70,9 @@ export function Login() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
-                {/* <Button variant="primary" className="custom-primary-btn" style={{marginBottom: "0.5em"}} onClick={handleLogin}>
-                    LOGIN
-                </Button> */}
-                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
-                    LOGIN
+                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }} disabled={isLoading}>LOGIN
                 </Button>
                 <Link to="/SignUp" style={{ color: "#84AEC8" }}><br />
                     New to ICE?
@@ -81,3 +84,33 @@ export function Login() {
 }
 
 export default Login;
+
+function intializeCart(response, setAmountCart) {
+    // Only if the user is not admin/publisher
+    if (response.data.roles.includes('User')) {
+        //https://stackoverflow.com/questions/65084192/how-can-i-wait-until-the-functions-finish-in-reactjs
+        var totalCart = [];
+        axios.get('/api/user-products/get-cart')
+            .then(function (response) {
+                totalCart = response.data.concat(JSON.parse(localStorage.getItem('cart')));
+                //https://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
+                var filtered = totalCart.filter(function (el) {
+                    return el != null;
+                });
+                filtered = filtered.map(String);
+                filtered = [...new Set(filtered)];
+                axios({
+                    url: '/api/user-products/sync-cart',
+                    method: 'post',
+                    data: filtered
+                })
+                    .then(function (response) {
+                        localStorage.setItem("cart", JSON.stringify(response.data.map(String)));
+                        setAmountCart(response.data.length);
+                    })
+                    .catch(function (error) {
+                    });
+            }).catch(function (error) {
+            });
+    }
+}
