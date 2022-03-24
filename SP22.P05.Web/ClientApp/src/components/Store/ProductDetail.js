@@ -52,11 +52,11 @@ export function ProductDetail({ setAmountCart }) {
 
     function AddToCartButton() {
         if (product.isInLibrary) {
-            return <Button variant="success" onClick={() => navigate("/library", { replace: true })}>In Library</Button>
+            return <Button variant="success" onClick={() => navigate("/library", { replace: false })}>In Library</Button>
         }
         if (!checkForRole("User") || localStorage.getItem("user") === null) {
             if (inCart) {
-                return <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button>
+                return <Button variant="primary" onClick={() => navigate("/cart", { replace: false })}>In cart</Button>
             } else {
                 return <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button>
             }
