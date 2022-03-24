@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
-
+import getCart from "../User/getCart";
 
 export function Login() {
 
@@ -34,10 +34,14 @@ export function Login() {
         })
             .then(function (response) {
                 console.log(response.data);
+                // Only if the user is not admin/publisher
+                if (response.data.roles.includes('User')) {
+                    getCart();
+                }
                 setisLoginFail(false);
                 setLoginSuccess(true);
                 localStorage.setItem('user', JSON.stringify(response.data));
-                console.log(!response.data.roles.includes('User'));
+                // console.log(!response.data.roles.includes('User'));
                 setLoading(false);
 
             })
