@@ -21,9 +21,9 @@ export function ProductDetail({ setAmountCart }) {
         } else if (allCart.includes(productId)) {
             setInCart(true);
         }
+        setLoading(true);
         axios.get('/api/products/' + productId)
             .then(function (response) {
-                setLoading(true);
                 const data = response.data;
                 setProduct(data);
                 setLoading(false);

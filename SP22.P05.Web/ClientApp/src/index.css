@@ -1,7 +1,6 @@
 body {
   margin: 0;
-  background-color: #13181b !important; /*being overridden by something else, not sure what*/
-  /* background-image: url(./content/background_cubes.svg); */
+  background-color: #13181b !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif !important;
@@ -27,18 +26,18 @@ code {
 }
 
 .blue-border {
-  border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+  border-width: 0.2em !important;
   border-image: linear-gradient( #212529, rgb(6, 165, 228), #212529) 1 !important;
 }
 
 .blue-border:hover {
-  border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+  border-width: 0.2em !important;
   border-image: linear-gradient( #212529, rgb(6, 247, 255), #212529) 1 !important;
 }
 
 .modal-content { 
   background-color: #13181b !important;
   color: #ffffff !important;
-  border-width: 0.2em !important; /*TODO: Figure out a better way than using !important*/
+  border-width: 0.2em !important;
   border-color: #929292 !important;
 }

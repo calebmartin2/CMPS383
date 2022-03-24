@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SP22.P05.Web.Data;
 
@@ -11,9 +12,10 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220322194624_adding-cart")]
+    partial class addingcart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,7 +132,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductUser", (string)null);
+                    b.ToTable("ProductUser");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.PublisherInfo", b =>
@@ -145,7 +147,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("PublisherInfo", (string)null);
+                    b.ToTable("PublisherInfo");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.Role", b =>
@@ -263,7 +265,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("UserInfo", (string)null);
+                    b.ToTable("UserInfo");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.UserRole", b =>
@@ -313,7 +315,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Products.ProductTag", b =>
@@ -328,7 +330,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("ProductTag", (string)null);
+                    b.ToTable("ProductTag");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Products.Tag", b =>
@@ -346,7 +348,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tag", (string)null);
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEvent", b =>
@@ -370,7 +372,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SaleEvent", (string)null);
+                    b.ToTable("SaleEvent");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEventProduct", b =>
@@ -396,7 +398,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("SaleEventId");
 
-                    b.ToTable("SaleEventProduct", (string)null);
+                    b.ToTable("SaleEventProduct");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Transactions.CartProduct", b =>
@@ -411,7 +413,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartProduct", (string)null);
+                    b.ToTable("CartProduct");
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Transactions.Order", b =>
@@ -435,7 +437,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
