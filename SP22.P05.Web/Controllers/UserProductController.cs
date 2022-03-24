@@ -96,11 +96,7 @@ public class UserProductController : Controller
 
         foreach (int id in cart)
         {
-            if (products.FirstOrDefault(x => x.Id == id) == null)
-            {
-                continue;
-            }
-            if (userLibrary.FirstOrDefault(x => x.ProductId == id) != null)
+            if (!products.Any(x => x.Id == id) || userLibrary.Any(x => x.ProductId == id))
             {
                 continue;
             }
