@@ -10,6 +10,7 @@ public class Product
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string Blurb { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public enum StatusType
     {
@@ -35,7 +36,13 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasMaxLength(120);
 
         builder.Property(x => x.Description)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(2000);
+
+        builder.Property(x => x.Blurb)
+            .IsRequired()
+            .HasMaxLength(240);
+
         builder.Property(x => x.Price)
             .HasColumnType("decimal(18, 2)");
 

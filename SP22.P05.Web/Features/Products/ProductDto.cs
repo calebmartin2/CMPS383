@@ -12,6 +12,9 @@ public class ProductDto
     [Required]
     public string Description { get; set; } = string.Empty;
 
+    [Required]
+    public string Blurb { get; set; } = string.Empty;
+
     [Range(0.01, double.MaxValue)]
     public decimal Price { get; set; }
 

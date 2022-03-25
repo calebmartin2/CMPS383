@@ -81,6 +81,7 @@ public class ProductsController : ControllerBase
         {
             Name = productDto.Name,
             Description = productDto.Description,
+            Blurb = productDto.Blurb,
             Price = productDto.Price,
             PublisherId = (int)publisherId,
             Status = Product.StatusType.Active
@@ -108,6 +109,7 @@ public class ProductsController : ControllerBase
         current.Name = productDto.Name;
         current.Price = productDto.Price;
         current.Description = productDto.Description;
+        current.Blurb = productDto.Blurb;
         dataContext.SaveChanges();
 
         return Ok(productDto);
@@ -257,6 +259,7 @@ public class ProductsController : ControllerBase
                 Id = x.Product.Id,
                 Name = x.Product.Name,
                 Description = x.Product.Description,
+                Blurb = x.Product.Blurb,
                 Price = x.Product.Price,
                 SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
