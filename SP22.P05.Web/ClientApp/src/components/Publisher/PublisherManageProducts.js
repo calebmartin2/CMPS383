@@ -10,6 +10,7 @@ export default function PublisherManageProducts() {
     const [addProductError, setAddProductError] = useState(false);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [blurb, setBlurb] = useState("");
     const [price, setPrice] = useState("");
     const [isEdit, setIsEdit] = useState(false);
     const [productId, setProductId] = useState("");
@@ -18,6 +19,7 @@ export default function PublisherManageProducts() {
         setName("");
         setDescription("");
         setPrice("");
+        setBlurb("");
         setAddProductError(false);
         setShow(false);
         setIsEdit(false);
@@ -50,6 +52,7 @@ export default function PublisherManageProducts() {
         axios.post('/api/products', {
             name: name,
             description: description,
+            blurb: blurb,
             price: price
         })
             .then(function (response) {
@@ -69,6 +72,7 @@ export default function PublisherManageProducts() {
         axios.put('/api/products/' + productId, {
             name: name,
             description: description,
+            blurb: blurb,
             price: price
         })
             .then(function (response) {
@@ -105,6 +109,10 @@ export default function PublisherManageProducts() {
                         <Form.Group className="mb-2" controlId="formBasicName">
                             <Form.Label>Name</Form.Label>
                             <Form.Control required type="text" placeholder="Enter Name" maxLength="120" value={name} onChange={(e) => setName(e.target.value)} />
+                        </Form.Group>
+                        <Form.Group className="mb-2" controlId="formBasicBlurb">
+                            <Form.Label>Blurb</Form.Label>
+                            <Form.Control required type="text" placeholder="Blurb" maxLength="240" value={blurb} onChange={(e) => setBlurb(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-2" controlId="formBasicDescription">
                             <Form.Label>Description</Form.Label>

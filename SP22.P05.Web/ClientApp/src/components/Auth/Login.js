@@ -15,6 +15,8 @@ export function Login({ setAmountCart }) {
     useEffect(() => {
         document.title = "ICE - Login"
     }, []);
+    
+    // Hide error on form change
     useEffect(() => {
         if (!password || !userName) {
             return;
