@@ -1,13 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button, props} from "react-native";
+import React, { useState, useContext } from "react";
+import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button} from "react-native";
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
+import { saveAuthCookie } from '../Authorization/AuthCookieProvider';
+import authCookieContext from '../Authorization/AuthCookieProvider';
 
 
 export default function LoginScreen({navigation}) {
   const [username, onChangeUsername] = useState(null);
   const [password, onChangePassword] = useState(null);
+  const {authCookie, saveAuthCookie } = useContext(authCookieContext);
 
   function handleLogin() {
     axios.post(baseUrl + '/api/authentication/login', {
@@ -16,12 +19,24 @@ export default function LoginScreen({navigation}) {
     })
       .then(function (response) {
         console.log(response.data);
+        console.log("headers:", response.headers);
+
+        // if (response?.headers?.get("set-cookie")) {
+        //   const cookie = response.headers.get("set-cookie").spit(";")[0];
+        //   console.log(cookie);
+        //   saveAuthCookie(response.headers.get("set-cookie").split(";")[0]);
+        // }
+        console.log(response.headers['set-cookie'])
+          saveAuthCookie(JSON.stringify(response.headers['set-cookie']));
+        navigation.navigate('ICE - Store')
       })
       .catch(function (error) {
         console.log(error);
         Alert.alert("Invalid Username or Password.");
+
       });
-  }
+      
+  };
 
   return (
     <>

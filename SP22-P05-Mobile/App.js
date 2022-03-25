@@ -4,12 +4,12 @@ import HomeScreen from './Screens/HomeScreen.js';
 import ProductInfo from './Screens/ProductInfo.js';
 import LoginScreen from './Screens/LoginScreen.js';
 import SignUpScreen from './Screens/SignUpScreen.js';
-
+import { AuthCookieProvider } from './Authorization/AuthCookieProvider.js';
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
-
+    <AuthCookieProvider>
     <NavigationContainer>
       <Stack.Navigator>
        <Stack.Screen name="Login" component={LoginScreen}/>
@@ -37,6 +37,7 @@ function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </AuthCookieProvider>
   );
 }
 
