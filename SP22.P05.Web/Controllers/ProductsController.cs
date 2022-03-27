@@ -246,14 +246,16 @@ public class ProductsController : ControllerBase
 
     //https://sankhadip.medium.com/how-to-upload-files-in-net-core-web-api-and-react-36a8fbf5c9e8
     [HttpPost("uploadfile")]
-    public ActionResult UploadFile([FromForm] FileModel file)
+    public ActionResult UploadFile(IFormFile file, int productId)
     {
         try
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", file.FileName);
+
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}", file.FileName);
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}"));
             using (Stream stream = new FileStream(path, FileMode.Create))
             {
-                file.FormFile.CopyTo(stream);
+                file.CopyTo(stream);
             }
             return Ok();
         } catch (Exception ex)
@@ -262,10 +264,10 @@ public class ProductsController : ControllerBase
         }
     }
     [HttpGet("downloadfile/{fileName}")]
-    public FileResult DownloadFile(string fileName)
+    public FileResult DownloadFile(string fileName, int productId)
     {
         //Build the File Path.
-        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", fileName);
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"FileUpload\\{productId}\\", fileName);
 
         //Read the File data into Byte Array.
         byte[] bytes = System.IO.File.ReadAllBytes(path);
