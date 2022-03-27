@@ -1,11 +1,26 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Table, Form, Dropdown, DropdownButton } from "react-bootstrap";
+import { Breadcrumb, Button, Dropdown, DropdownButton, Form, InputGroup, Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 
 export function AdminManageProducts() {
     const [products, setProducts] = useState([]);
+    const [show, setShow] = useState(false);
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [blurb, setBlurb] = useState("");
+    const [price, setPrice] = useState("");
+    const [productId, setProductId] = useState("");
+
+    const handleClose = () => {
+        setName("");
+        setDescription("");
+        setPrice("");
+        setBlurb("");
+        setShow(false);
+    }
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         document.title = "ICE - Manage Products"
@@ -40,6 +55,33 @@ export function AdminManageProducts() {
             .catch(function (error) {
                 console.log(error);
             });
+    }
+
+    const handleEdit = (e) => {
+        e.preventDefault();
+        console.log(productId);
+        axios.put('/api/products/' + productId, {
+            name: name,
+            description: description,
+            blurb: blurb,
+            price: price
+        })
+            .then(function (response) {
+                fetchProducts();
+                handleClose();
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+
+    }
+
+    function handleEditShow(product) {
+        setName(product.name);
+        setDescription(product.description);
+        setPrice(product.price);
+        setProductId(product.id);
+        handleShow();
     }
 
     return (
@@ -98,6 +140,7 @@ export function AdminManageProducts() {
                                     <Dropdown.Item as="button">
                                         <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link>
                                     </Dropdown.Item>
+                                    <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit</Dropdown.Item>
                                     <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProudct(product.id) }}>Delete</Dropdown.Item>
                                 </DropdownButton>
                             </td>
@@ -106,6 +149,39 @@ export function AdminManageProducts() {
                     }
                 </tbody>
             </Table>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header><Modal.Title>Edit Product</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleEdit}>
+                        <Form.Group className="mb-2" controlId="formBasicName">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control required type="text" placeholder="Enter Name" maxLength="120" value={name} onChange={(e) => setName(e.target.value)} />
+                        </Form.Group>
+                        <Form.Group className="mb-2" controlId="formBasicBlurb">
+                            <Form.Label>Blurb</Form.Label>
+                            <Form.Control required type="text" placeholder="Blurb" maxLength="240" value={blurb} onChange={(e) => setBlurb(e.target.value)} />
+                        </Form.Group>
+                        <Form.Group className="mb-2" controlId="formBasicDescription">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control required as="textarea" rows={5} placeholder="Description" maxLength="2000" value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Group>
+                        <Form.Group className="mb-4" controlId="formBasicPrice">
+                            <Form.Label>Price</Form.Label>
+                            <InputGroup>
+                                <InputGroup.Text>$</InputGroup.Text>
+                                <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
+                            </InputGroup>
+                        </Form.Group>
+                        <Button className="custom-primary-btn" variant="primary" type="submit">
+                            Save Changes
+                        </Button>
+                        <Button variant="danger" onClick={handleClose}>
+                            Discard
+                        </Button>
+                    </Form>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }
