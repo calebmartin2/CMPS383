@@ -67,10 +67,12 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = RoleNames.AdminOrPublisher)]
+    [Authorize(Roles = RoleNames.Publisher)]
 
-    public ActionResult<ProductDto> CreateProduct(ProductDto productDto)
+    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto, IFormFile file)
     {
+        
+
         var publisherId = User.GetCurrentUserId();
         var publisherName = User.GetCurrentUserName();
         if (publisherId == null)
@@ -85,13 +87,27 @@ public class ProductsController : ControllerBase
             Blurb = productDto.Blurb,
             Price = productDto.Price,
             PublisherId = (int)publisherId,
-            Status = Product.StatusType.Active
+            Status = Product.StatusType.Active,
+            FileName = file.FileName,
         };
 
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
-        productDto.PublisherName = publisherName; //TODO, get the company name rather than the username
+        try
+        {
+
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productDto.Id}", file.FileName);
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productDto.Id}"));
+            using (Stream stream = new FileStream(path, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productDto);
     }
@@ -263,11 +279,12 @@ public class ProductsController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    [HttpGet("downloadfile/{fileName}")]
-    public FileResult DownloadFile(string fileName, int productId)
+    [HttpGet("download/{productId}/{fileName}")]
+    public FileResult DownloadFile(int productId, string fileName)
     {
+        //var fileName = dataContext.Set<Product>().First(x => x.Id == productId).FileName;
         //Build the File Path.
-        string path = Path.Combine(Directory.GetCurrentDirectory(), $"FileUpload\\{productId}\\", fileName);
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}\\", fileName);
 
         //Read the File data into Byte Array.
         byte[] bytes = System.IO.File.ReadAllBytes(path);
@@ -298,6 +315,7 @@ public class ProductsController : ControllerBase
                 PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                 Status = (int)x.Product.Status,
+                FileName = x.Product.FileName,
 
             });
     }

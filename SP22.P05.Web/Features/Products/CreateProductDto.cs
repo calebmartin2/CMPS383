@@ -2,7 +2,7 @@
 
 namespace SP22.P05.Web.Features.Products;
 
-public class ProductDto
+public class CreateProductDto
 {
     public int Id { get; set; }
 
@@ -17,14 +17,5 @@ public class ProductDto
 
     [Range(0.01, double.MaxValue)]
     public decimal Price { get; set; }
-
-    public decimal? SalePrice { get; set; }
-
-    public DateTimeOffset? SaleEndUtc { get; set; }
-    public string? PublisherName { get; set; }
-    public int Status { get; set; }
-    public string[] Tags { get; set; } = Array.Empty<string>();
-    public bool IsInLibrary { get; set; }
-    public string FileName { get; set; } = string.Empty;
 
 }

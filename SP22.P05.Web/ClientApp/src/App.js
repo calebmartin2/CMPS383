@@ -21,6 +21,7 @@ import UserLibrary from "./components/User/UserLibrary";
 import { refreshUserInfo } from "./refreshUserInfo";
 import Receipt from "./components/Store/Receipt";
 import syncCart from "./components/User/syncCart";
+import { checkForRole } from "./components/Auth/checkForRole";
 
 function App() {
 
@@ -29,7 +30,9 @@ function App() {
   useEffect(() => {
     populateCart()
     refreshUserInfo()
-    syncCart(JSON.parse(localStorage.getItem("cart")));
+    if (!checkForRole("User")) {
+      syncCart(JSON.parse(localStorage.getItem("cart")));
+    }
   }, [amountCart]);
 
   function populateCart() {
