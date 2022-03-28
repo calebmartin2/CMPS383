@@ -3,7 +3,6 @@ import React, { useState, useContext } from "react";
 import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button} from "react-native";
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
-import { saveAuthCookie } from '../Authorization/AuthCookieProvider';
 import authCookieContext from '../Authorization/AuthCookieProvider';
 
 
