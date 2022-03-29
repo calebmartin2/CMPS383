@@ -12,8 +12,8 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220325015329_change-blurb-maxlength-240")]
-    partial class changeblurbmaxlength240
+    [Migration("20220329014743_fix-maxlength-issue-3")]
+    partial class fixmaxlengthissue3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -293,13 +293,15 @@ namespace SP22.P03.Web.Migrations
 
                     b.Property<string>("Blurb")
                         .IsRequired()
-                        .HasMaxLength(240)
-                        .HasColumnType("nvarchar(240)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
