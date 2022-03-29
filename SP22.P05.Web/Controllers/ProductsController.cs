@@ -97,8 +97,8 @@ public class ProductsController : ControllerBase
         try
         {
 
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productDto.Id}", file.FileName);
-            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productDto.Id}"));
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", file.FileName);
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}"));
             using (Stream stream = new FileStream(path, FileMode.Create))
             {
                 file.CopyTo(stream);
@@ -147,7 +147,7 @@ public class ProductsController : ControllerBase
         //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
         try
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{id}");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}");
             DirectoryInfo di = new DirectoryInfo(path);
 
             foreach (FileInfo file in di.GetFiles())
@@ -289,8 +289,8 @@ public class ProductsController : ControllerBase
         try
         {
 
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}", file.FileName);
-            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}"));
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}", file.FileName);
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}"));
             using (Stream stream = new FileStream(path, FileMode.Create))
             {
                 file.CopyTo(stream);
@@ -306,7 +306,7 @@ public class ProductsController : ControllerBase
     {
         //var fileName = dataContext.Set<Product>().First(x => x.Id == productId).FileName;
         //Build the File Path.
-        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}\\", fileName);
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", fileName);
 
         //Read the File data into Byte Array.
         byte[] bytes = System.IO.File.ReadAllBytes(path);
