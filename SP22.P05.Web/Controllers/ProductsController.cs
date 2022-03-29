@@ -286,6 +286,12 @@ public class ProductsController : ControllerBase
     [HttpPost("uploadfile")]
     public ActionResult UploadFile(IFormFile file, [FromForm] int productId)
     {
+        var product = dataContext.Set<Product>().First(x => x.Id == productId);
+        if (product == null)
+        {
+            return BadRequest();
+        }
+        
         // delete directory associated with product, leaves blank folder but deletes all containing files
         //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
         try
@@ -316,11 +322,16 @@ public class ProductsController : ControllerBase
             {
                 file.CopyTo(stream);
             }
+            product.FileName = file.FileName;
+            dataContext.SaveChanges();
             return Ok();
         } catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
+
+
+
     }
     [HttpGet("download/{productId}/{fileName}")]
     public FileResult DownloadFile(int productId, string fileName)
