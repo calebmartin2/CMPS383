@@ -37,18 +37,10 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasMaxLength(120);
 
         builder.Property(x => x.Description)
-            .IsRequired()
-            .HasMaxLength(2000);
+            .IsRequired();
 
         builder.Property(x => x.Blurb)
-            .IsRequired()
-            .HasMaxLength(240);
-
-        builder.Property(x => x.FileName)
-            .HasMaxLength(120);
-
-        builder.Property(x => x.Price)
-            .HasColumnType("decimal(18, 2)");
+            .IsRequired();
 
         builder.Property(x => x.PublisherId)
             .HasDefaultValue(1);
