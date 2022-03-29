@@ -10,6 +10,7 @@ public class Product
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string Blurb { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public enum StatusType
     {
@@ -23,6 +24,7 @@ public class Product
     public virtual ICollection<ProductTag> Tags { get; set; } = new List<ProductTag>();
     public virtual PublisherInfo? Publisher { get; set; }
     public int PublisherId { get; set; }
+    public string FileName { get; set; } = string.Empty;
 
 }
 
@@ -37,6 +39,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Description)
             .IsRequired();
 
+        builder.Property(x => x.Blurb)
+            .IsRequired();
 
         builder.Property(x => x.PublisherId)
             .HasDefaultValue(1);

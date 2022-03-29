@@ -178,7 +178,7 @@ public class UsersController : ControllerBase
         // Probably a built in way, don't know how else to fix at the moment
         foreach (var publisher in allPublishers)
         {
-            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            if (!publisherInfo.Any(x => x.UserId == publisher.Id))
             {
                 return BadRequest("Publisher does not have info.");
             }
@@ -186,7 +186,7 @@ public class UsersController : ControllerBase
             {
                 Id = publisher.Id,
                 UserName = publisher.UserName,
-                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                CompanyName = publisherInfo.First(x => x.UserId == publisher.Id).CompanyName,
                 IsApproved = approvedPublishers.Contains(publisher),
                 Email = publisher.Email
             });
@@ -204,7 +204,7 @@ public class UsersController : ControllerBase
         // Probably a built in way, don't know how else to fix at the moment
         foreach (var publisher in pendingPublishers)
         {
-            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            if (!publisherInfo.Any(x => x.UserId == publisher.Id))
             {
                 return BadRequest("Publisher does not have info.");
             }
@@ -212,7 +212,7 @@ public class UsersController : ControllerBase
             {
                 Id = publisher.Id,
                 UserName = publisher.UserName,
-                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                CompanyName = publisherInfo.First(x => x.UserId == publisher.Id).CompanyName,
                 Email = publisher.Email
             });
         }
@@ -229,7 +229,7 @@ public class UsersController : ControllerBase
         // Probably a built in way, don't know how else to fix at the moment
         foreach (var publisher in approvedPublishers)
         {
-            if (publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id) == null)
+            if (!publisherInfo.Any(x => x.UserId == publisher.Id))
             {
                 return BadRequest("Publisher does not have info.");
             }
@@ -237,7 +237,7 @@ public class UsersController : ControllerBase
             {
                 Id = publisher.Id,
                 UserName = publisher.UserName,
-                CompanyName = publisherInfo.FirstOrDefault(x => x.UserId == publisher.Id).CompanyName,
+                CompanyName = publisherInfo.First(x => x.UserId == publisher.Id).CompanyName,
                 IsApproved = true,
                 Email = publisher.Email
             });

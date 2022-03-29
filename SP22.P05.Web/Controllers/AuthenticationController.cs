@@ -61,6 +61,7 @@ namespace SP22.P05.Web.Controllers
 
         private static IQueryable<UserDto> GetUserDto(IQueryable<User> users)
         {
+
             return users.Select(x => new UserDto
             {
                 Id = x.Id,

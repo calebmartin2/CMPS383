@@ -25,7 +25,8 @@ export default function Receipt() {
         <>
             {handleCartView()}
 
-            <p>Thank You for Your purchase!</p>
+            <h1>Thank You for Your purchase!</h1>
+            <h4>Items bought:</h4>
             {products.map((product) => (
                 <div key={product.id}>
                     <p>{product.name} ${product.price.toFixed(2)}</p>

@@ -21,9 +21,9 @@ export function ProductDetail({ setAmountCart }) {
         } else if (allCart.includes(productId)) {
             setInCart(true);
         }
+        setLoading(true);
         axios.get('/api/products/' + productId)
             .then(function (response) {
-                setLoading(true);
                 const data = response.data;
                 setProduct(data);
                 setLoading(false);
@@ -52,11 +52,11 @@ export function ProductDetail({ setAmountCart }) {
 
     function AddToCartButton() {
         if (product.isInLibrary) {
-            return <Button variant="success" onClick={() => navigate("/library", { replace: true })}>In Library</Button>
+            return <Button variant="success" onClick={() => navigate("/library", { replace: false })}>In Library</Button>
         }
-        if (!checkForRole("User") || localStorage.getItem("User") === null) {
+        if (!checkForRole("User") || localStorage.getItem("user") === null) {
             if (inCart) {
-                return <Button variant="primary" onClick={() => navigate("/cart", { replace: true })}>In cart</Button>
+                return <Button variant="primary" onClick={() => navigate("/cart", { replace: false })}>In cart</Button>
             } else {
                 return <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button>
             }
@@ -75,6 +75,7 @@ export function ProductDetail({ setAmountCart }) {
                     </Breadcrumb>
                     <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
                     <p>Publisher: {product.publisherName}</p>
+                    <p>{product.blurb}</p>
                     <p>{product.description}</p>
                     <p>${product.price.toFixed(2)}</p>
                     <AddToCartButton />

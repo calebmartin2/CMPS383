@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SP22.P05.Web.Features.Products;
+using SP22.P05.Web.Features.Transactions;
 
 namespace SP22.P05.Web.Features.Authorization;
 

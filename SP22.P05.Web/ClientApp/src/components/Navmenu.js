@@ -4,11 +4,17 @@ import iceLogo from '../content/ice_logo.png';
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { checkForRole } from "./Auth/checkForRole";
+import { useEffect } from "react";
 
 export function Navmenu({ amountCart, setAmountCart }) {
   let location = useLocation()
   const loggedInUser = localStorage.getItem("user");
   let navigate = useNavigate();
+
+  useEffect(() => {
+    
+  }, [amountCart])
+  
 
   function handleLogout() {
     localStorage.removeItem('user');

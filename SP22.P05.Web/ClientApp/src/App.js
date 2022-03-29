@@ -20,17 +20,24 @@ import { useEffect, useState } from "react";
 import UserLibrary from "./components/User/UserLibrary";
 import { refreshUserInfo } from "./refreshUserInfo";
 import Receipt from "./components/Store/Receipt";
+import syncCart from "./components/User/syncCart";
+import { checkForRole } from "./components/Auth/checkForRole";
 
 function App() {
-  
+
   const [amountCart, setAmountCart] = useState(0);
-  
+
   useEffect(() => {
     populateCart()
-  }, []);
+    refreshUserInfo()
+    if (!checkForRole("User")) {
+      syncCart(JSON.parse(localStorage.getItem("cart")));
+    }
+  }, [amountCart]);
 
   function populateCart() {
     var allCart = JSON.parse(localStorage.getItem("cart"));
+
     if (allCart == null) {
       return;
     }
@@ -39,12 +46,11 @@ function App() {
 
   return (
     <div className="App text-white">
-      {refreshUserInfo()}
       <Navmenu amountCart={amountCart} setAmountCart={setAmountCart} />
       <Container>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setAmountCart={setAmountCart} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/publisher" element={<PublisherDashboard />} />
@@ -56,8 +62,8 @@ function App() {
           <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
           <Route path="/admin/manage-products" element={<AdminManageProducts />} />
           <Route path="/terms" element={<TermsOfAgreement />} />
-          <Route path="/product/:productId" element={<ProductDetail setAmountCart={setAmountCart} />} />
-          <Route path="/cart" element={<Cart setAmountCart={setAmountCart}/>} />
+          <Route path="/product/:productId/*" element={<ProductDetail setAmountCart={setAmountCart} />} />
+          <Route path="/cart" element={<Cart setAmountCart={setAmountCart} />} />
           <Route path="/library" element={<UserLibrary />} />
           <Route path='/receipt' element={<Receipt />} />
         </Routes>

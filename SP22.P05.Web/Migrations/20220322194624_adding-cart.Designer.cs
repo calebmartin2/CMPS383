@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SP22.P05.Web.Data;
 
@@ -11,9 +12,10 @@ using SP22.P05.Web.Data;
 namespace SP22.P03.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220322194624_adding-cart")]
+    partial class addingcart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,15 +291,7 @@ namespace SP22.P03.Web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Blurb")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -606,7 +600,7 @@ namespace SP22.P03.Web.Migrations
                         .IsRequired();
 
                     b.HasOne("SP22.P05.Web.Features.Authorization.User", "User")
-                        .WithMany("Carts")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -634,8 +628,6 @@ namespace SP22.P03.Web.Migrations
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.User", b =>
                 {
-                    b.Navigation("Carts");
-
                     b.Navigation("Products");
 
                     b.Navigation("PublisherInfo");

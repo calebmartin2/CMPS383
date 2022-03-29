@@ -11,7 +11,7 @@ export function SignUp() {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [show, setShow] = useState(false);
-
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         document.title = "ICE - Sign Up"
@@ -20,8 +20,10 @@ export function SignUp() {
     const handleSignUp = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        setLoading(true);
         if (password !== confirmPassword) {
             setShow(true);
+            setLoading(false);
             return;
         }
 
@@ -31,20 +33,15 @@ export function SignUp() {
         })
             .then(function (response) {
                 console.log(response.data);
+                setLoading(false);
                 navigate("/Login", { replace: true });
             })
             .catch(function (error) {
                 console.log(error);
+                setLoading(false);
             });
     }
 
-
-    const handleKeypress = (e) => {
-        setShow(false);
-        if (e.code === "Enter" || e.code === "NumpadEnter") {
-            handleSignUp();
-        }
-    };
 
     return (
         <>
@@ -52,22 +49,22 @@ export function SignUp() {
                 <h1>SIGN UP</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control required type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} onKeyPress={handleKeypress} />
+                    <Form.Control required type="text" placeholder="Username" value={userName} onChange={(e) => setUsername(e.target.value)} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control required type="password" placeholder="Password" value={password} pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$"
                         title="Minimum 8 characters, at least one number, at least one upper case, at least one lower case, and at least one special character."
-                        onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeypress} />
+                        onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                     <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value) } onKeyPress={handleKeypress} />
+                    <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value) }  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>} />
                 </Form.Group>
-                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }}>
+                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }} disabled={isLoading}>
                     SIGN UP
                 </Button>
                 <Link to="/Login" style={{ color: "#84AEC8" }}><br />
