@@ -81,6 +81,7 @@ export function AdminManageProducts() {
         setDescription(product.description);
         setPrice(product.price);
         setProductId(product.id);
+        setBlurb(product.blurb);
         handleShow();
     }
 

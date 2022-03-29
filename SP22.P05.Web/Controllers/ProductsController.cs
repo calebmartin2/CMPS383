@@ -159,7 +159,7 @@ public class ProductsController : ControllerBase
                 dir.Delete(true);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
         }
@@ -284,22 +284,54 @@ public class ProductsController : ControllerBase
 
     //https://sankhadip.medium.com/how-to-upload-files-in-net-core-web-api-and-react-36a8fbf5c9e8
     [HttpPost("uploadfile")]
-    public ActionResult UploadFile(IFormFile file, int productId)
+    public ActionResult UploadFile(IFormFile file, [FromForm] int productId)
     {
+        var product = dataContext.Set<Product>().First(x => x.Id == productId);
+        if (product == null)
+        {
+            return BadRequest();
+        }
+        
+        // delete directory associated with product, leaves blank folder but deletes all containing files
+        //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
         try
         {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}");
+            DirectoryInfo di = new DirectoryInfo(path);
 
+            foreach (FileInfo delFile in di.GetFiles())
+            {
+                delFile.Delete();
+            }
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+
+
+        try
+        {
             string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}", file.FileName);
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}"));
             using (Stream stream = new FileStream(path, FileMode.Create))
             {
                 file.CopyTo(stream);
             }
+            product.FileName = file.FileName;
+            dataContext.SaveChanges();
             return Ok();
         } catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
+
+
+
     }
     [HttpGet("download/{productId}/{fileName}")]
     public FileResult DownloadFile(int productId, string fileName)

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Breadcrumb, Button, Dropdown, DropdownButton, Form, InputGroup, Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -13,8 +13,11 @@ export default function PublisherManageProducts() {
     const [blurb, setBlurb] = useState("");
     const [price, setPrice] = useState("");
     const [isEdit, setIsEdit] = useState(false);
+    const [isUpdateFile, setIsUpdateFile] = useState(false);
     const [productId, setProductId] = useState("");
-    const [file, setFile] = useState();
+    // const [file, setFile] = useState("");
+    const fileRef = useRef(null);
+
 
     const handleClose = () => {
         setName("");
@@ -24,7 +27,8 @@ export default function PublisherManageProducts() {
         setAddProductError(false);
         setShow(false);
         setIsEdit(false);
-        setFile(null);
+        setIsUpdateFile(false);
+        // setFile(null);
     }
     const handleShow = () => setShow(true);
 
@@ -55,7 +59,7 @@ export default function PublisherManageProducts() {
         bodyFormData.append('description', description);
         bodyFormData.append('blurb', blurb);
         bodyFormData.append('price', price)
-        bodyFormData.append('file', file)
+        bodyFormData.append('file', fileRef.current.files[0])
 
         axios({
             method: "post",
@@ -71,9 +75,7 @@ export default function PublisherManageProducts() {
                 setAddProductError(true);
                 console.log(response);
             });
-
     }
-
 
 
     const handleEdit = (e) => {
@@ -101,8 +103,50 @@ export default function PublisherManageProducts() {
         setDescription(product.description);
         setPrice(product.price);
         setProductId(product.id);
+        setBlurb(product.blurb)
         setIsEdit(true);
         handleShow();
+    }
+
+    const handleUpdateFile = (e) => {
+        e.preventDefault();
+        var bodyFormData = new FormData();
+        bodyFormData.append('productId', productId)
+        bodyFormData.append('file', fileRef.current.files[0])
+        console.log("PROD: " + productId);
+        axios({
+            method: "post",
+            url: "/api/products/uploadfile",
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
+        })
+            .then(function (response) {
+                console.log(response);
+                fetchProducts();
+                handleClose();
+            })
+            .catch(function (response) {
+                setAddProductError(true);
+                console.log(response);
+            });
+
+    }
+
+    function handleUpdateFileShow(product) {
+        setProductId(product.id);
+        setIsUpdateFile(true);
+        handleShow();
+    }
+
+
+    function showModalTitle() {
+        if (isEdit) {
+            return "Edit Product"
+        }
+        if (isUpdateFile) {
+            return "Update File"
+        }
+        return "Add Product"
     }
 
     return (
@@ -113,42 +157,12 @@ export default function PublisherManageProducts() {
             </Breadcrumb>
 
             <Modal show={show} onHide={handleClose}>
-                <Modal.Header><Modal.Title>{isEdit ? <>Edit Product</> : <>Add Product</>}</Modal.Title></Modal.Header>
+                <Modal.Header><Modal.Title>{showModalTitle()}</Modal.Title></Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={isEdit ? handleEdit : handleAdd}>
-                        <Form.Group className="mb-2" controlId="formBasicName">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control required type="text" placeholder="Enter Name" maxLength="120" value={name} onChange={(e) => setName(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-2" controlId="formBasicBlurb">
-                            <Form.Label>Blurb</Form.Label>
-                            <Form.Control required type="text" placeholder="Blurb" maxLength="240" value={blurb} onChange={(e) => setBlurb(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-2" controlId="formBasicDescription">
-                            <Form.Label>Description</Form.Label>
-                            <Form.Control required as="textarea" rows={5} placeholder="Description" maxLength="2000" value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-4" controlId="formBasicPrice">
-                            <Form.Label>Price</Form.Label>
-                            <InputGroup>
-                                <InputGroup.Text>$</InputGroup.Text>
-                                <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
-                            </InputGroup>
-                        </Form.Group>
-                        <Form.Group  className="mb-4">
-                            <Form.Label>File</Form.Label>
-                            <Form.Control type="file" onChange={(e) => setFile(e.target.files[0])}></Form.Control>
-                        </Form.Group>
-                        <Button className="custom-primary-btn" variant="primary" type="submit">
-                            {isEdit ? <>Save Changes</> : <>Add</>}
-                        </Button>
-                        <Button variant="danger" onClick={handleClose}>
-                            Discard
-                        </Button>
-                        {addProductError ? <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p> : null}
-                    </Form>
+                    {isUpdateFile ? updateFileForm() : addOrEditForm()}
                 </Modal.Body>
             </Modal>
+
             {loading ? "Loading" : products.length > 0 && !loading ?
                 <>
                     <Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
@@ -174,7 +188,8 @@ export default function PublisherManageProducts() {
                                         <DropdownButton id="dropdown-item-button" title="Actions">
                                             <Dropdown.Item as="button"><Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link></Dropdown.Item>
                                             <Dropdown.Item as="button"><Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download>Download</Link></Dropdown.Item>
-                                            <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit</Dropdown.Item>
+                                            <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit Info</Dropdown.Item>
+                                            <Dropdown.Item as="button" onClick={() => handleUpdateFileShow(product)} >Update File</Dropdown.Item>
                                         </DropdownButton>
                                     </td>
                                 </tr>
@@ -187,5 +202,60 @@ export default function PublisherManageProducts() {
                 </Button><h1>No products</h1></>}
         </>
     );
+
+    function addOrEditForm() {
+        return <Form onSubmit={isEdit ? handleEdit : handleAdd}>
+            <Form.Group className="mb-2" controlId="formBasicName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control required type="text" placeholder="Enter Name" maxLength="120" value={name} onChange={(e) => setName(e.target.value)} />
+            </Form.Group>
+            <Form.Group className="mb-2" controlId="formBasicBlurb">
+                <Form.Label>Blurb</Form.Label>
+                <Form.Control required type="text" placeholder="Blurb" maxLength="240" value={blurb} onChange={(e) => setBlurb(e.target.value)} />
+            </Form.Group>
+            <Form.Group className="mb-2" controlId="formBasicDescription">
+                <Form.Label>Description</Form.Label>
+                <Form.Control required as="textarea" rows={5} placeholder="Description" maxLength="2000" value={description} onChange={(e) => setDescription(e.target.value)} />
+            </Form.Group>
+            <Form.Group className="mb-4" controlId="formBasicPrice">
+                <Form.Label>Price</Form.Label>
+                <InputGroup>
+                    <InputGroup.Text>$</InputGroup.Text>
+                    <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
+                </InputGroup>
+            </Form.Group>
+            {!isEdit && <Form.Group className="mb-4">
+                <Form.Label>File</Form.Label>
+                <Form.Control type="file" ref={fileRef}></Form.Control>
+            </Form.Group>}
+            <Button className="custom-primary-btn" variant="primary" type="submit">
+                {isEdit ? <>Save Changes</> : <>Add</>}
+            </Button>
+            <Button variant="danger" onClick={handleClose}>
+                Discard
+            </Button>
+            {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
+        </Form>;
+    }
+    function updateFileForm() {
+        return (
+            <Form onSubmit={handleUpdateFile}>
+                <InputGroup>
+                    <Form.Group className="mb-4">
+                        <Form.Label>File</Form.Label>
+                        <Form.Control required type="file" ref={fileRef}></Form.Control>
+                    </Form.Group>
+                </InputGroup>
+                <Button className="custom-primary-btn" variant="primary" type="submit">
+                    Update File
+                </Button>
+                <Button variant="danger" onClick={handleClose}>
+                    Discard
+                </Button>
+                {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
+            </Form>
+        )
+    }
 }
+
 

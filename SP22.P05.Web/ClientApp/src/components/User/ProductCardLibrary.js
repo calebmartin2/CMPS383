@@ -10,7 +10,9 @@ export function ProductCardLibrary({ myProduct: product }) {
                         <Card.Subtitle>{product.blurb}</Card.Subtitle>
                     </Card.Body>
                     <Card.Footer>
-                    <Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download>Download</Link>
+                    <Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download style={{backgroundColor: "green", color: "#ddd", padding: "0.2em", textDecoration: "none"}}>Download</Link>
+                    <Card.Text style={{ float: "left", color: "#999" }}>{product.publisherName}</Card.Text>
+
                     </Card.Footer>
                 </Card>
         </Col>
