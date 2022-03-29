@@ -143,6 +143,20 @@ public class ProductsController : ControllerBase
             return NotFound();
         }
 
+        // delete directory associated with product, leaves blank folder but deletes all containing files
+        //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{id}");
+        DirectoryInfo di = new DirectoryInfo(path);
+
+        foreach (FileInfo file in di.GetFiles())
+        {
+            file.Delete();
+        }
+        foreach (DirectoryInfo dir in di.GetDirectories())
+        {
+            dir.Delete(true);
+        }
+
         products.Remove(current);
         dataContext.SaveChanges();
 

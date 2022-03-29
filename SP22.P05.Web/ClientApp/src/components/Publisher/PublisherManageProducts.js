@@ -135,7 +135,7 @@ export default function PublisherManageProducts() {
                                 <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
                             </InputGroup>
                         </Form.Group>
-                        <Form.Group>
+                        <Form.Group  className="mb-4">
                             <Form.Label>File</Form.Label>
                             <Form.Control type="file" onChange={(e) => setFile(e.target.files[0])}></Form.Control>
                         </Form.Group>
