@@ -8,7 +8,7 @@ import authCookieContext from '../Authorization/AuthCookieProvider';
 
 export default function HomeScreen({ navigation }) {
     const [products, setProducts] = useState([]);
-    const [userName, setUserName] = useState("No name");
+    const [userName, setUserName] = useState("");
     const [refreshing, setRefreshing] = React.useState(false);
     const { authCookie } = useContext(authCookieContext);
 
@@ -36,19 +36,18 @@ export default function HomeScreen({ navigation }) {
         axios({
             method: 'get',
             url: baseUrl + '/api/authentication/me',
-            headers: { 'set-cookie': JSON.parse(authCookie) }
+            headers: { Cookie: authCookie }
         })
             .then(function (response) {
                 setUserName(response.data.userName);
             })
             .catch(function (error) {
-                console.log("NO SUCCESS");
+                console.log(error);
             });
     }
     useEffect(() => {
         getMeTest()
         fetchProducts();
-        console.log(products)
     }, [])
 
     return (

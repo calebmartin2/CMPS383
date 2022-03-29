@@ -1,5 +1,5 @@
 
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AUTH_COOKIE = "AUTH_COOKIE";
@@ -11,17 +11,18 @@ export function AuthCookieProvider({ children }) {
 
     useEffect(() => {
         const getAuthCookie = async () => {
-        const result = await AsyncStorage.getItem(AUTH_COOKIE);
-        if (!result) {
-            return;
+            const result = await AsyncStorage.getItem(AUTH_COOKIE);
+            if (!result) {
+                return;
+            }
+            setAuthCookie(result);
         }
-        setAuthCookie(result);
-    }
-    getAuthCookie();
+        getAuthCookie();
     }, [setAuthCookie]);
 
     const saveAuthCookie = useCallback(
         async (cookie) => {
+            console.log("SAVING COOKIE");
             await AsyncStorage.setItem(AUTH_COOKIE, cookie, (error) => {
                 if (error != undefined) {
 

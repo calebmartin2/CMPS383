@@ -17,22 +17,40 @@ export default function LoginScreen({navigation}) {
       password: password
     })
       .then(function (response) {
-        console.log(response.data);
-        console.log("headers:", response.headers);
+        // console.log(response.data);
+        // console.log("headers:", response.headers);
 
         // if (response?.headers?.get("set-cookie")) {
         //   const cookie = response.headers.get("set-cookie").spit(";")[0];
         //   console.log(cookie);
         //   saveAuthCookie(response.headers.get("set-cookie").split(";")[0]);
         // }
-        console.log(response.headers['set-cookie'])
-          saveAuthCookie(JSON.stringify(response.headers['set-cookie']));
-        navigation.navigate('ICE - Store')
+        var cookie = response.headers["set-cookie"][0].split(";")[0];
+        async function temp(){
+          await saveAuthCookie(cookie);
+          navigation.navigate('ICE - Store')
+        }
+        temp();
       })
       .catch(function (error) {
         console.log(error);
         Alert.alert("Invalid Username or Password.");
 
+      });
+      
+  };
+
+  function handleLogout() {
+    axios({
+      method: 'post',
+      url: baseUrl + '/api/authentication/logout',
+      headers: { Cookie: authCookie }
+  })
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+          console.log(error);
       });
       
   };
@@ -59,9 +77,16 @@ export default function LoginScreen({navigation}) {
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
+          <Text style={styles.loginText}>LOGOUT</Text>
+        </TouchableOpacity>
         <Button
           title="Sign Up Here"
           onPress={()=> navigation.navigate('SignUp')}
+        />
+        <Button
+          title="Store"
+          onPress={()=> navigation.navigate('ICE - Store')}
         />
       </View>
     </>
