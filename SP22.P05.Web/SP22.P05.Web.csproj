@@ -45,4 +45,9 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ProductFiles\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

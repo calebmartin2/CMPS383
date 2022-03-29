@@ -24,6 +24,7 @@ public class Product
     public virtual ICollection<ProductTag> Tags { get; set; } = new List<ProductTag>();
     public virtual PublisherInfo? Publisher { get; set; }
     public int PublisherId { get; set; }
+    public string FileName { get; set; } = string.Empty;
 
 }
 
@@ -42,6 +43,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Blurb)
             .IsRequired()
             .HasMaxLength(240);
+
+        builder.Property(x => x.FileName)
+            .HasMaxLength(120);
 
         builder.Property(x => x.Price)
             .HasColumnType("decimal(18, 2)");

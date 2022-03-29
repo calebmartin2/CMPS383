@@ -14,6 +14,7 @@ export default function PublisherManageProducts() {
     const [price, setPrice] = useState("");
     const [isEdit, setIsEdit] = useState(false);
     const [productId, setProductId] = useState("");
+    const [file, setFile] = useState();
 
     const handleClose = () => {
         setName("");
@@ -23,6 +24,7 @@ export default function PublisherManageProducts() {
         setAddProductError(false);
         setShow(false);
         setIsEdit(false);
+        setFile(null);
     }
     const handleShow = () => setShow(true);
 
@@ -48,23 +50,31 @@ export default function PublisherManageProducts() {
 
     const handleAdd = (e) => {
         e.preventDefault();
+        var bodyFormData = new FormData();
+        bodyFormData.append('name', name);
+        bodyFormData.append('description', description);
+        bodyFormData.append('blurb', blurb);
+        bodyFormData.append('price', price)
+        bodyFormData.append('file', file)
 
-        axios.post('/api/products', {
-            name: name,
-            description: description,
-            blurb: blurb,
-            price: price
+        axios({
+            method: "post",
+            url: "/api/products",
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
         })
             .then(function (response) {
                 fetchProducts();
                 handleClose();
             })
-            .catch(function (error) {
+            .catch(function (response) {
                 setAddProductError(true);
-                console.log(error);
-            })
+                console.log(response);
+            });
 
     }
+
+
 
     const handleEdit = (e) => {
         e.preventDefault();
@@ -125,6 +135,10 @@ export default function PublisherManageProducts() {
                                 <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
                             </InputGroup>
                         </Form.Group>
+                        <Form.Group  className="mb-4">
+                            <Form.Label>File</Form.Label>
+                            <Form.Control type="file" onChange={(e) => setFile(e.target.files[0])}></Form.Control>
+                        </Form.Group>
                         <Button className="custom-primary-btn" variant="primary" type="submit">
                             {isEdit ? <>Save Changes</> : <>Add</>}
                         </Button>
@@ -159,6 +173,7 @@ export default function PublisherManageProducts() {
                                     <td>
                                         <DropdownButton id="dropdown-item-button" title="Actions">
                                             <Dropdown.Item as="button"><Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link></Dropdown.Item>
+                                            <Dropdown.Item as="button"><Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download>Download</Link></Dropdown.Item>
                                             <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit</Dropdown.Item>
                                         </DropdownButton>
                                     </td>
