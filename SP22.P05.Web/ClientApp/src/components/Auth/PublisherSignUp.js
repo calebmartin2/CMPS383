@@ -80,6 +80,9 @@ export function PublisherSignUp() {
                 <Button variant="primary" type="submit" className="custom-primary-btn" disabled={isLoading}>
                     SIGN UP
                 </Button>
+                <Link to="/Login" style={{ color: "#84AEC8" }}><br />
+                    Already a Publisher?
+                </Link>
             </Form>
             <Alert style={{ maxWidth: "25em", margin: "1em auto" }} show={show} variant="danger">
                 <Alert.Heading>Passwords must match.</Alert.Heading>

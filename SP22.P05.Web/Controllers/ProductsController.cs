@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SP22.P05.Web.Data;
 using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
+using SP22.P05.Web.Features.Files;
 using SP22.P05.Web.Features.Products;
 using SP22.P05.Web.Features.Transactions;
 
@@ -66,10 +67,12 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = RoleNames.AdminOrPublisher)]
+    [Authorize(Roles = RoleNames.Publisher)]
 
-    public ActionResult<ProductDto> CreateProduct(ProductDto productDto)
+    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto, IFormFile file)
     {
+        
+
         var publisherId = User.GetCurrentUserId();
         var publisherName = User.GetCurrentUserName();
         if (publisherId == null)
@@ -81,15 +84,30 @@ public class ProductsController : ControllerBase
         {
             Name = productDto.Name,
             Description = productDto.Description,
+            Blurb = productDto.Blurb,
             Price = productDto.Price,
             PublisherId = (int)publisherId,
-            Status = Product.StatusType.Active
+            Status = Product.StatusType.Active,
+            FileName = file.FileName,
         };
 
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
-        productDto.PublisherName = publisherName; //TODO, get the company name rather than the username
+        try
+        {
+
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productDto.Id}", file.FileName);
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productDto.Id}"));
+            using (Stream stream = new FileStream(path, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productDto);
     }
@@ -108,6 +126,7 @@ public class ProductsController : ControllerBase
         current.Name = productDto.Name;
         current.Price = productDto.Price;
         current.Description = productDto.Description;
+        current.Blurb = productDto.Blurb;
         dataContext.SaveChanges();
 
         return Ok(productDto);
@@ -124,6 +143,28 @@ public class ProductsController : ControllerBase
             return NotFound();
         }
 
+        // delete directory associated with product, leaves blank folder but deletes all containing files
+        //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
+        try
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{id}");
+            DirectoryInfo di = new DirectoryInfo(path);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+        
+
         products.Remove(current);
         dataContext.SaveChanges();
 
@@ -136,7 +177,7 @@ public class ProductsController : ControllerBase
     public ActionResult ChangeStatus(int id, int status)
     {
         var product = dataContext.Set<Product>().FirstOrDefault(x => x.Id == id);
-        
+
         if (product == null)
         {
             return NotFound();
@@ -241,6 +282,38 @@ public class ProductsController : ControllerBase
 
     }
 
+    //https://sankhadip.medium.com/how-to-upload-files-in-net-core-web-api-and-react-36a8fbf5c9e8
+    [HttpPost("uploadfile")]
+    public ActionResult UploadFile(IFormFile file, int productId)
+    {
+        try
+        {
+
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}", file.FileName);
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}"));
+            using (Stream stream = new FileStream(path, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+            return Ok();
+        } catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("download/{productId}/{fileName}")]
+    public FileResult DownloadFile(int productId, string fileName)
+    {
+        //var fileName = dataContext.Set<Product>().First(x => x.Id == productId).FileName;
+        //Build the File Path.
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles\\{productId}\\", fileName);
+
+        //Read the File data into Byte Array.
+        byte[] bytes = System.IO.File.ReadAllBytes(path);
+
+        //Send the File to Download.
+        return File(bytes, "application/octet-stream", fileName);
+    }
 
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
@@ -257,12 +330,14 @@ public class ProductsController : ControllerBase
                 Id = x.Product.Id,
                 Name = x.Product.Name,
                 Description = x.Product.Description,
+                Blurb = x.Product.Blurb,
                 Price = x.Product.Price,
                 SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                 SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
                 PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                 Status = (int)x.Product.Status,
+                FileName = x.Product.FileName,
 
             });
     }

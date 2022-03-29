@@ -75,6 +75,7 @@ export function ProductDetail({ setAmountCart }) {
                     </Breadcrumb>
                     <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
                     <p>Publisher: {product.publisherName}</p>
+                    <p>{product.blurb}</p>
                     <p>{product.description}</p>
                     <p>${product.price.toFixed(2)}</p>
                     <AddToCartButton />
