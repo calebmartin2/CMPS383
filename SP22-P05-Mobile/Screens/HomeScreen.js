@@ -4,13 +4,10 @@ import { StyleSheet, View, ScrollView, TouchableOpacity, RefreshControl } from '
 import axios from "axios";
 import baseUrl from '../BaseUrl';
 import { Text, Card } from 'react-native-elements';
-// import authCookieContext from '../Authorization/AuthCookieProvider';
 
 export default function HomeScreen({ navigation }) {
     const [products, setProducts] = useState([]);
-    // const [userName, setUserName] = useState("");
     const [refreshing, setRefreshing] = React.useState(false);
-    // const { authCookie } = useContext(authCookieContext);
 
     const wait = timeout => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -32,21 +29,7 @@ export default function HomeScreen({ navigation }) {
                 console.log(error);
             });
     }
-    // async function getMeTest() {
-    //     axios({
-    //         method: 'get',
-    //         url: baseUrl + '/api/authentication/me',
-    //         headers: { Cookie: authCookie }
-    //     })
-    //         .then(function (response) {
-    //             setUserName(response.data.userName);
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error);
-    //         });
-    // }
     useEffect(() => {
-        // getMeTest()
         fetchProducts();
     }, [])
 
