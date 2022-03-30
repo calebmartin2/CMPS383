@@ -1,15 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useContext } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button} from "react-native";
+import React, { useState, useContext, useEffect } from "react";
+import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button } from "react-native";
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 import authCookieContext from '../Authorization/AuthCookieProvider';
 
 
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({ navigation }) {
   const [username, onChangeUsername] = useState(null);
   const [password, onChangePassword] = useState(null);
-  const {authCookie, saveAuthCookie } = useContext(authCookieContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
+  const { authCookie, saveAuthCookie } = useContext(authCookieContext);
+
+  async function getMeTest() {
+    axios({
+      method: 'get',
+      url: baseUrl + '/api/authentication/me',
+      headers: { Cookie: authCookie }
+    })
+      .then(function (response) {
+        setIsLoggedIn(true);
+        setUserName(response.data.userName);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   function handleLogin() {
     axios.post(baseUrl + '/api/authentication/login', {
@@ -25,10 +42,12 @@ export default function LoginScreen({navigation}) {
         //   console.log(cookie);
         //   saveAuthCookie(response.headers.get("set-cookie").split(";")[0]);
         // }
+        setIsLoggedIn(true);
         var cookie = response.headers["set-cookie"][0].split(";")[0];
-        async function temp(){
+        async function temp() {
+          setUserName(response.data.userName);
           await saveAuthCookie(cookie);
-          navigation.navigate('Root', { screen: 'Store'})
+          navigation.navigate('Root', { screen: 'Store' })
         }
         temp();
       })
@@ -37,7 +56,7 @@ export default function LoginScreen({navigation}) {
         Alert.alert("Invalid Username or Password.");
 
       });
-      
+
   };
 
   function handleLogout() {
@@ -45,20 +64,26 @@ export default function LoginScreen({navigation}) {
       method: 'post',
       url: baseUrl + '/api/authentication/logout',
       headers: { Cookie: authCookie }
-  })
+    })
       .then(function (response) {
         saveAuthCookie("AUTH-COOKIE")
+        setUserName("")
+        setIsLoggedIn(false)
         console.log(response)
       })
       .catch(function (error) {
-          console.log(error);
+        console.log(error);
       });
-      
+
   };
+
+  useEffect(() => {
+    getMeTest()
+  }, [])
 
   return (
     <>
-      <View style={styles.container}>
+      {!isLoggedIn ? <View style={styles.container}>
         <StatusBar style="auto" />
         <Text>Login</Text>
         <SafeAreaView>
@@ -81,12 +106,16 @@ export default function LoginScreen({navigation}) {
         </TouchableOpacity>
         <Button
           title="Sign Up"
-          onPress={()=> navigation.navigate('SignUp')}
+          onPress={() => navigation.navigate('SignUp')}
         />
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
-          <Text style={styles.loginText}>LOGOUT</Text>
-        </TouchableOpacity>
       </View>
+        :
+        <View>
+          <Text>{userName}</Text>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
+            <Text style={styles.loginText}>LOGOUT</Text>
+          </TouchableOpacity>
+        </View>}
     </>
   );
 }
