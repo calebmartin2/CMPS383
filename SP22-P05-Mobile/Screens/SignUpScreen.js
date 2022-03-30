@@ -29,12 +29,14 @@ export default function SignUpScreen({navigation}) {
     return(
         <>
         <View style={styles.container}>
-        <StatusBar style="auto" />
+        <StatusBar style="light" />
         <SafeAreaView>
           <TextInput
             style={styles.input}
             onChangeText={setUsername}
             value={userName}
+            autoCorrect={false}
+            autoCapitalize="none"
             placeholder="Username"
           />
           <TextInput
@@ -54,15 +56,41 @@ export default function SignUpScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  signUpButton: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10
+  },
   input: {
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    color: "black",
+    backgroundColor: "white"
   },
-  signUpButton: {
+  loginButton: {
     alignItems: "center",
     backgroundColor: "#DDDDDD",
     padding: 10
-  }
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'rgb(19,24,27)',
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: "700",
+    textAlign: 'right',
+    color: 'rgb(255,255,255)'
+  },
+  title: {
+    fontSize: 20,
+    paddingLeft: 20,
+    textAlign: 'left',
+    color: 'rgb(255,255,255)'
+  },
+  scrollView: {
+    backgroundColor: 'rgb(19,24,27)',
+  },
 });

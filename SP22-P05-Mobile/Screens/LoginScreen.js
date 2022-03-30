@@ -4,6 +4,7 @@ import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Aler
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 import authCookieContext from '../Authorization/AuthCookieProvider';
+import { withTheme } from 'react-native-elements';
 
 
 export default function LoginScreen({ navigation }) {
@@ -68,6 +69,8 @@ export default function LoginScreen({ navigation }) {
       .then(function (response) {
         saveAuthCookie("AUTH-COOKIE")
         setUserName("")
+        onChangeUsername("")
+        onChangePassword("")
         setIsLoggedIn(false)
         console.log(response)
       })
@@ -84,12 +87,14 @@ export default function LoginScreen({ navigation }) {
   return (
     <>
       {!isLoggedIn ? <View style={styles.container}>
-        <StatusBar style="auto" />
-        <Text>Login</Text>
+        <StatusBar style="light" />
+        <Text style={styles.title}>Login</Text>
         <SafeAreaView>
           <TextInput
             style={styles.input}
             onChangeText={onChangeUsername}
+            autoCorrect={false}
+            autoCapitalize="none"
             value={username}
             placeholder="Username"
           />
@@ -110,8 +115,8 @@ export default function LoginScreen({ navigation }) {
         />
       </View>
         :
-        <View>
-          <Text>{userName}</Text>
+        <View  style={styles.container}>
+          <Text style={styles.username}>Hello, {userName}!</Text>
           <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
             <Text style={styles.loginText}>LOGOUT</Text>
           </TouchableOpacity>
@@ -126,10 +131,39 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    color: "black",
+    backgroundColor: "white"
   },
   loginButton: {
     alignItems: "center",
     backgroundColor: "#DDDDDD",
     padding: 10
-  }
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'rgb(19,24,27)',
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: "700",
+    textAlign: 'right',
+    color: 'rgb(255,255,255)'
+  },
+  title: {
+    fontSize: 20,
+    paddingLeft: 20,
+    textAlign: 'left',
+    color: 'rgb(255,255,255)'
+  },
+  username: {
+    fontSize: 20,
+    paddingLeft: 20,
+    fontWeight: "bold",
+    margin: 15,
+    textAlign: 'left',
+    color: 'rgb(255,255,255)'
+  },
+  scrollView: {
+    backgroundColor: 'rgb(19,24,27)',
+  },
 });
