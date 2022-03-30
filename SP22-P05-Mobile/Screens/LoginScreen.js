@@ -28,7 +28,7 @@ export default function LoginScreen({navigation}) {
         var cookie = response.headers["set-cookie"][0].split(";")[0];
         async function temp(){
           await saveAuthCookie(cookie);
-          navigation.navigate('ICE - Store')
+          navigation.navigate('Root', { screen: 'Store'})
         }
         temp();
       })
@@ -47,6 +47,7 @@ export default function LoginScreen({navigation}) {
       headers: { Cookie: authCookie }
   })
       .then(function (response) {
+        saveAuthCookie("AUTH-COOKIE")
         console.log(response)
       })
       .catch(function (error) {
@@ -59,6 +60,7 @@ export default function LoginScreen({navigation}) {
     <>
       <View style={styles.container}>
         <StatusBar style="auto" />
+        <Text>Login</Text>
         <SafeAreaView>
           <TextInput
             style={styles.input}
@@ -77,17 +79,13 @@ export default function LoginScreen({navigation}) {
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
+        <Button
+          title="Sign Up"
+          onPress={()=> navigation.navigate('SignUp')}
+        />
         <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
           <Text style={styles.loginText}>LOGOUT</Text>
         </TouchableOpacity>
-        <Button
-          title="Sign Up Here"
-          onPress={()=> navigation.navigate('SignUp')}
-        />
-        <Button
-          title="Store"
-          onPress={()=> navigation.navigate('ICE - Store')}
-        />
       </View>
     </>
   );
