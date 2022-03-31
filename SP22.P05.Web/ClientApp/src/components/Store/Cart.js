@@ -7,6 +7,7 @@ import { checkForRole, handleCartView } from "../Auth/checkForRole";
 export default function Cart({ setAmountCart }) {
     const cart = localStorage.getItem('cart');
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
     let navigate = useNavigate();
 
     document.title = "ICE - Cart"
@@ -19,9 +20,11 @@ export default function Cart({ setAmountCart }) {
         })
             .then(function (response) {
                 setProducts(response.data);
+                setLoading(false);
             })
             .catch(function (error) {
                 console.log(error);
+                setLoading(false);
             });
 
     }, [cart]); //might need to change dependency array
@@ -85,7 +88,7 @@ export default function Cart({ setAmountCart }) {
             {/* Bad idea to hardcode, fix later */}
             {handleCartView()}
             <h1>CART</h1>
-            {products.length !== 0 ?
+            { loading ? "Loading..." : products.length !== 0 ?
                 <div>
                     {products.map((product) => (
                         <div key={product.id}>

@@ -7,6 +7,7 @@ export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [addEditLoading, setAddEditLoading] = useState(false);
     const [addProductError, setAddProductError] = useState(false);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -53,6 +54,7 @@ export default function PublisherManageProducts() {
     }, [])
 
     const handleAdd = (e) => {
+        setAddEditLoading(true);
         e.preventDefault();
         var bodyFormData = new FormData();
         bodyFormData.append('name', name);
@@ -70,15 +72,18 @@ export default function PublisherManageProducts() {
             .then(function (response) {
                 fetchProducts();
                 handleClose();
+                setAddEditLoading(false);
             })
             .catch(function (response) {
                 setAddProductError(true);
                 console.log(response);
+                setAddEditLoading(false);
             });
     }
 
 
     const handleEdit = (e) => {
+        setAddEditLoading(true);
         e.preventDefault();
         console.log(productId);
         axios.put('/api/products/' + productId, {
@@ -90,10 +95,12 @@ export default function PublisherManageProducts() {
             .then(function (response) {
                 fetchProducts();
                 handleClose();
+                setAddEditLoading(false);
             })
             .catch(function (error) {
                 setAddProductError(true);
                 console.log(error);
+                setAddEditLoading(false);
             })
 
     }
@@ -109,6 +116,7 @@ export default function PublisherManageProducts() {
     }
 
     const handleUpdateFile = (e) => {
+        setAddEditLoading(true);
         e.preventDefault();
         var bodyFormData = new FormData();
         bodyFormData.append('productId', productId)
@@ -124,10 +132,12 @@ export default function PublisherManageProducts() {
                 console.log(response);
                 fetchProducts();
                 handleClose();
+                setAddEditLoading(false);
             })
             .catch(function (response) {
                 setAddProductError(true);
                 console.log(response);
+                setAddEditLoading(false);
             });
 
     }
@@ -228,7 +238,7 @@ export default function PublisherManageProducts() {
                 <Form.Label>File</Form.Label>
                 <Form.Control type="file" ref={fileRef}></Form.Control>
             </Form.Group>}
-            <Button className="custom-primary-btn" variant="primary" type="submit">
+            <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
                 {isEdit ? <>Save Changes</> : <>Add</>}
             </Button>
             <Button variant="danger" onClick={handleClose}>
@@ -246,7 +256,7 @@ export default function PublisherManageProducts() {
                         <Form.Control required type="file" ref={fileRef}></Form.Control>
                     </Form.Group>
                 </InputGroup>
-                <Button className="custom-primary-btn" variant="primary" type="submit">
+                <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
                     Update File
                 </Button>
                 <Button variant="danger" onClick={handleClose}>
