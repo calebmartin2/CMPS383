@@ -124,7 +124,7 @@ export default function PublisherManageProducts() {
         console.log("PROD: " + productId);
         axios({
             method: "post",
-            url: "/api/products/uploadfile",
+            url: "/api/products/updatefile",
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
         })

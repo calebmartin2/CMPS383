@@ -17,5 +17,7 @@ public class CreateProductDto
 
     [Range(0.01, double.MaxValue)]
     public decimal Price { get; set; }
+    public IFormFile? file { get; set; }
+    public IFormFile? icon { get; set; }
 
 }
