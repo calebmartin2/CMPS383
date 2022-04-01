@@ -185,8 +185,8 @@ export function AdminManageProducts() {
                             </InputGroup>
                         </Form.Group>
                         <Form.Group className="mb-4">
-                            <Form.Label>Icon (must be 1:1)</Form.Label>
-                            <Form.Control type="file" ref={iconRef}></Form.Control>
+                            <Form.Label>Icon (must be 1:1, max size 100KiB)</Form.Label>
+                            <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={iconRef}></Form.Control>
                         </Form.Group>
                         <Button className="custom-primary-btn" variant="primary" type="submit">
                             Save Changes
