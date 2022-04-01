@@ -250,7 +250,7 @@ export default function PublisherManageProducts() {
                 <Form.Control type="file" ref={fileRef}></Form.Control>
             </Form.Group>}
             <Form.Group className="mb-4">
-                <Form.Label>Icon (must be 1:1)</Form.Label>
+                <Form.Label>Icon (must be 1:1, max size 100KiB)</Form.Label>
                 <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={iconRef}></Form.Control>
             </Form.Group>
             <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
