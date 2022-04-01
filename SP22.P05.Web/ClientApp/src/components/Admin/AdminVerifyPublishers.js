@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Table, Button } from "react-bootstrap";
+import { Breadcrumb, Dropdown, DropdownButton, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 
@@ -81,15 +81,17 @@ export function AdminVerifyPublishers() {
                                 <td>{pendingPublisher.companyName}</td>
                                 <td><a style={{ color: "#FFFFFF" }} href={"mailto:" + pendingPublisher.email}>{pendingPublisher.email}</a></td>
                                 <td>
-                                    <Button variant="primary" className="custom-primary-btn" onClick={() => { if (window.confirm('Verify ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + ' to be a publisher?')) VerifyPublisher(pendingPublisher.id) }}>Approve</Button>
-                                    <Button variant="danger" style={{ marginLeft: "1em" }} onClick={() => { if (window.confirm('Deny ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + 'to not be a publsher?')) deletePendingPublisher(pendingPublisher.id) }}>Deny</Button>
+                                    <DropdownButton id="dropdown-item-button" title="Actions">
+                                        <Dropdown.Item as="button" onClick={() => { if (window.confirm('Verify ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + ' to be a publisher?')) VerifyPublisher(pendingPublisher.id) }}>Approve </Dropdown.Item>
+                                        <Dropdown.Item as="button" onClick={() => { if (window.confirm('Deny ' + pendingPublisher.userName + ' of company ' + pendingPublisher.companyName + 'to not be a publsher?')) deletePendingPublisher(pendingPublisher.id) }}>Deny</Dropdown.Item>
+                                    </DropdownButton>
                                 </td>
                             </tr>
                         ))
                         }
                     </tbody>
                 </Table>
-                : <h3 style={{color: "#cccccc"}}>No incoming publishers</h3>}
+                : <h3 style={{ color: "#cccccc" }}>No incoming publishers</h3>}
 
         </>
 
