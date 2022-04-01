@@ -86,7 +86,7 @@ public class ProductsController : ControllerBase
                 return BadRequest("Image not 1:1 aspect ratio");
             }
         }
-
+        var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
         var product = new Product
         {
             Name = productDto.Name,
@@ -96,7 +96,7 @@ public class ProductsController : ControllerBase
             PublisherId = (int)publisherId,
             Status = Product.StatusType.Active,
             FileName = productDto.file.FileName,
-            IconName = productDto.icon.FileName
+            IconName = newIconGuid
         };
 
         dataContext.Add(product);
@@ -107,7 +107,7 @@ public class ProductsController : ControllerBase
 
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}"));
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.file.FileName);
-            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.icon.FileName);
+            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", newIconGuid);
             using (Stream stream = new FileStream(filePath, FileMode.Create))
             {
                 productDto.file.CopyTo(stream);
@@ -137,6 +137,7 @@ public class ProductsController : ControllerBase
         }
         if (icon != null)
         {
+            var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(icon.FileName);
 
             // Delete existing file
             if (current.IconName != null)
@@ -151,12 +152,12 @@ public class ProductsController : ControllerBase
 
             // Add new icon file
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
-            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", icon.FileName);
+            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", newIconGuid);
             using (Stream stream = new FileStream(iconPath, FileMode.Create))
             {
                 icon.CopyTo(stream);
             }
-            current.IconName = icon.FileName;
+            current.IconName = newIconGuid;
         }
         current.Name = productDto.Name;
         current.Price = productDto.Price;
