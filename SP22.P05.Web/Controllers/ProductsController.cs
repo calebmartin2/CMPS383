@@ -150,6 +150,7 @@ public class ProductsController : ControllerBase
             }
 
             // Add new icon file
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
             string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", icon.FileName);
             using (Stream stream = new FileStream(iconPath, FileMode.Create))
             {
