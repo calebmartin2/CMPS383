@@ -127,7 +127,7 @@ public class ProductsController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = RoleNames.AdminOrPublisher)]
-    public ActionResult<ProductDto> UpdateProduct(int id, ProductDto productDto)
+    public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] ProductDto productDto, IFormFile? icon)
     {
         var products = dataContext.Set<Product>();
         var current = products.FirstOrDefault(x => x.Id == id);
@@ -135,7 +135,24 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
+        if (icon != null)
+        {
+            // Delete existing file
+            string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//{productDto.FileName}");
+            FileInfo delFile = new FileInfo(delPath);
+            if (delFile.Exists)
+            {
+                delFile.Delete();
+            }
 
+            // Add new icon file
+            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", icon.FileName);
+            using (Stream stream = new FileStream(iconPath, FileMode.Create))
+            {
+                icon.CopyTo(stream);
+            }
+            current.IconName = icon.FileName;
+        }
         current.Name = productDto.Name;
         current.Price = productDto.Price;
         current.Description = productDto.Description;
@@ -338,28 +355,18 @@ public class ProductsController : ControllerBase
     [HttpGet("download/{productId}/{fileName}")]
     public FileResult DownloadFile(int productId, string fileName)
     {
-        //var fileName = dataContext.Set<Product>().First(x => x.Id == productId).FileName;
-        //Build the File Path.
+        // UNSAFE CODE: user can pass something like ../../ and access files they should not have access to.
         string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", fileName);
-
-        //Read the File data into Byte Array.
         byte[] bytes = System.IO.File.ReadAllBytes(path);
-
-        //Send the File to Download.
         return File(bytes, "application/octet-stream", fileName);
     }
-    // not sure if there's a better way for returning images
-    [HttpGet("icon/{productId}/{iconName}")]
-    public FileResult DownloadIcon(int productId, string iconName)
+
+    [HttpGet("icon/{productId}/")]
+    public FileResult DownloadIcon(int productId)
     {
-        //var fileName = dataContext.Set<Product>().First(x => x.Id == productId).FileName;
-        //Build the File Path.
+        var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
         string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
-
-        //Read the File data into Byte Array.
         byte[] bytes = System.IO.File.ReadAllBytes(path);
-
-        //Send the File to Download.
         return File(bytes, "image/*", iconName);
     }
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
