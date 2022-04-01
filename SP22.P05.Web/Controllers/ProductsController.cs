@@ -348,7 +348,20 @@ public class ProductsController : ControllerBase
         //Send the File to Download.
         return File(bytes, "application/octet-stream", fileName);
     }
+    // not sure if there's a better way for returning images
+    [HttpGet("icon/{productId}/{iconName}")]
+    public FileResult DownloadIcon(int productId, string iconName)
+    {
+        //var fileName = dataContext.Set<Product>().First(x => x.Id == productId).FileName;
+        //Build the File Path.
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
 
+        //Read the File data into Byte Array.
+        byte[] bytes = System.IO.File.ReadAllBytes(path);
+
+        //Send the File to Download.
+        return File(bytes, "image/*", iconName);
+    }
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
 
@@ -372,6 +385,7 @@ public class ProductsController : ControllerBase
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                 Status = (int)x.Product.Status,
                 FileName = x.Product.FileName,
+                IconName = x.Product.IconName
                 
 
             });
