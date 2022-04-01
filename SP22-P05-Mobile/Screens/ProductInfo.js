@@ -9,6 +9,7 @@ export default function ProductInfo({ route }) {
             <View style={styles.container}>
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.publisherName}>Publisher: {product.publisherName}</Text>
+                <Text style={styles.blurb}>{product.blurb}</Text>
                 <Text style={styles.description}>{product.description}</Text>
                 {/* <View style={styles.tagList}>
                     <Text style={styles.tags}>Tags: </Text>
@@ -27,7 +28,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgb(19,24,27)',
     },
-
+    blurb: {
+        color: 'rgb(200,200,200)',
+        fontSize: 20,
+        paddingLeft: 10,
+        paddingTop: 10,
+        paddingBottom: 15,
+    },
     name: {
         fontSize: 50,
         fontWeight: "700",
