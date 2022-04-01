@@ -18,6 +18,8 @@ export default function PublisherManageProducts() {
     const [productId, setProductId] = useState("");
     // const [file, setFile] = useState("");
     const fileRef = useRef(null);
+    const iconRef = useRef(null);
+
 
 
     const handleClose = () => {
@@ -62,6 +64,8 @@ export default function PublisherManageProducts() {
         bodyFormData.append('blurb', blurb);
         bodyFormData.append('price', price)
         bodyFormData.append('file', fileRef.current.files[0])
+        bodyFormData.append('icon', iconRef.current.files[0])
+
 
         axios({
             method: "post",
@@ -91,7 +95,7 @@ export default function PublisherManageProducts() {
         bodyFormData.append('description', description);
         bodyFormData.append('blurb', blurb);
         bodyFormData.append('price', price);
-        // append file info here
+        bodyFormData.append('icon', iconRef.current.files[0])
 
         axios({
             method: "put",
@@ -245,6 +249,10 @@ export default function PublisherManageProducts() {
                 <Form.Label>File</Form.Label>
                 <Form.Control type="file" ref={fileRef}></Form.Control>
             </Form.Group>}
+            <Form.Group className="mb-4">
+                <Form.Label>Icon (must be 1:1)</Form.Label>
+                <Form.Control type="file" ref={iconRef}></Form.Control>
+            </Form.Group>
             <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
                 {isEdit ? <>Save Changes</> : <>Add</>}
             </Button>
