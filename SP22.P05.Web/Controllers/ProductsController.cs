@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ImageMagick;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SP22.P05.Web.Data;
 using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
-using SP22.P05.Web.Features.Files;
 using SP22.P05.Web.Features.Products;
 using SP22.P05.Web.Features.Transactions;
 
@@ -69,15 +69,22 @@ public class ProductsController : ControllerBase
     [HttpPost]
     [Authorize(Roles = RoleNames.Publisher)]
 
-    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto, IFormFile file)
+    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto)
     {
-        
+
 
         var publisherId = User.GetCurrentUserId();
         var publisherName = User.GetCurrentUserName();
-        if (publisherId == null)
+        if (publisherId == null || productDto.file == null || productDto.icon == null)
         {
             return BadRequest();
+        }
+        using (var image = new MagickImage(productDto.icon.OpenReadStream()))
+        {
+            if (image.Width != image.Height)
+            {
+                return BadRequest("Image not 1:1 aspect ratio");
+            }
         }
 
         var product = new Product
@@ -88,7 +95,8 @@ public class ProductsController : ControllerBase
             Price = productDto.Price,
             PublisherId = (int)publisherId,
             Status = Product.StatusType.Active,
-            FileName = file.FileName,
+            FileName = productDto.file.FileName,
+            IconName = productDto.icon.FileName
         };
 
         dataContext.Add(product);
@@ -97,11 +105,16 @@ public class ProductsController : ControllerBase
         try
         {
 
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", file.FileName);
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}"));
-            using (Stream stream = new FileStream(path, FileMode.Create))
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.file.FileName);
+            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.icon.FileName);
+            using (Stream stream = new FileStream(filePath, FileMode.Create))
             {
-                file.CopyTo(stream);
+                productDto.file.CopyTo(stream);
+            }
+            using (Stream stream = new FileStream(iconPath, FileMode.Create))
+            {
+                productDto.icon.CopyTo(stream);
             }
         }
         catch (Exception ex)
@@ -114,7 +127,7 @@ public class ProductsController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = RoleNames.AdminOrPublisher)]
-    public ActionResult<ProductDto> UpdateProduct(int id, ProductDto productDto)
+    public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] ProductDto productDto, IFormFile? icon)
     {
         var products = dataContext.Set<Product>();
         var current = products.FirstOrDefault(x => x.Id == id);
@@ -122,7 +135,29 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
+        if (icon != null)
+        {
 
+            // Delete existing file
+            if (current.IconName != null)
+            {
+                string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}" , current.IconName);
+                FileInfo delFile = new FileInfo(delPath);
+                if (delFile.Exists)
+                {
+                    delFile.Delete();
+                }
+            }
+
+            // Add new icon file
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
+            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", icon.FileName);
+            using (Stream stream = new FileStream(iconPath, FileMode.Create))
+            {
+                icon.CopyTo(stream);
+            }
+            current.IconName = icon.FileName;
+        }
         current.Name = productDto.Name;
         current.Price = productDto.Price;
         current.Description = productDto.Description;
@@ -163,7 +198,7 @@ public class ProductsController : ControllerBase
         {
 
         }
-        
+
 
         products.Remove(current);
         dataContext.SaveChanges();
@@ -282,8 +317,7 @@ public class ProductsController : ControllerBase
 
     }
 
-    //https://sankhadip.medium.com/how-to-upload-files-in-net-core-web-api-and-react-36a8fbf5c9e8
-    [HttpPost("uploadfile")]
+    [HttpPost("updatefile")]
     public ActionResult UploadFile(IFormFile file, [FromForm] int productId)
     {
         var product = dataContext.Set<Product>().First(x => x.Id == productId);
@@ -291,29 +325,18 @@ public class ProductsController : ControllerBase
         {
             return BadRequest();
         }
-        
-        // delete directory associated with product, leaves blank folder but deletes all containing files
+
+        // delete product file
         //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
-        try
+        string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//{product.FileName}");
+        FileInfo delFile = new FileInfo(delPath);
+        if (delFile.Exists)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}");
-            DirectoryInfo di = new DirectoryInfo(path);
-
-            foreach (FileInfo delFile in di.GetFiles())
-            {
-                delFile.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete(true);
-            }
-        }
-        catch (Exception)
-        {
-
+            delFile.Delete();
         }
 
-
+        // attempt to add the new file
+        //https://sankhadip.medium.com/how-to-upload-files-in-net-core-web-api-and-react-36a8fbf5c9e8
         try
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}", file.FileName);
@@ -325,7 +348,8 @@ public class ProductsController : ControllerBase
             product.FileName = file.FileName;
             dataContext.SaveChanges();
             return Ok();
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -336,17 +360,20 @@ public class ProductsController : ControllerBase
     [HttpGet("download/{productId}/{fileName}")]
     public FileResult DownloadFile(int productId, string fileName)
     {
-        //var fileName = dataContext.Set<Product>().First(x => x.Id == productId).FileName;
-        //Build the File Path.
+        // UNSAFE CODE: user can pass something like ../../ and access files they should not have access to.
         string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", fileName);
-
-        //Read the File data into Byte Array.
         byte[] bytes = System.IO.File.ReadAllBytes(path);
-
-        //Send the File to Download.
         return File(bytes, "application/octet-stream", fileName);
     }
 
+    [HttpGet("icon/{productId}/")]
+    public FileResult DownloadIcon(int productId)
+    {
+        var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
+        byte[] bytes = System.IO.File.ReadAllBytes(path);
+        return File(bytes, "image/*", iconName);
+    }
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
 
@@ -370,6 +397,8 @@ public class ProductsController : ControllerBase
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                 Status = (int)x.Product.Status,
                 FileName = x.Product.FileName,
+                IconName = x.Product.IconName
+                
 
             });
     }

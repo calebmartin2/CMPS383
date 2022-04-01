@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Breadcrumb, Button, Dropdown, DropdownButton, Form, InputGroup, Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
@@ -12,6 +12,8 @@ export function AdminManageProducts() {
     const [blurb, setBlurb] = useState("");
     const [price, setPrice] = useState("");
     const [productId, setProductId] = useState("");
+    const iconRef = useRef(null);
+
 
     const handleClose = () => {
         setName("");
@@ -57,14 +59,22 @@ export function AdminManageProducts() {
             });
     }
 
+
     const handleEdit = (e) => {
         e.preventDefault();
         console.log(productId);
-        axios.put('/api/products/' + productId, {
-            name: name,
-            description: description,
-            blurb: blurb,
-            price: price
+        var bodyFormData = new FormData();
+        bodyFormData.append('name', name);
+        bodyFormData.append('description', description);
+        bodyFormData.append('blurb', blurb);
+        bodyFormData.append('price', price);
+        bodyFormData.append('icon', iconRef.current.files[0])
+
+        axios({
+            method: "put",
+            url: "/api/products/" + productId,
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
         })
             .then(function (response) {
                 fetchProducts();
@@ -141,7 +151,7 @@ export function AdminManageProducts() {
                                     <Dropdown.Item as="button">
                                         <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link>
                                     </Dropdown.Item>
-                                    <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit</Dropdown.Item>
+                                    <Dropdown.Item as="button" onClick={() => handleEditShow(product)}>Edit Info</Dropdown.Item>
                                     <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProudct(product.id) }}>Delete</Dropdown.Item>
                                 </DropdownButton>
                             </td>
@@ -173,6 +183,10 @@ export function AdminManageProducts() {
                                 <InputGroup.Text>$</InputGroup.Text>
                                 <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
                             </InputGroup>
+                        </Form.Group>
+                        <Form.Group className="mb-4">
+                            <Form.Label>Icon (must be 1:1)</Form.Label>
+                            <Form.Control type="file" ref={iconRef}></Form.Control>
                         </Form.Group>
                         <Button className="custom-primary-btn" variant="primary" type="submit">
                             Save Changes
