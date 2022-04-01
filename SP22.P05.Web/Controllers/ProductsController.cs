@@ -86,6 +86,10 @@ public class ProductsController : ControllerBase
                 return BadRequest("Image not 1:1 aspect ratio");
             }
         }
+        if (productDto.icon.Length > 102400)
+        {
+            return BadRequest("Icon file is too large. Max file size is 100KiB");
+        }
         var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
         var product = new Product
         {
@@ -137,6 +141,10 @@ public class ProductsController : ControllerBase
         }
         if (icon != null)
         {
+            if (icon.Length > 102400)
+            {
+                return BadRequest("Icon file is too large. Max file size is 100KiB");
+            }
             var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(icon.FileName);
 
             // Delete existing file
