@@ -86,11 +86,18 @@ export default function PublisherManageProducts() {
         setAddEditLoading(true);
         e.preventDefault();
         console.log(productId);
-        axios.put('/api/products/' + productId, {
-            name: name,
-            description: description,
-            blurb: blurb,
-            price: price
+        var bodyFormData = new FormData();
+        bodyFormData.append('name', name);
+        bodyFormData.append('description', description);
+        bodyFormData.append('blurb', blurb);
+        bodyFormData.append('price', price);
+        // append file info here
+
+        axios({
+            method: "put",
+            url: "/api/products/" + productId,
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
         })
             .then(function (response) {
                 fetchProducts();

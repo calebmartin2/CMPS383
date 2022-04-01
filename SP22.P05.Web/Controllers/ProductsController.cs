@@ -137,16 +137,20 @@ public class ProductsController : ControllerBase
         }
         if (icon != null)
         {
+
             // Delete existing file
-            string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//{productDto.FileName}");
-            FileInfo delFile = new FileInfo(delPath);
-            if (delFile.Exists)
+            if (current.IconName != null)
             {
-                delFile.Delete();
+                string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}" , current.IconName);
+                FileInfo delFile = new FileInfo(delPath);
+                if (delFile.Exists)
+                {
+                    delFile.Delete();
+                }
             }
 
             // Add new icon file
-            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", icon.FileName);
+            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", icon.FileName);
             using (Stream stream = new FileStream(iconPath, FileMode.Create))
             {
                 icon.CopyTo(stream);
