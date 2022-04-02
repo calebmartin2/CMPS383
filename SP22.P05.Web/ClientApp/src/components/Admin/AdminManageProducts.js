@@ -149,7 +149,7 @@ export function AdminManageProducts() {
                             <td>
                                 <DropdownButton id="dropdown-item-button" title="Actions">
                                     <Dropdown.Item as="button">
-                                        <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link>
+                                        <Link to={`/product/${product.id}/${product.name.replace(/ /g, "_")}`} style={{ textDecoration: 'none' }}>Go to Store Page</Link>
                                     </Dropdown.Item>
                                     <Dropdown.Item as="button" onClick={() => handleEditShow(product)}>Edit Info</Dropdown.Item>
                                     <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProudct(product.id) }}>Delete</Dropdown.Item>
@@ -191,7 +191,7 @@ export function AdminManageProducts() {
                         <Button className="custom-primary-btn" variant="primary" type="submit">
                             Save Changes
                         </Button>
-                        <Button variant="danger" onClick={handleClose}>
+                        <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
                             Discard
                         </Button>
                     </Form>

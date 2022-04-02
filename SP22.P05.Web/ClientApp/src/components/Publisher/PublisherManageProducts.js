@@ -207,7 +207,7 @@ export default function PublisherManageProducts() {
                                     <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
                                     <td>
                                         <DropdownButton id="dropdown-item-button" title="Actions">
-                                            <Dropdown.Item as="button"><Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link></Dropdown.Item>
+                                            <Dropdown.Item as="button"><Link to={`/product/${product.id}/${product.name.replace(/ /g, "_")}`} style={{ textDecoration: 'none' }}>Go to Store Page</Link></Dropdown.Item>
                                             <Dropdown.Item as="button"><Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download>Download</Link></Dropdown.Item>
                                             <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit Info</Dropdown.Item>
                                             <Dropdown.Item as="button" onClick={() => handleUpdateFileShow(product)} >Update File</Dropdown.Item>
@@ -256,7 +256,7 @@ export default function PublisherManageProducts() {
             <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
                 {isEdit ? <>Save Changes</> : <>Add</>}
             </Button>
-            <Button variant="danger" onClick={handleClose}>
+            <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
                 Discard
             </Button>
             {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
@@ -274,7 +274,7 @@ export default function PublisherManageProducts() {
                 <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
                     Update File
                 </Button>
-                <Button variant="danger" onClick={handleClose}>
+                <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
                     Discard
                 </Button>
                 {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
