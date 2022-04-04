@@ -27,5 +27,6 @@ public class ProductDto
     public bool? IsInLibrary { get; set; }
     public string? FileName { get; set; } = string.Empty;
     public string? IconName { get; set; } = string.Empty;
+    public string[] Pictures { get; set; } = Array.Empty<string>();
 
 }

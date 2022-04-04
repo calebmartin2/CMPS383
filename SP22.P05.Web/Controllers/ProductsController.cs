@@ -6,6 +6,7 @@ using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
 using SP22.P05.Web.Features.Transactions;
+using System.Linq;
 
 namespace SP22.P05.Web.Controllers;
 
@@ -66,16 +67,37 @@ public class ProductsController : ControllerBase
         return GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
     }
 
-    [HttpPost]
-    [Authorize(Roles = RoleNames.Publisher)]
-
-    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto)
+    [HttpPost("uploadPic/{id}")]
+    //https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
+    public async Task<ActionResult> UploadPicturesAsync(List<IFormFile> pictures, int id)
     {
 
+        foreach (var formFile in pictures)
+        {
+            if (formFile.Length > 0)
+            {
+                string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
+                Directory.CreateDirectory(myPath);
 
+                var filePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+            }
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Authorize(Roles = RoleNames.Publisher)]
+    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto)
+    {
         var publisherId = User.GetCurrentUserId();
         var publisherName = User.GetCurrentUserName();
-        if (publisherId == null || productDto.file == null || productDto.icon == null)
+        if (publisherId == null || productDto.file == null || productDto.icon == null || productDto.Pictures == null)
         {
             return BadRequest();
         }
@@ -90,6 +112,7 @@ public class ProductsController : ControllerBase
         {
             return BadRequest("Icon file is too large. Max file size is 100KiB");
         }
+
         var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
         var product = new Product
         {
@@ -100,7 +123,7 @@ public class ProductsController : ControllerBase
             PublisherId = (int)publisherId,
             Status = Product.StatusType.Active,
             FileName = productDto.file.FileName,
-            IconName = newIconGuid
+            IconName = newIconGuid,
         };
 
         dataContext.Add(product);
@@ -108,6 +131,22 @@ public class ProductsController : ControllerBase
         productDto.Id = product.Id;
         try
         {
+            
+            foreach (var formFile in productDto.Pictures)
+            {
+                if (formFile.Length > 0)
+                {
+                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
+                    Directory.CreateDirectory(myPath);
+
+                    var pictureFilePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+
+                    using (var stream = System.IO.File.Create(pictureFilePath))
+                    {
+                        formFile.CopyTo(stream);
+                    }
+                }
+            }
 
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}"));
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.file.FileName);
@@ -406,8 +445,7 @@ public class ProductsController : ControllerBase
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                 Status = (int)x.Product.Status,
                 FileName = x.Product.FileName,
-                IconName = x.Product.IconName
-                
+                IconName = x.Product.IconName,
 
             });
     }
