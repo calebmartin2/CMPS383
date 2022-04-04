@@ -12,6 +12,7 @@ export function SignUp() {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [show, setShow] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const [success] = useState(true);
 
     useEffect(() => {
         document.title = "ICE - Sign Up"
@@ -34,7 +35,7 @@ export function SignUp() {
             .then(function (response) {
                 console.log(response.data);
                 setLoading(false);
-                navigate("/Login", { replace: true });
+                navigate("/Login", {state: {success: success } });
             })
             .catch(function (error) {
                 console.log(error);

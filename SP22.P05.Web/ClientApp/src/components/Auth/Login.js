@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
-import { Form, Button, Alert } from "react-bootstrap";
-import { Link, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Alert, Button, Form } from "react-bootstrap";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 export function Login({ setAmountCart }) {
 
@@ -10,7 +10,8 @@ export function Login({ setAmountCart }) {
     const [isLoginFail, setisLoginFail] = useState(false);
     const [loginSuccess, setLoginSuccess] = useState(false);
     const [isLoading, setLoading] = useState(false);
-
+    const { state } = useLocation();
+    const { success } = state || {};
 
     useEffect(() => {
         document.title = "ICE - Login"
@@ -65,6 +66,7 @@ export function Login({ setAmountCart }) {
     return (
         <>
             <Form style={{ maxWidth: "20em", margin: "0em auto" }} onSubmit={handleLogin}>
+                {success && <h2 style={{ backgroundColor:  "green", padding: "0.2em" }}>Account created!</h2>}
                 <h1>LOGIN</h1>
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
