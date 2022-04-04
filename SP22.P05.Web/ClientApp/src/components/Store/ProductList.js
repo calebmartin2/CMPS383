@@ -31,7 +31,7 @@ export function ProductList() {
             {loading
             ? <h2>Loading...</h2>
                 : <div className="ProductList mx-auto text-break">
-                    <Row xs={2} md={3} className="g-4" >
+                    <Row xs={1} md={2} lg={3} className="g-4" >
                         {products.map((product) => (
                             <ProductCard key={product.id} myProduct={product} />
                         ))

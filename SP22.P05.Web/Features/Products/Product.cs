@@ -25,6 +25,7 @@ public class Product
     public virtual PublisherInfo? Publisher { get; set; }
     public int PublisherId { get; set; }
     public string FileName { get; set; } = string.Empty;
+    public string IconName { get; set; } = string.Empty;
 
 }
 

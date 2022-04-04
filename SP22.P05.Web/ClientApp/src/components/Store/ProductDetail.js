@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button } from "react-bootstrap";
+import { Breadcrumb, Button, Row, Col } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "../NotFoundPage";
 import { useNavigate } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
+import { ProductCarousel } from "./Carousel";
 export function ProductDetail({ setAmountCart }) {
     let navigate = useNavigate();
 
@@ -74,11 +75,19 @@ export function ProductDetail({ setAmountCart }) {
                         <Breadcrumb.Item active>{product.name}</Breadcrumb.Item>
                     </Breadcrumb>
                     <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
-                    <p>Publisher: {product.publisherName}</p>
-                    <p>{product.blurb}</p>
-                    <p>{product.description}</p>
-                    <p>${product.price.toFixed(2)}</p>
+                    <Row>
+                        <Col lg={8} xs={12}>
+                            < ProductCarousel />
+                        </Col>
+                        <Col>
+                            <p>Publisher: {product.publisherName}</p>
+                            <p>{product.blurb}</p>
+                            <p>{product.description}</p>
+                            <p>${product.price.toFixed(2)}</p>
                     <AddToCartButton />
+                        </Col>
+                    </Row>
+
                 </>
 
                 : <NotFoundPage />}

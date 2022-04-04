@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { handleCartView } from "../Auth/checkForRole";
 
 
@@ -29,7 +29,9 @@ export default function Receipt() {
             <h4>Items bought:</h4>
             {products.map((product) => (
                 <div key={product.id}>
-                    <p>{product.name} ${product.price.toFixed(2)}</p>
+                    <p>{product.name} ${product.price.toFixed(2)} 
+                    <Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download style={{backgroundColor: "green", color: "#ddd", padding: "0.2em",marginLeft: "0.5em", textDecoration: "none"}}>Download</Link>
+                    </p>
                 </div>
             ))}
             <Button onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button><br /><br />

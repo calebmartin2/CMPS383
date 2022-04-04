@@ -7,6 +7,7 @@ export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [addEditLoading, setAddEditLoading] = useState(false);
     const [addProductError, setAddProductError] = useState(false);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -17,6 +18,8 @@ export default function PublisherManageProducts() {
     const [productId, setProductId] = useState("");
     // const [file, setFile] = useState("");
     const fileRef = useRef(null);
+    const iconRef = useRef(null);
+
 
 
     const handleClose = () => {
@@ -53,6 +56,7 @@ export default function PublisherManageProducts() {
     }, [])
 
     const handleAdd = (e) => {
+        setAddEditLoading(true);
         e.preventDefault();
         var bodyFormData = new FormData();
         bodyFormData.append('name', name);
@@ -60,6 +64,8 @@ export default function PublisherManageProducts() {
         bodyFormData.append('blurb', blurb);
         bodyFormData.append('price', price)
         bodyFormData.append('file', fileRef.current.files[0])
+        bodyFormData.append('icon', iconRef.current.files[0])
+
 
         axios({
             method: "post",
@@ -70,30 +76,42 @@ export default function PublisherManageProducts() {
             .then(function (response) {
                 fetchProducts();
                 handleClose();
+                setAddEditLoading(false);
             })
             .catch(function (response) {
                 setAddProductError(true);
                 console.log(response);
+                setAddEditLoading(false);
             });
     }
 
 
     const handleEdit = (e) => {
+        setAddEditLoading(true);
         e.preventDefault();
         console.log(productId);
-        axios.put('/api/products/' + productId, {
-            name: name,
-            description: description,
-            blurb: blurb,
-            price: price
+        var bodyFormData = new FormData();
+        bodyFormData.append('name', name);
+        bodyFormData.append('description', description);
+        bodyFormData.append('blurb', blurb);
+        bodyFormData.append('price', price);
+        bodyFormData.append('icon', iconRef.current.files[0])
+
+        axios({
+            method: "put",
+            url: "/api/products/" + productId,
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
         })
             .then(function (response) {
                 fetchProducts();
                 handleClose();
+                setAddEditLoading(false);
             })
             .catch(function (error) {
                 setAddProductError(true);
                 console.log(error);
+                setAddEditLoading(false);
             })
 
     }
@@ -109,6 +127,7 @@ export default function PublisherManageProducts() {
     }
 
     const handleUpdateFile = (e) => {
+        setAddEditLoading(true);
         e.preventDefault();
         var bodyFormData = new FormData();
         bodyFormData.append('productId', productId)
@@ -116,7 +135,7 @@ export default function PublisherManageProducts() {
         console.log("PROD: " + productId);
         axios({
             method: "post",
-            url: "/api/products/uploadfile",
+            url: "/api/products/updatefile",
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
         })
@@ -124,10 +143,12 @@ export default function PublisherManageProducts() {
                 console.log(response);
                 fetchProducts();
                 handleClose();
+                setAddEditLoading(false);
             })
             .catch(function (response) {
                 setAddProductError(true);
                 console.log(response);
+                setAddEditLoading(false);
             });
 
     }
@@ -186,7 +207,7 @@ export default function PublisherManageProducts() {
                                     <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
                                     <td>
                                         <DropdownButton id="dropdown-item-button" title="Actions">
-                                            <Dropdown.Item as="button"><Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link></Dropdown.Item>
+                                            <Dropdown.Item as="button"><Link to={`/product/${product.id}/${product.name.replace(/ /g, "_")}`} style={{ textDecoration: 'none' }}>Go to Store Page</Link></Dropdown.Item>
                                             <Dropdown.Item as="button"><Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download>Download</Link></Dropdown.Item>
                                             <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit Info</Dropdown.Item>
                                             <Dropdown.Item as="button" onClick={() => handleUpdateFileShow(product)} >Update File</Dropdown.Item>
@@ -228,10 +249,14 @@ export default function PublisherManageProducts() {
                 <Form.Label>File</Form.Label>
                 <Form.Control type="file" ref={fileRef}></Form.Control>
             </Form.Group>}
-            <Button className="custom-primary-btn" variant="primary" type="submit">
+            <Form.Group className="mb-4">
+                <Form.Label>Icon (must be 1:1, max size 100KiB)</Form.Label>
+                <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={iconRef}></Form.Control>
+            </Form.Group>
+            <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
                 {isEdit ? <>Save Changes</> : <>Add</>}
             </Button>
-            <Button variant="danger" onClick={handleClose}>
+            <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
                 Discard
             </Button>
             {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
@@ -246,10 +271,10 @@ export default function PublisherManageProducts() {
                         <Form.Control required type="file" ref={fileRef}></Form.Control>
                     </Form.Group>
                 </InputGroup>
-                <Button className="custom-primary-btn" variant="primary" type="submit">
+                <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
                     Update File
                 </Button>
-                <Button variant="danger" onClick={handleClose}>
+                <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
                     Discard
                 </Button>
                 {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
