@@ -6,11 +6,10 @@ import axios from "axios";
 
 export function Home() {
   const [search, setSearch] = useState("");
-  const [search2, setSearch2] = useState("");
   const navigate = useNavigate()
 
-  function handleSearch() {
-    setSearch2(search);
+  function handleSearch(e) {
+    e.preventDefault();
     const path = axios.getUri({ url: "/search", params: {query: search} });
     navigate(path)
   }
@@ -21,14 +20,15 @@ export function Home() {
           <h1>STORE</h1>
         </Col>
         <Col xs={8} md={6} lg={4}>
-          <Form className="d-flex">
+          <Form className="d-flex" onSubmit={(e) => handleSearch(e)}>
             <FormControl
               type="search"
               placeholder="Search"
               className="me-2"
               onChange={(e) => setSearch(e.target.value)}
+              required
             />
-            <Button variant="outline-success" onClick={handleSearch} >Search</Button>
+            <Button variant="outline-success" type="submit" >Search</Button>
           </Form>
         </Col>
       </Row>
