@@ -6,7 +6,6 @@ using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
 using SP22.P05.Web.Features.Transactions;
-using System.Linq;
 
 namespace SP22.P05.Web.Controllers;
 
@@ -130,11 +129,9 @@ public class ProductsController : ControllerBase
         dataContext.SaveChanges();
         productDto.Id = product.Id;
         List<Picture> pictureList = new List<Picture>();
-      
-
         try
         {
-            
+            // Handle adding pictures
             foreach (var formFile in productDto.Pictures)
             {
                 if (formFile.Length > 0)
@@ -196,7 +193,7 @@ public class ProductsController : ControllerBase
             // Delete existing file
             if (current.IconName != null)
             {
-                string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}" , current.IconName);
+                string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", current.IconName);
                 FileInfo delFile = new FileInfo(delPath);
                 if (delFile.Exists)
                 {
@@ -422,12 +419,20 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("icon/{productId}/")]
-    public FileResult DownloadIcon(int productId)
+    public IActionResult DownloadIcon(int productId)
     {
-        var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
-        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
-        byte[] bytes = System.IO.File.ReadAllBytes(path);
-        return File(bytes, "image/*", iconName);
+        try
+        {
+            var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+            return File(bytes, "image/*", iconName);
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
+
     }
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
