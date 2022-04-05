@@ -8,23 +8,25 @@ export default function UserLibrary() {
     const [search, setSearch] = useState("");
 
     useEffect(() => {
+        const controller = new AbortController();
         document.title = "ICE - Library"
         axios({
+            signal: controller.signal,
             url: '/api/products/library',
+            params: {query: search},
             method: 'get',
         })
             .then(function (response) {
                 setProducts(response.data);
+
             })
             .catch(function (error) {
                 console.log(error);
             });
-
-    }, []);
-
-    function handleSearch() {
-
-    }
+        return () => {
+            controller.abort();
+        }
+    }, [search]);
 
     return (
         <>
@@ -41,14 +43,13 @@ export default function UserLibrary() {
                             className="me-2"
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        <Button variant="outline-success" onClick={handleSearch} >Search</Button>
                     </Form>
                 </Col>
             </Row>
             <div className="ProductList mx-auto text-break">
                 <Row xs={1} md={2} lg={3} className="g-4" >
                     {products.map((product) => (
-                        <ProductCardLibrary key={product.id} myProduct={product} />
+                        <ProductCardLibrary key={product.id} myProduct={product}/>
                     ))
                     }
                 </Row>

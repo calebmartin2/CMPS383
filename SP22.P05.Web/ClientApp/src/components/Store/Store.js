@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { Button, Form, FormControl, Row, Col } from "react-bootstrap";
 import { ProductList } from "./ProductList";
+import { useNavigate  } from "react-router-dom";
+import axios from "axios";
+
 export function Home() {
   const [search, setSearch] = useState("");
-  
-  function handleSearch() {
+  const [search2, setSearch2] = useState("");
+  const navigate = useNavigate()
 
+  function handleSearch() {
+    setSearch2(search);
+    const path = axios.getUri({ url: "/search", params: {query: search} });
+    navigate(path)
   }
   return (
     <>
@@ -25,7 +32,7 @@ export function Home() {
           </Form>
         </Col>
       </Row>
-      <ProductList />
+      <ProductList/>
     </>
   );
 }

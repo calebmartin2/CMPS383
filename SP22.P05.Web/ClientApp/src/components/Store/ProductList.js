@@ -4,15 +4,17 @@ import { ProductCard } from "./ProductCard";
 import { Row } from "react-bootstrap";
 import './ProductList.css'
 
-export function ProductList() {
-    const [products, setProducts] = useState([]);
+export function ProductList({search}) {
     const [loading, setLoading] = useState(false);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         document.title = "ICE - Store"
         setLoading(true);
         async function fetchProducts() {
-            axios.get('/api/products')
+            axios.get('/api/products', {
+                params: {query: search}
+            })
                 .then(function (response) {
                     console.log(response.data);
                     const data = response.data;
@@ -24,7 +26,7 @@ export function ProductList() {
                 });
         }
         fetchProducts();
-    }, [])
+    }, [search])
 
     return (
         <>
