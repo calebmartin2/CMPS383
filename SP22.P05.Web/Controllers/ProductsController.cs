@@ -174,7 +174,7 @@ public class ProductsController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = RoleNames.AdminOrPublisher)]
-    public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] ProductDto productDto, IFormFile? icon)
+    public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] CreateProductDto productDto)
     {
         var products = dataContext.Set<Product>();
         var current = products.FirstOrDefault(x => x.Id == id);
@@ -182,13 +182,15 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
-        if (icon != null)
+
+        // Handle updating icon
+        if (productDto.icon != null)
         {
-            if (icon.Length > 102400)
+            if (productDto.icon.Length > 102400)
             {
                 return BadRequest("Icon file is too large. Max file size is 100KiB");
             }
-            var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(icon.FileName);
+            var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
 
             // Delete existing file
             if (current.IconName != null)
@@ -200,16 +202,52 @@ public class ProductsController : ControllerBase
                     delFile.Delete();
                 }
             }
-
             // Add new icon file
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
             string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", newIconGuid);
             using (Stream stream = new FileStream(iconPath, FileMode.Create))
             {
-                icon.CopyTo(stream);
+                productDto.icon.CopyTo(stream);
             }
             current.IconName = newIconGuid;
         }
+
+        // Handle updating pictures
+        List<Picture> pictureList = new List<Picture>();
+        if (productDto.Pictures != null)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
+            DirectoryInfo di = new DirectoryInfo(path);
+            if (di.Exists)
+            {
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }
+
+            dataContext.RemoveRange(current.Pictures);
+            foreach (var formFile in productDto.Pictures)
+            {
+                if (formFile.Length > 0)
+                {
+                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
+                    Directory.CreateDirectory(myPath);
+                    pictureList.Add(new Picture { Name = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
+                    var pictureFilePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                    using (var stream = System.IO.File.Create(pictureFilePath))
+                    {
+                        formFile.CopyTo(stream);
+                    }
+                }
+            }
+            dataContext.AddRange(pictureList);
+        }
+
         current.Name = productDto.Name;
         current.Price = productDto.Price;
         current.Description = productDto.Description;
@@ -370,7 +408,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost("updatefile")]
-    public ActionResult UploadFile(IFormFile file, [FromForm] int productId)
+    public ActionResult UpdateFile(IFormFile file, [FromForm] int productId)
     {
         var product = dataContext.Set<Product>().First(x => x.Id == productId);
         if (product == null)
@@ -434,6 +472,7 @@ public class ProductsController : ControllerBase
         }
 
     }
+
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
 
