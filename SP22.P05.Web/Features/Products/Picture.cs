@@ -8,6 +8,7 @@ namespace SP22.P05.Web.Features.Products
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public int ProductId { get; set; }
     }
 }
 

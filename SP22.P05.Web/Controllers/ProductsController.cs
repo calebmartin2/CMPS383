@@ -123,12 +123,15 @@ public class ProductsController : ControllerBase
             PublisherId = (int)publisherId,
             Status = Product.StatusType.Active,
             FileName = productDto.file.FileName,
-            IconName = newIconGuid,
+            IconName = newIconGuid
         };
 
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
+        List<Picture> pictureList = new List<Picture>();
+      
+
         try
         {
             
@@ -138,6 +141,8 @@ public class ProductsController : ControllerBase
                 {
                     string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
                     Directory.CreateDirectory(myPath);
+                    pictureList.Add(new Picture { Name = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
+
 
                     var pictureFilePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
 
@@ -147,6 +152,8 @@ public class ProductsController : ControllerBase
                     }
                 }
             }
+            dataContext.AddRange(pictureList);
+            dataContext.SaveChanges();
 
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}"));
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.file.FileName);
@@ -446,6 +453,7 @@ public class ProductsController : ControllerBase
                 Status = (int)x.Product.Status,
                 FileName = x.Product.FileName,
                 IconName = x.Product.IconName,
+                Pictures = x.Product.Pictures.Select(x => x.Name).ToArray(),
 
             });
     }
