@@ -7,14 +7,14 @@ import axios from "axios";
 export function Search() {
     const [search, setSearch] = useState("");
     const navigate = useNavigate()
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const query = searchParams.get("query");
     useEffect(() => {
         console.log(query)
         if (query) {
             setSearch(query);
         }
-    }, []);
+    }, [query]);
 
     function handleSearch(e) {
         e.preventDefault();

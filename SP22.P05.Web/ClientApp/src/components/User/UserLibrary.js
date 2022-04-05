@@ -39,6 +39,7 @@ export default function UserLibrary() {
                     <Row>
                         <Col xs={4} md={6} lg={8}>
                             <h1>LIBRARY</h1>
+                            {!products.length && <h3 style={{ color: "lightGray" }}>Product not in library.</h3>}
                         </Col>
                         <Col xs={8} md={6} lg={4}>
                             <Form className="d-flex" onSubmit={e => { e.preventDefault() }}>
