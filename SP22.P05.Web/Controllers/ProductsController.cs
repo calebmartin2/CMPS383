@@ -21,9 +21,12 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public ProductDto[] GetAllProducts()
+    public ProductDto[] GetAllProducts(string? query)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
+        if (!String.IsNullOrEmpty(query)) {
+            products = products.Where(x => x.Name!.Contains(query));
+        }
         return GetProductDtos(products).ToArray();
     }
 
@@ -310,7 +313,7 @@ public class ProductsController : ControllerBase
 
     [HttpGet("library")]
     [Authorize(Roles = RoleNames.User)]
-    public ActionResult<ProductDto> GetLibrary()
+    public ActionResult<ProductDto> GetLibrary(string? query)
     {
         int? userId = User.GetCurrentUserId();
         if (userId == null)
@@ -321,6 +324,10 @@ public class ProductsController : ControllerBase
         if (products == null)
         {
             return NotFound();
+        }
+        if (!String.IsNullOrEmpty(query))
+        {
+            products = products.Where(x => x.Name!.Contains(query));
         }
         return Ok(GetProductDtos(products));
 
