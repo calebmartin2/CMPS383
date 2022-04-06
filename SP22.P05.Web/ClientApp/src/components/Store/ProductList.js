@@ -4,15 +4,17 @@ import { ProductCard } from "./ProductCard";
 import { Row } from "react-bootstrap";
 import './ProductList.css'
 
-export function ProductList() {
-    const [products, setProducts] = useState([]);
+export function ProductList({search}) {
     const [loading, setLoading] = useState(false);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         document.title = "ICE - Store"
         setLoading(true);
         async function fetchProducts() {
-            axios.get('/api/products')
+            axios.get('/api/products', {
+                params: {query: search}
+            })
                 .then(function (response) {
                     console.log(response.data);
                     const data = response.data;
@@ -24,13 +26,14 @@ export function ProductList() {
                 });
         }
         fetchProducts();
-    }, [])
+    }, [search])
 
     return (
         <>
             {loading
             ? <h2>Loading...</h2>
                 : <div className="ProductList mx-auto text-break">
+                    {!products.length  && <h3 style={{color: "lightGray"}}>No results were returned for that query.</h3>}
                     <Row xs={1} md={2} lg={3} className="g-4" >
                         {products.map((product) => (
                             <ProductCard key={product.id} myProduct={product} />

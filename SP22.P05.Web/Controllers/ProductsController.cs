@@ -21,9 +21,12 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public ProductDto[] GetAllProducts()
+    public ProductDto[] GetAllProducts(string? query)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
+        if (!String.IsNullOrEmpty(query)) {
+            products = products.Where(x => x.Name!.Contains(query));
+        }
         return GetProductDtos(products).ToArray();
     }
 
@@ -66,16 +69,37 @@ public class ProductsController : ControllerBase
         return GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
     }
 
-    [HttpPost]
-    [Authorize(Roles = RoleNames.Publisher)]
-
-    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto)
+    [HttpPost("uploadPic/{id}")]
+    //https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
+    public async Task<ActionResult> UploadPicturesAsync(List<IFormFile> pictures, int id)
     {
 
+        foreach (var formFile in pictures)
+        {
+            if (formFile.Length > 0)
+            {
+                string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
+                Directory.CreateDirectory(myPath);
 
+                var filePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+            }
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Authorize(Roles = RoleNames.Publisher)]
+    public ActionResult<ProductDto> CreateProduct([FromForm] CreateProductDto productDto)
+    {
         var publisherId = User.GetCurrentUserId();
         var publisherName = User.GetCurrentUserName();
-        if (publisherId == null || productDto.file == null || productDto.icon == null)
+        if (publisherId == null || productDto.file == null || productDto.icon == null || productDto.Pictures == null)
         {
             return BadRequest();
         }
@@ -90,6 +114,7 @@ public class ProductsController : ControllerBase
         {
             return BadRequest("Icon file is too large. Max file size is 100KiB");
         }
+
         var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
         var product = new Product
         {
@@ -106,8 +131,30 @@ public class ProductsController : ControllerBase
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
+        List<Picture> pictureList = new List<Picture>();
         try
         {
+            // Handle adding pictures
+            foreach (var formFile in productDto.Pictures)
+            {
+                if (formFile.Length > 0)
+                {
+                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
+                    Directory.CreateDirectory(myPath);
+                    var tempGuid = Guid.NewGuid().ToString();
+                    pictureList.Add(new Picture { Name = tempGuid + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
+
+
+                    var pictureFilePath = Path.Combine(myPath, tempGuid + Path.GetExtension(formFile.FileName));
+
+                    using (var stream = System.IO.File.Create(pictureFilePath))
+                    {
+                        formFile.CopyTo(stream);
+                    }
+                }
+            }
+            dataContext.AddRange(pictureList);
+            dataContext.SaveChanges();
 
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}"));
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.file.FileName);
@@ -131,7 +178,7 @@ public class ProductsController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = RoleNames.AdminOrPublisher)]
-    public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] ProductDto productDto, IFormFile? icon)
+    public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] CreateProductDto productDto)
     {
         var products = dataContext.Set<Product>();
         var current = products.FirstOrDefault(x => x.Id == id);
@@ -139,34 +186,73 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
-        if (icon != null)
+
+        // Handle updating icon
+        if (productDto.icon != null)
         {
-            if (icon.Length > 102400)
+            if (productDto.icon.Length > 102400)
             {
                 return BadRequest("Icon file is too large. Max file size is 100KiB");
             }
-            var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(icon.FileName);
+            var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
 
             // Delete existing file
             if (current.IconName != null)
             {
-                string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}" , current.IconName);
+                string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", current.IconName);
                 FileInfo delFile = new FileInfo(delPath);
                 if (delFile.Exists)
                 {
                     delFile.Delete();
                 }
             }
-
             // Add new icon file
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
             string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", newIconGuid);
             using (Stream stream = new FileStream(iconPath, FileMode.Create))
             {
-                icon.CopyTo(stream);
+                productDto.icon.CopyTo(stream);
             }
             current.IconName = newIconGuid;
         }
+
+        // Handle updating pictures
+        List<Picture> pictureList = new List<Picture>();
+        if (productDto.Pictures != null)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
+            DirectoryInfo di = new DirectoryInfo(path);
+            if (di.Exists)
+            {
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }
+            var removePictures = dataContext.Set<Picture>().Where(x => x.ProductId == current.Id);
+            dataContext.RemoveRange(removePictures);
+            foreach (var formFile in productDto.Pictures)
+            {
+                if (formFile.Length > 0)
+                {
+                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{current.Id}//Pictures");
+                    Directory.CreateDirectory(myPath);
+                    var newGuid = Guid.NewGuid();
+                    pictureList.Add(new Picture { Name = newGuid + Path.GetExtension(formFile.FileName), ProductId = current.Id });
+                    var pictureFilePath = Path.Combine(myPath, newGuid + Path.GetExtension(formFile.FileName));
+                    using (var stream = System.IO.File.Create(pictureFilePath))
+                    {
+                        formFile.CopyTo(stream);
+                    }
+                }
+            }
+            dataContext.AddRange(pictureList);
+        }
+
         current.Name = productDto.Name;
         current.Price = productDto.Price;
         current.Description = productDto.Description;
@@ -310,7 +396,7 @@ public class ProductsController : ControllerBase
 
     [HttpGet("library")]
     [Authorize(Roles = RoleNames.User)]
-    public ActionResult<ProductDto> GetLibrary()
+    public ActionResult<ProductDto> GetLibrary(string? query)
     {
         int? userId = User.GetCurrentUserId();
         if (userId == null)
@@ -322,12 +408,16 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
+        if (!String.IsNullOrEmpty(query))
+        {
+            products = products.Where(x => x.Name!.Contains(query));
+        }
         return Ok(GetProductDtos(products));
 
     }
 
     [HttpPost("updatefile")]
-    public ActionResult UploadFile(IFormFile file, [FromForm] int productId)
+    public ActionResult UpdateFile(IFormFile file, [FromForm] int productId)
     {
         var product = dataContext.Set<Product>().First(x => x.Id == productId);
         if (product == null)
@@ -376,13 +466,31 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("icon/{productId}/")]
-    public FileResult DownloadIcon(int productId)
+    public IActionResult DownloadIcon(int productId)
     {
-        var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
-        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
-        byte[] bytes = System.IO.File.ReadAllBytes(path);
-        return File(bytes, "image/*", iconName);
+        try
+        {
+            var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
+            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+            return File(bytes, "image/*", iconName);
+        }
+        catch (Exception)
+        {
+            return NotFound();
+        }
+
     }
+
+    [HttpGet("picture/{productId}/{fileName}")]
+    public FileResult DownloadPicture(int productId, string fileName)
+    {
+        // UNSAFE CODE: user can pass something like ../../ and access files they should not have access to.
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//Pictures", fileName);
+        byte[] bytes = System.IO.File.ReadAllBytes(path);
+        return File(bytes, "application/octet-stream", fileName);
+    }
+
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
 
@@ -406,8 +514,8 @@ public class ProductsController : ControllerBase
                 Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                 Status = (int)x.Product.Status,
                 FileName = x.Product.FileName,
-                IconName = x.Product.IconName
-                
+                IconName = x.Product.IconName,
+                Pictures = x.Product.Pictures.Select(x => "/api/products/picture/" + x.ProductId + "/" + x.Name).ToArray(),
 
             });
     }
