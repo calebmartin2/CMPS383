@@ -1,7 +1,7 @@
 import { Carousel } from "react-bootstrap";
 export function ProductCarousel({ pictures }) {
     return (
-        <Carousel>
+        pictures.length !== 0 && <Carousel>
             {pictures.map((picture) =>
                 <Carousel.Item>
                     <img
