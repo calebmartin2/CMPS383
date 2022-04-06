@@ -4,8 +4,6 @@ import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Aler
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 import authCookieContext from '../Authorization/AuthCookieProvider';
-import { withTheme } from 'react-native-elements';
-
 
 export default function LoginScreen({ navigation }) {
   const [username, onChangeUsername] = useState(null);
@@ -35,14 +33,6 @@ export default function LoginScreen({ navigation }) {
       password: password
     })
       .then(function (response) {
-        // console.log(response.data);
-        // console.log("headers:", response.headers);
-
-        // if (response?.headers?.get("set-cookie")) {
-        //   const cookie = response.headers.get("set-cookie").spit(";")[0];
-        //   console.log(cookie);
-        //   saveAuthCookie(response.headers.get("set-cookie").split(";")[0]);
-        // }
         setIsLoggedIn(true);
         var cookie = response.headers["set-cookie"][0].split(";")[0];
         async function temp() {
@@ -55,9 +45,7 @@ export default function LoginScreen({ navigation }) {
       .catch(function (error) {
         console.log(error);
         Alert.alert("Invalid Username or Password.");
-
       });
-
   };
 
   function handleLogout() {
@@ -77,7 +65,6 @@ export default function LoginScreen({ navigation }) {
       .catch(function (error) {
         console.log(error);
       });
-
   };
 
   useEffect(() => {
@@ -115,7 +102,7 @@ export default function LoginScreen({ navigation }) {
         />
       </View>
         :
-        <View  style={styles.container}>
+        <View style={styles.container}>
           <Text style={styles.username}>Hello, {userName}!</Text>
           <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
             <Text style={styles.loginText}>LOGOUT</Text>
