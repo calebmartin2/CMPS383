@@ -241,8 +241,9 @@ public class ProductsController : ControllerBase
                 {
                     string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{current.Id}//Pictures");
                     Directory.CreateDirectory(myPath);
-                    pictureList.Add(new Picture { Name = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName), ProductId = current.Id });
-                    var pictureFilePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                    var newGuid = Guid.NewGuid();
+                    pictureList.Add(new Picture { Name = newGuid + Path.GetExtension(formFile.FileName), ProductId = current.Id });
+                    var pictureFilePath = Path.Combine(myPath, newGuid + Path.GetExtension(formFile.FileName));
                     using (var stream = System.IO.File.Create(pictureFilePath))
                     {
                         formFile.CopyTo(stream);

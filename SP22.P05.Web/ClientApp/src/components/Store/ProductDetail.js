@@ -26,6 +26,7 @@ export function ProductDetail({ setAmountCart }) {
         axios.get('/api/products/' + productId)
             .then(function (response) {
                 const data = response.data;
+                console.log(data);
                 setProduct(data);
                 setLoading(false);
                 document.title = "ICE - " + response.data.name
@@ -77,14 +78,15 @@ export function ProductDetail({ setAmountCart }) {
                     <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
                     <Row>
                         <Col lg={8} xs={12}>
-                            < ProductCarousel />
+                            {console.log("PIC2 " + product.pictures)}
+                            < ProductCarousel pictures={product.pictures}/>
                         </Col>
                         <Col>
                             <p>Publisher: {product.publisherName}</p>
                             <p>{product.blurb}</p>
                             <p>{product.description}</p>
                             <p>${product.price.toFixed(2)}</p>
-                    <AddToCartButton />
+                            <AddToCartButton />
                         </Col>
                     </Row>
 
