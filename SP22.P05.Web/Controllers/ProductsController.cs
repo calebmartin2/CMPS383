@@ -138,10 +138,11 @@ public class ProductsController : ControllerBase
                 {
                     string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
                     Directory.CreateDirectory(myPath);
-                    pictureList.Add(new Picture { Name = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
+                    var tempGuid = Guid.NewGuid().ToString();
+                    pictureList.Add(new Picture { Name = tempGuid + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
 
 
-                    var pictureFilePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
+                    var pictureFilePath = Path.Combine(myPath, tempGuid + Path.GetExtension(formFile.FileName));
 
                     using (var stream = System.IO.File.Create(pictureFilePath))
                     {
@@ -229,15 +230,15 @@ public class ProductsController : ControllerBase
                     dir.Delete(true);
                 }
             }
-
-            dataContext.RemoveRange(current.Pictures);
+            var removePictures = dataContext.Set<Picture>().Where(x => x.ProductId == current.Id);
+            dataContext.RemoveRange(removePictures);
             foreach (var formFile in productDto.Pictures)
             {
                 if (formFile.Length > 0)
                 {
-                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
+                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{current.Id}//Pictures");
                     Directory.CreateDirectory(myPath);
-                    pictureList.Add(new Picture { Name = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
+                    pictureList.Add(new Picture { Name = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName), ProductId = current.Id });
                     var pictureFilePath = Path.Combine(myPath, Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName));
                     using (var stream = System.IO.File.Create(pictureFilePath))
                     {
@@ -473,6 +474,15 @@ public class ProductsController : ControllerBase
 
     }
 
+    [HttpGet("picture/{productId}/{fileName}")]
+    public FileResult DownloadPicture(int productId, string fileName)
+    {
+        // UNSAFE CODE: user can pass something like ../../ and access files they should not have access to.
+        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//Pictures", fileName);
+        byte[] bytes = System.IO.File.ReadAllBytes(path);
+        return File(bytes, "application/octet-stream", fileName);
+    }
+
     private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
     {
 
@@ -497,7 +507,7 @@ public class ProductsController : ControllerBase
                 Status = (int)x.Product.Status,
                 FileName = x.Product.FileName,
                 IconName = x.Product.IconName,
-                Pictures = x.Product.Pictures.Select(x => x.Name).ToArray(),
+                Pictures = x.Product.Pictures.Select(x => "/api/products/picture/" + x.ProductId + "/" + x.Name).ToArray(),
 
             });
     }

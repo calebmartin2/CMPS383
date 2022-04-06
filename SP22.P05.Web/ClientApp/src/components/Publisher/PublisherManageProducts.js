@@ -100,7 +100,9 @@ export default function PublisherManageProducts() {
         bodyFormData.append('price', price);
         bodyFormData.append('icon', iconRef.current.files[0]);
         bodyFormData.append('pictures', pictureRef.current.files);
-
+        for (var i = 0; i < pictureRef.current.files.length; i++) {
+            bodyFormData.append("pictures", pictureRef.current.files[i]);
+        }
 
         axios({
             method: "put",
