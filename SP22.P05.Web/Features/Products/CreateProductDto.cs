@@ -19,5 +19,6 @@ public class CreateProductDto
     public decimal Price { get; set; }
     public IFormFile? file { get; set; }
     public IFormFile? icon { get; set; }
+    public List<IFormFile>? Pictures { get; set; }
 
 }

@@ -26,6 +26,7 @@ public class Product
     public int PublisherId { get; set; }
     public string FileName { get; set; } = string.Empty;
     public string IconName { get; set; } = string.Empty;
+    public virtual ICollection<Picture> Pictures { get; set; } = new List<Picture>();
 
 }
 
@@ -45,5 +46,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(x => x.PublisherId)
             .HasDefaultValue(1);
+
     }
 }

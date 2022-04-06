@@ -75,7 +75,7 @@ export function PublisherSignUp() {
                     <Form.Control required type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms of Agreement</Link></>}/> 
+                    <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms and Conditions</Link></>}/> 
                 </Form.Group>
                 <Button variant="primary" type="submit" className="custom-primary-btn" disabled={isLoading}>
                     SIGN UP

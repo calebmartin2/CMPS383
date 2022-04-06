@@ -22,6 +22,7 @@ import { refreshUserInfo } from "./refreshUserInfo";
 import Receipt from "./components/Store/Receipt";
 import syncCart from "./components/User/syncCart";
 import { checkForRole } from "./components/Auth/checkForRole";
+import {Search} from "./components/Store/Search"
 
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
       <Container>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/search/*" element={<Search />} />
           <Route path="/login" element={<Login setAmountCart={setAmountCart} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="*" element={<NotFoundPage />} />

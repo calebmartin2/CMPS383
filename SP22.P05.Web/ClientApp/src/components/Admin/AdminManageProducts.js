@@ -13,6 +13,8 @@ export function AdminManageProducts() {
     const [price, setPrice] = useState("");
     const [productId, setProductId] = useState("");
     const iconRef = useRef(null);
+    const pictureRef = useRef(null);
+
 
 
     const handleClose = () => {
@@ -69,6 +71,10 @@ export function AdminManageProducts() {
         bodyFormData.append('blurb', blurb);
         bodyFormData.append('price', price);
         bodyFormData.append('icon', iconRef.current.files[0])
+        bodyFormData.append('pictures', pictureRef.current.files);
+        for (var i = 0; i < pictureRef.current.files.length; i++) {
+            bodyFormData.append("pictures", pictureRef.current.files[i]);
+        }
 
         axios({
             method: "put",
@@ -149,7 +155,7 @@ export function AdminManageProducts() {
                             <td>
                                 <DropdownButton id="dropdown-item-button" title="Actions">
                                     <Dropdown.Item as="button">
-                                        <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>Go to Store Page</Link>
+                                        <Link to={`/product/${product.id}/${product.name.replace(/ /g, "_")}`} style={{ textDecoration: 'none' }}>Go to Store Page</Link>
                                     </Dropdown.Item>
                                     <Dropdown.Item as="button" onClick={() => handleEditShow(product)}>Edit Info</Dropdown.Item>
                                     <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProudct(product.id) }}>Delete</Dropdown.Item>
@@ -188,10 +194,14 @@ export function AdminManageProducts() {
                             <Form.Label>Icon (must be 1:1, max size 100KiB)</Form.Label>
                             <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={iconRef}></Form.Control>
                         </Form.Group>
+                        <Form.Group className="mb-4">
+                            <Form.Label>Pictures</Form.Label>
+                            <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={pictureRef} multiple></Form.Control>
+                        </Form.Group>
                         <Button className="custom-primary-btn" variant="primary" type="submit">
                             Save Changes
                         </Button>
-                        <Button variant="danger" onClick={handleClose}>
+                        <Button variant="danger" onClick={handleClose} style={{ marginLeft: "0.5em" }}>
                             Discard
                         </Button>
                     </Form>
