@@ -14,7 +14,7 @@ export function PublisherSignUp() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [show, setShow] = useState(false);
     const [isLoading, setLoading] = useState(false);
-
+    const [success] = useState(true);
 
     useEffect(() => {
         document.title = "ICE - Publisher Sign Up"
@@ -39,7 +39,7 @@ export function PublisherSignUp() {
         })
             .then(function (response) {
                 console.log(response.data);
-                navigate("/Login", { replace: true });
+                navigate("/Login", {state: {success: success } });
                 setLoading(false);
             })
             .catch(function (error) {

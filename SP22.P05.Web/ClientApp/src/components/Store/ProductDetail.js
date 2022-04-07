@@ -83,10 +83,8 @@ export function ProductDetail({ setAmountCart }) {
                         </Col>
                         <Col>
                             <p>Publisher: {product.publisherName}</p>
-                            <p>{product.blurb}</p>
                             <p>{product.description}</p>
-                            <p>${product.price.toFixed(2)}</p>
-                            <AddToCartButton />
+                            <p>${product.price.toFixed(2)} <AddToCartButton /></p>
                         </Col>
                     </Row>
 
