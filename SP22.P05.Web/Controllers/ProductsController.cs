@@ -468,6 +468,9 @@ public class ProductsController : ControllerBase
     [HttpGet("icon/{productId}/")]
     public IActionResult DownloadIcon(int productId)
     {
+        int CacheAgeSeconds = 60 * 60 * 24; // 1 day
+        Response.Headers["Cache-Control"] = $"public,max-age={CacheAgeSeconds}";
+
         try
         {
             var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
@@ -485,6 +488,8 @@ public class ProductsController : ControllerBase
     [HttpGet("picture/{productId}/{fileName}")]
     public FileResult DownloadPicture(int productId, string fileName)
     {
+        int CacheAgeSeconds = 60 * 60 * 24; // 1 day
+        Response.Headers["Cache-Control"] = $"public,max-age={CacheAgeSeconds}";
         // UNSAFE CODE: user can pass something like ../../ and access files they should not have access to.
         string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//Pictures", fileName);
         byte[] bytes = System.IO.File.ReadAllBytes(path);
