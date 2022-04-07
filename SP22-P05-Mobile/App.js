@@ -76,7 +76,16 @@ function App() {
           <Stack.Screen name="ICE - Store" component={HomeScreen} 
           />
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Library" component={LibraryScreen}/>
+          <Stack.Screen name="Library" component={LibraryScreen} options ={{
+            title: 'Library',
+            headerStyle: {
+              backgroundColor: 'rgb(33,37,41)'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            }}} />
+
           <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} options={{
         title: 'Terms and Conditions', headerStyle: {
           backgroundColor: 'rgb(33,37,41)',
