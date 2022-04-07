@@ -4,11 +4,11 @@ import HomeScreen from './Screens/HomeScreen.js';
 import ProductInfo from './Screens/ProductInfo.js';
 import LoginScreen from './Screens/LoginScreen.js';
 import SignUpScreen from './Screens/SignUpScreen.js';
+import LibraryScreen from './Screens/LibraryScreen.js';
 import TermsAndConditions from './Screens/TermsAndConditons.js';
 import { AuthCookieProvider } from './Authorization/AuthCookieProvider.js';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 
 const Tab = createBottomTabNavigator();
 
@@ -76,6 +76,7 @@ function App() {
           <Stack.Screen name="ICE - Store" component={HomeScreen} 
           />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Library" component={LibraryScreen}/>
           <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} options={{
         title: 'Terms and Conditions', headerStyle: {
           backgroundColor: 'rgb(33,37,41)',
