@@ -9,6 +9,7 @@ import TermsAndConditions from './Screens/TermsAndConditons.js';
 import { AuthCookieProvider } from './Authorization/AuthCookieProvider.js';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ShoppingCart from './Screens/ShoppingCart.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,6 +50,16 @@ function Root() {
       }} />
       <Tab.Screen name="Account" component={LoginScreen} options={{
         title: 'Account',
+        headerStyle: {
+          backgroundColor: 'rgb(33,37,41)',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}/>
+      <Tab.Screen name="Shopping Cart" component={ShoppingCart} options={{
+        title: 'Shopping Cart',
         headerStyle: {
           backgroundColor: 'rgb(33,37,41)',
         },

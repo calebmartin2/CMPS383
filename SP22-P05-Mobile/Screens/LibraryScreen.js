@@ -30,7 +30,6 @@ export default function UserLibrary() {
         })
             .then(function (response) {
                 setProducts(response.data);
-                console.log(products)
             })
             .catch(function (error) {
                 console.log(error);
@@ -50,8 +49,8 @@ export default function UserLibrary() {
         <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={styles.container}>
             <StatusBar style="light" />
+            {!products.length && <Text style = {styles.empty}>no products in library</Text>}
             {products.map((product) => (
-                <TouchableOpacity key={product.id} onPress={() => navigation.navigate('ProductInfo', { product: product })}>
                     <Card containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
                         <Grid>
                             <Col style={{ width: 120 }}>
@@ -68,12 +67,7 @@ height: 100,}} source={{ uri: getIconLink(product.id) }}/>
                                 </Row>
                             </Col>
                         </Grid>
-                        <View style={styles.container2}>
-                            <Text style={styles.price}>{product.publisherName}</Text>
-                            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                        </View>
                     </Card>
-                </TouchableOpacity>
             ))
             }
         </View>
@@ -86,12 +80,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgb(19,24,27)',
 
-    },
-    price: {
-        fontSize: 20,
-        fontWeight: "700",
-        textAlign: 'right',
-        color: 'rgb(255,255,255)'
     },
     title: {
         fontSize: 20,
@@ -113,4 +101,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
+    empty: {
+        color: 'rgb(128,128,128)',
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: "300",
+        textAlignVertical: 'center',
+    }
 });
