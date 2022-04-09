@@ -67,7 +67,7 @@ export default function PublisherManageProducts() {
         for (var i = 0; i < pictureRef.current.files.length; i++) {
             bodyFormData.append("pictures", pictureRef.current.files[i]);
         }
-        
+
 
 
         axios({
@@ -264,30 +264,34 @@ export default function PublisherManageProducts() {
                 <Form.Label>Pictures</Form.Label>
                 <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={pictureRef} multiple></Form.Control>
             </Form.Group>
-            <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
-                {isEdit ? <>Save Changes</> : <>Add</>}
-            </Button>
-            <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
-                Discard
-            </Button>
+            <Modal.Footer>
+                <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
+                    {isEdit ? <>Save Changes</> : <>Add</>}
+                </Button>
+                <Button variant="danger" onClick={handleClose}>
+                    Discard
+                </Button>
+            </Modal.Footer>
             {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
         </Form>;
     }
     function updateFileForm() {
         return (
             <Form onSubmit={handleUpdateFile}>
-                <InputGroup>
-                    <Form.Group className="mb-4">
-                        <Form.Label>File</Form.Label>
+                <Form.Group className="mb-4">
+                    <Form.Label>File</Form.Label>
+                    <InputGroup>
                         <Form.Control required type="file" ref={fileRef}></Form.Control>
-                    </Form.Group>
-                </InputGroup>
-                <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
-                    Update File
-                </Button>
-                <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
-                    Discard
-                </Button>
+                    </InputGroup>
+                </Form.Group>
+                <Modal.Footer>
+                    <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
+                        Update File
+                    </Button>
+                    <Button variant="danger" onClick={handleClose}>
+                        Discard
+                    </Button>
+                </Modal.Footer>
                 {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
             </Form>
         )
