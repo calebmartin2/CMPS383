@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Card, CloseButton } from "react-bootstrap";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { checkForRole, handleCartView } from "../Auth/checkForRole";
 
 export default function Cart({ setAmountCart }) {
@@ -55,6 +55,10 @@ export default function Cart({ setAmountCart }) {
         return sum.toFixed(2);
     }
 
+    function getIconLink(product) {
+        return `/api/products/icon/${product.id}`
+    }
+
     function buyItems() {
         var tempCart = JSON.parse(cart);
         if (checkForRole('User')) {
@@ -68,7 +72,7 @@ export default function Cart({ setAmountCart }) {
             .then(function (response) {
                 console.log(response);
                 removeAllItemCart()
-                navigate( '/receipt', {state: { products: products}} ); 
+                navigate('/receipt', { state: { products: products } });
 
             })
             .catch(function (error) {
@@ -88,13 +92,15 @@ export default function Cart({ setAmountCart }) {
             {/* Bad idea to hardcode, fix later */}
             {handleCartView()}
             <h1>CART</h1>
-            { loading ? "Loading..." : products.length !== 0 ?
+            {loading ? "Loading..." : products.length !== 0 ?
                 <div>
                     {products.map((product) => (
                         <div key={product.id}>
                             <Card style={{ margin: "1em" }} className="blue-border" bg="black" text="white">
-                                <Card.Body><Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: '#FFF'  }}>{product.name}</Link>
-                                    <span style={{ float: "right" }}>${product.price.toFixed(2)}
+                                <Card.Body><Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: '#FFF'}}><Card.Img style={{
+                                    height: "5em", width: "5em", marginRight: "1em"
+                                }} src={getIconLink(product)} /> {product.name}</Link>
+                                    <span style={{ float: "right", paddingTop: "2em"}}>${product.price.toFixed(2)}
                                         <CloseButton style={{ float: "right" }} variant="white" onClick={() => removeItemCart(product.id)}></CloseButton>
                                     </span>
                                 </Card.Body>
@@ -105,7 +111,7 @@ export default function Cart({ setAmountCart }) {
                     <Card bg="black" text="white" >
                         <Card.Body> <span style={{ float: "right" }}>Total: ${calculateTotal()} </span></Card.Body>
                     </Card>
-                    <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() =>{ if (window.confirm("Are you sure you want to purchase these items for $" + calculateTotal() + "?"))buyItems()}}>Buy Now</Button>
+                    <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() => { if (window.confirm("Are you sure you want to purchase these items for $" + calculateTotal() + "?")) buyItems() }}>Buy Now</Button>
                     <Button style={{ float: "right", margin: "1em" }} onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button>
                     <p style={{ color: "#888", textDecoration: "underline" }} onClick={() => removeAllItemCart()}>Remove All Items</p>
                 </div>

@@ -6,6 +6,7 @@ using SP22.P05.Web.Extensions;
 using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
 using SP22.P05.Web.Features.Transactions;
+using SP22.P05.Web.Services;
 
 namespace SP22.P05.Web.Controllers;
 
@@ -14,10 +15,13 @@ namespace SP22.P05.Web.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly DataContext dataContext;
+    private readonly IProductService productService;
 
-    public ProductsController(DataContext dataContext)
+    public ProductsController(DataContext dataContext,
+                              IProductService productService)
     {
         this.dataContext = dataContext;
+        this.productService = productService;
     }
 
     [HttpGet]
@@ -27,7 +31,7 @@ public class ProductsController : ControllerBase
         if (!String.IsNullOrEmpty(query)) {
             products = products.Where(x => x.Name!.Contains(query));
         }
-        return GetProductDtos(products).ToArray();
+        return productService.GetProductDtos(products).ToArray();
     }
 
     [HttpGet("manage")]
@@ -35,7 +39,7 @@ public class ProductsController : ControllerBase
     public ProductDto[] GetManageAllProducts()
     {
         var products = dataContext.Set<Product>();
-        return GetProductDtos(products).ToArray();
+        return productService.GetProductDtos(products).ToArray();
     }
 
     [HttpGet]
@@ -44,7 +48,7 @@ public class ProductsController : ControllerBase
     {
         int? userId = User.GetCurrentUserId();
         var products = dataContext.Set<Product>();
-        var result = GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
+        var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
         if (result == null)
         {
             return NotFound();
@@ -58,7 +62,7 @@ public class ProductsController : ControllerBase
     public ProductDto[] GetAllProducts(int[] id)
     {
         var products = dataContext.Set<Product>().Where(x => id.Contains(x.Id));
-        return GetProductDtos(products).ToArray();
+        return productService.GetProductDtos(products).ToArray();
     }
 
     [HttpGet]
@@ -66,7 +70,7 @@ public class ProductsController : ControllerBase
     public ProductDto[] GetProductsOnSale()
     {
         var products = dataContext.Set<Product>();
-        return GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
+        return productService.GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
     }
 
     [HttpPost("uploadPic/{id}")]
@@ -391,7 +395,7 @@ public class ProductsController : ControllerBase
         var products = dataContext.Set<Product>();
         var publisherId = User.GetCurrentUserId();
 
-        return GetProductDtos(products.Where(x => x.PublisherId == publisherId)).ToArray();
+        return productService.GetProductDtos(products.Where(x => x.PublisherId == publisherId)).ToArray();
     }
 
     [HttpGet("library")]
@@ -412,7 +416,7 @@ public class ProductsController : ControllerBase
         {
             products = products.Where(x => x.Name!.Contains(query));
         }
-        return Ok(GetProductDtos(products));
+        return Ok(productService.GetProductDtos(products));
 
     }
 
@@ -482,7 +486,7 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
-
+        
     }
 
     [HttpGet("picture/{productId}/{fileName}")]
@@ -496,34 +500,34 @@ public class ProductsController : ControllerBase
         return File(bytes, "application/octet-stream", fileName);
     }
 
-    private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
-    {
+    //private static IQueryable<ProductDto> GetProductDtos(IQueryable<Product> products)
+    //{
 
-        var now = DateTimeOffset.UtcNow;
-        return products
-            .Select(x => new
-            {
-                Product = x,
-                CurrentSale = x.SaleEventProducts.FirstOrDefault(y => y.SaleEvent!.StartUtc <= now && now <= y.SaleEvent.EndUtc),
-            })
-            .Select(x => new ProductDto
-            {
-                Id = x.Product.Id,
-                Name = x.Product.Name,
-                Description = x.Product.Description,
-                Blurb = x.Product.Blurb,
-                Price = x.Product.Price,
-                SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
-                SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
-                PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
-                Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
-                Status = (int)x.Product.Status,
-                FileName = x.Product.FileName,
-                IconName = x.Product.IconName,
-                Pictures = x.Product.Pictures.Select(x => "/api/products/picture/" + x.ProductId + "/" + x.Name).ToArray(),
+    //    var now = DateTimeOffset.UtcNow;
+    //    return products
+    //        .Select(x => new
+    //        {
+    //            Product = x,
+    //            CurrentSale = x.SaleEventProducts.FirstOrDefault(y => y.SaleEvent!.StartUtc <= now && now <= y.SaleEvent.EndUtc),
+    //        })
+    //        .Select(x => new ProductDto
+    //        {
+    //            Id = x.Product.Id,
+    //            Name = x.Product.Name,
+    //            Description = x.Product.Description,
+    //            Blurb = x.Product.Blurb,
+    //            Price = x.Product.Price,
+    //            SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
+    //            SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
+    //            PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
+    //            Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
+    //            Status = (int)x.Product.Status,
+    //            FileName = x.Product.FileName,
+    //            IconName = x.Product.IconName,
+    //            Pictures = x.Product.Pictures.Select(x => "/api/products/picture/" + x.ProductId + "/" + x.Name).ToArray(),
 
-            });
-    }
+    //        });
+    //}
 
 
 }

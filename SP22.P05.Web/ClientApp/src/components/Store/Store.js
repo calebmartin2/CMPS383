@@ -23,7 +23,7 @@ export function Home() {
           <Form className="d-flex" onSubmit={(e) => handleSearch(e)}>
             <FormControl
               type="search"
-              placeholder="Search"
+              placeholder="Search by Name"
               className="me-2"
               onChange={(e) => setSearch(e.target.value)}
               required
