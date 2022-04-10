@@ -25,13 +25,15 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public ProductDto[] GetAllProducts(string? query)
+    public IEnumerable<ProductDto> GetAllProducts(string? query)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
         if (!String.IsNullOrEmpty(query)) {
             products = products.Where(x => x.Name!.Contains(query));
         }
-        return productService.GetProductDtos(products).ToArray();
+        var retval = productService.GetProductDtos(products);
+        // Get the users library, only if they are a user
+        return retval;
     }
 
     [HttpGet("manage"), Authorize(Roles = RoleNames.Admin)]
