@@ -24,8 +24,7 @@ public class UserProductController : Controller
         this.dataContext = dataContext;
     }
 
-    [HttpPost("add-to-account")]
-    [Authorize(Roles = RoleNames.User)]
+    [HttpPost("add-to-account"), Authorize(Roles = RoleNames.User)]
     public ActionResult AddToAccount(int[] productId)
     {
         var products = dataContext.Set<Product>();
@@ -75,8 +74,7 @@ public class UserProductController : Controller
         }
     }
 
-    [HttpPost("sync-cart")]
-    [Authorize(Roles = RoleNames.User)]
+    [HttpPost("sync-cart"), Authorize(Roles = RoleNames.User)]
     public ActionResult<int[]> SyncCart(int[] cart)
     {
  
@@ -118,8 +116,7 @@ public class UserProductController : Controller
 
     }
 
-    [HttpGet("get-cart")]
-    [Authorize(Roles = RoleNames.User)]
+    [HttpGet("get-cart"), Authorize(Roles = RoleNames.User)]
     public ActionResult<int[]> GetCart()
     {
         int? userId = User.GetCurrentUserId();

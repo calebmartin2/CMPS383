@@ -21,8 +21,7 @@ public class UsersController : ControllerBase
         this.dataContext = dataContext;
     }
 
-    [HttpPost]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpPost, Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<UserDto>> Create(CreateUserDto dto)
     {
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
@@ -147,8 +146,7 @@ public class UsersController : ControllerBase
         });
     }
 
-    [HttpDelete("delete-publisher/{id}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpDelete("delete-publisher/{id}"), Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult> DeletePublisher(int id)
     {
         var publisher = userManager.Users.FirstOrDefault(x => x.Id == id);
@@ -166,8 +164,7 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("get-all-publishers")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpGet("get-all-publishers"), Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<List<PublisherDto>>> GetAllPublishers()
     {
         var pendingPublishers = await userManager.GetUsersInRoleAsync(RoleNames.PendingPublisher);
@@ -194,8 +191,7 @@ public class UsersController : ControllerBase
         return Ok(publisherDto);
     }
 
-    [HttpGet("get-pending-publishers")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpGet("get-pending-publishers"), Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<List<PublisherDto>>> GetPendingPublishers()
     {
         var pendingPublishers = await userManager.GetUsersInRoleAsync(RoleNames.PendingPublisher);
@@ -219,8 +215,7 @@ public class UsersController : ControllerBase
         return Ok(publisherDto);
     }
 
-    [HttpGet("get-approved-publishers")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpGet("get-approved-publishers"), Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<List<PublisherDto>>> GetApprovedPubilshers()
     {
         var approvedPublishers = await userManager.GetUsersInRoleAsync(RoleNames.Publisher);
@@ -245,8 +240,7 @@ public class UsersController : ControllerBase
         return Ok(publisherDto);
     }
 
-    [HttpPost("verify-publisher")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpPost("verify-publisher"), Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<UserDto>> VerifyPublisher([FromForm] int id)
     {
         var currentUser = userManager.Users.FirstOrDefault(x => x.Id == id);

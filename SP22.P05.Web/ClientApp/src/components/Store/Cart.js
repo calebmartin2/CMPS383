@@ -55,10 +55,6 @@ export default function Cart({ setAmountCart }) {
         return sum.toFixed(2);
     }
 
-    function getIconLink(product) {
-        return `/api/products/icon/${product.id}`
-    }
-
     function buyItems() {
         var tempCart = JSON.parse(cart);
         if (checkForRole('User')) {
@@ -99,7 +95,7 @@ export default function Cart({ setAmountCart }) {
                             <Card style={{ margin: "1em" }} className="blue-border" bg="black" text="white">
                                 <Card.Body><Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: '#FFF'}}><Card.Img style={{
                                     height: "5em", width: "5em", marginRight: "1em"
-                                }} src={getIconLink(product)} /> {product.name}</Link>
+                                }} src={product.iconName} /> {product.name}</Link>
                                     <span style={{ float: "right", paddingTop: "2em"}}>${product.price.toFixed(2)}
                                         <CloseButton style={{ float: "right" }} variant="white" onClick={() => removeItemCart(product.id)}></CloseButton>
                                     </span>

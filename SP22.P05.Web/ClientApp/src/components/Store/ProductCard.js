@@ -3,14 +3,6 @@ import './ProductList.css'
 import { Link } from "react-router-dom";
 import defaultIcon from "../../content/default_ice.png"
 export function ProductCard({ myProduct, cart }) {
-    console.log(cart)
-    function getIconLink() {
-        if (!!myProduct.iconName) {
-            return `/api/products/icon/${myProduct.id}`
-        }
-        // If no icon exists, default image
-        return defaultIcon
-    }
     return (
 
         <Col>
@@ -22,7 +14,7 @@ export function ProductCard({ myProduct, cart }) {
                                 <tr>
                                     <td rowSpan="2"><Card.Img style={{
                                         height: "5em", width: "5em", marginRight: "1em",
-                                    }} variant="left" src={getIconLink()} /></td>
+                                    }} variant="left" src={myProduct.iconName ? myProduct.iconName : defaultIcon}/></td>
                                     <td><Card.Title style={{ fontWeight: 700 }}>{myProduct.name}</Card.Title></td>
                                 </tr>
                                 <tr>
