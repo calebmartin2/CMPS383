@@ -1,14 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export function Login({ setAmountCart }) {
 
     const [userName, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [isLoginFail, setisLoginFail] = useState(false);
-    const [loginSuccess, setLoginSuccess] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const { state } = useLocation();
     let navigate = useNavigate();
@@ -92,8 +91,6 @@ export function Login({ setAmountCart }) {
 export default Login;
 
 function intializeCart(response, setAmountCart, navigate) {
-    // Only if the user is not admin/publisher
-
     //https://stackoverflow.com/questions/65084192/how-can-i-wait-until-the-functions-finish-in-reactjs
     var totalCart = [];
     axios.get('/api/user-products/get-cart')
