@@ -5,7 +5,7 @@ import defaultIcon from "../../content/default_ice.png"
 export function ProductCard({ myProduct }) {
     function getIconLink() {
         if (!!myProduct.iconName) {
-            return `/api/products/icon/${myProduct.id}`
+            return `/api/file/icon/${myProduct.id}`
         }
         // If no icon exists, default image
         return defaultIcon

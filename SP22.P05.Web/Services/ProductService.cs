@@ -29,11 +29,11 @@ namespace SP22.P05.Web.Services
                     SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                     SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
                     PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
-                    Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
+                    //Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                     Status = (int)x.Product.Status,
                     FileName = x.Product.FileName,
                     IconName = x.Product.IconName,
-                    Pictures = x.Product.Pictures.Select(x => "/api/products/picture/" + x.ProductId + "/" + x.Name).ToArray(),
+                    Pictures = x.Product.Pictures.Select(x => "/api/file/picture/" + x.ProductId + "/" + x.Name).ToArray(),
 
                 });
         }
