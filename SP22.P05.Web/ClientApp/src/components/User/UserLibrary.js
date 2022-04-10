@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Col, Form, FormControl, Row } from "react-bootstrap";
+import { Col, Form, FormControl, Row, Spinner } from "react-bootstrap";
 import { handleCartView } from "../Auth/checkForRole";
 import { ProductCardLibrary } from "./ProductCardLibrary";
 export default function UserLibrary() {
@@ -37,7 +37,7 @@ export default function UserLibrary() {
     return (
         <>
             {loading
-                ? <h2>Loading...</h2>
+                ? <Spinner animation="border" variant="info" />
                 : <>{handleCartView()}
                     <Row>
                         <Col xs={4} md={6} lg={8}>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Card, CloseButton } from "react-bootstrap";
+import { Button, Card, CloseButton, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { checkForRole, handleCartView } from "../Auth/checkForRole";
 
@@ -92,7 +92,7 @@ export default function Cart({ setAmountCart }) {
             {/* Bad idea to hardcode, fix later */}
             {handleCartView()}
             <h1>CART</h1>
-            {loading ? "Loading..." : products.length !== 0 ?
+            {loading ? <Spinner animation="border" variant="info" /> : products.length !== 0 ?
                 <div>
                     {products.map((product) => (
                         <div key={product.id}>
@@ -113,7 +113,7 @@ export default function Cart({ setAmountCart }) {
                     </Card>
                     <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() => { if (window.confirm("Are you sure you want to purchase these items for $" + calculateTotal() + "?")) buyItems() }}>Buy Now</Button>
                     <Button style={{ float: "right", margin: "1em" }} onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button>
-                    <p style={{ color: "#888", textDecoration: "underline" }} onClick={() => removeAllItemCart()}>Remove All Items</p>
+                    <p style={{ color: "#888", textDecoration: "underline", width: "fit-content"}} onClick={() => removeAllItemCart()}>Remove All Items</p>
                 </div>
                 : <RenderNoItems />
             }

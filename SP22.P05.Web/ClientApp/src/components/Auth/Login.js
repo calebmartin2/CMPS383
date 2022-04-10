@@ -35,9 +35,8 @@ export function Login({ setAmountCart }) {
             password: password
         })
             .then(function (response) {
-                intializeCart(response, setAmountCart);
+                intializeCart(response, setAmountCart, setLoginSuccess);
                 setisLoginFail(false);
-                setLoginSuccess(true);
                 localStorage.setItem('user', JSON.stringify(response.data));
                 setLoading(false);
             })
@@ -89,7 +88,7 @@ export function Login({ setAmountCart }) {
 
 export default Login;
 
-function intializeCart(response, setAmountCart) {
+function intializeCart(response, setAmountCart, setLoginSuccess) {
     // Only if the user is not admin/publisher
     if (response.data.roles.includes('User')) {
         //https://stackoverflow.com/questions/65084192/how-can-i-wait-until-the-functions-finish-in-reactjs
@@ -111,6 +110,7 @@ function intializeCart(response, setAmountCart) {
                     .then(function (response) {
                         localStorage.setItem("cart", JSON.stringify(response.data.map(String)));
                         setAmountCart(response.data.length);
+                        setLoginSuccess(true);
                     })
                     .catch(function (error) {
                     });

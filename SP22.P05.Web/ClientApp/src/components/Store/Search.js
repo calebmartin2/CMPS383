@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Form, FormControl, Row, Col } from "react-bootstrap";
+import { Button, Form, FormControl, Row, Col, Breadcrumb } from "react-bootstrap";
 import { ProductList } from "./ProductList";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import axios from "axios";
 
 export function Search() {
@@ -18,12 +18,16 @@ export function Search() {
 
     function handleSearch(e) {
         e.preventDefault();
-        const path = axios.getUri({ url: "/search", params: {query: search} });
+        const path = axios.getUri({ url: "/search", params: { query: search } });
         navigate(path)
     }
 
     return (
         <>
+            <Breadcrumb>
+                <Breadcrumb.Item linkAs={Link} to="/" linkProps={{ to: "/" }}>Store</Breadcrumb.Item>
+                <Breadcrumb.Item active>{query}</Breadcrumb.Item>
+            </Breadcrumb>
             <Row>
                 <Col xs={4} md={6} lg={8}>
                     <h1>Searching for: {query}</h1>

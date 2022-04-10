@@ -5,6 +5,7 @@ import { useNavigate  } from "react-router-dom";
 import axios from "axios";
 
 export function Home() {
+
   const [search, setSearch] = useState("");
   const navigate = useNavigate()
 

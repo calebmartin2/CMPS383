@@ -23,8 +23,9 @@ export function Navmenu({ amountCart, setAmountCart }) {
     })
       .then(function (response) {
         console.log(response.data);
-        navigate("/", { replace: true });
         setAmountCart(0);
+        window.location.reload();
+        navigate("/", { replace: true });
       })
       .catch(function (error) {
         console.log(error);

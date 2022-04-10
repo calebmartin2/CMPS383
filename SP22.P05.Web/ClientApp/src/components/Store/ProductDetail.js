@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button, Row, Col } from "react-bootstrap";
+import { Breadcrumb, Button, Row, Col, Spinner } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "../NotFoundPage";
 import { useNavigate } from "react-router-dom";
@@ -69,7 +69,7 @@ export function ProductDetail({ setAmountCart }) {
 
     return (
         <>
-            {loading ? "Loading..." : product ?
+            {loading ?  <Spinner animation="border" variant="info" /> : product ?
                 <>
                     <Breadcrumb>
                         <Breadcrumb.Item linkAs={Link} to="/" linkProps={{ to: "/" }}>Store</Breadcrumb.Item>
@@ -84,7 +84,10 @@ export function ProductDetail({ setAmountCart }) {
                         <Col>
                             <p>Publisher: {product.publisherName}</p>
                             <p>{product.description}</p>
-                            <p>${product.price.toFixed(2)} <AddToCartButton /></p>
+                            <div style={{background: "rgb(33 37 41)", padding: "1em", width: "fit-content", borderRadius: "0.5em"}}>
+                                <span style={{marginRight: "1em"}}>${product.price.toFixed(2)}</span>
+                                <AddToCartButton />
+                            </div>
                         </Col>
                     </Row>
 

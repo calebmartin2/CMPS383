@@ -33,7 +33,6 @@ code {
 .blue-border:hover {
   border-width: 0.2em !important;
   border-image: linear-gradient( #212529, rgb(6, 247, 255), #212529) 1 !important;
-  text-shadow:0px 0px 30px #fdec6e !important;
 }
 
 .modal-content { 
