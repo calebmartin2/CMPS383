@@ -31,8 +31,8 @@ namespace SP22.P05.Web.Services
                     PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
                     //Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                     Status = (int)x.Product.Status,
-                    FileName = x.Product.FileName,
-                    IconName = x.Product.IconName,
+                    FileName = String.IsNullOrEmpty(x.Product.FileName) ? null : "/api/file/download/" + x.Product.Id + "/" + x.Product.FileName,
+                    IconName = String.IsNullOrEmpty(x.Product.IconName) ? null : "/api/file/icon/"  + x.Product.Id,
                     Pictures = x.Product.Pictures.Select(x => "/api/file/picture/" + x.ProductId + "/" + x.Name).ToArray(),
 
                 });
