@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Button, Form } from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export function Login({ setAmountCart }) {
@@ -77,7 +77,14 @@ export function Login({ setAmountCart }) {
                     <Form.Label>Password</Form.Label>
                     <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
-                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }} disabled={isLoading}>LOGIN
+                <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }} disabled={isLoading}>
+                     {isLoading ? <><Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                    /> LOGGING IN</> : 'LOGIN'}
                 </Button>
                 <Link to="/SignUp" style={{ color: "#84AEC8" }}><br />
                     New to ICE?

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { Breadcrumb, Button, Dropdown, DropdownButton, Form, InputGroup, Modal, Table } from "react-bootstrap";
+import { Breadcrumb, Button, Dropdown, DropdownButton, Form, InputGroup, Modal, Table, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 
@@ -14,8 +14,7 @@ export function AdminManageProducts() {
     const [productId, setProductId] = useState("");
     const iconRef = useRef(null);
     const pictureRef = useRef(null);
-
-
+    const [loading, setLoading] = useState(false);
 
     const handleClose = () => {
         setName("");
@@ -63,6 +62,7 @@ export function AdminManageProducts() {
 
 
     const handleEdit = (e) => {
+        setLoading(true);
         e.preventDefault();
         console.log(productId);
         var bodyFormData = new FormData();
@@ -85,9 +85,11 @@ export function AdminManageProducts() {
             .then(function (response) {
                 fetchProducts();
                 handleClose();
+                setLoading(false);
             })
             .catch(function (error) {
                 console.log(error);
+                setLoading(false);
             })
 
     }
@@ -199,8 +201,15 @@ export function AdminManageProducts() {
                             <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={pictureRef} multiple></Form.Control>
                         </Form.Group>
                         <Modal.Footer>
-                        <Button className="custom-primary-btn" variant="primary" type="submit">
-                            Save Changes
+                        <Button className="custom-primary-btn" variant="primary" type="submit" disabled={loading}>
+                        {loading ? <><Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                    /> Saving Changes </> : 'Save Changes'}
+                            
                         </Button>
                         <Button variant="danger" onClick={handleClose} >
                             Discard
