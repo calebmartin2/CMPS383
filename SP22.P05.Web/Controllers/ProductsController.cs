@@ -62,14 +62,14 @@ public class ProductsController : ControllerBase
     public IEnumerable<ProductDto> GetAllProducts(int[] id)
     {
         var products = dataContext.Set<Product>().Where(x => id.Contains(x.Id));
-        return productService.GetProductDtos(products).ToArray();
+        return productService.GetProductDtos(products);
     }
 
     [HttpGet, Route("sales")]
     public IEnumerable<ProductDto> GetProductsOnSale()
     {
         var products = dataContext.Set<Product>();
-        return productService.GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
+        return productService.GetProductDtos(products).Where(x => x.SalePrice != null);
     }
 
     [HttpPost, Authorize(Roles = RoleNames.Publisher)]
@@ -305,7 +305,7 @@ public class ProductsController : ControllerBase
         var products = dataContext.Set<Product>();
         var publisherId = User.GetCurrentUserId();
 
-        return productService.GetProductDtos(products.Where(x => x.PublisherId == publisherId)).ToArray();
+        return productService.GetProductDtos(products.Where(x => x.PublisherId == publisherId));
     }
 
     [HttpGet("library"), Authorize(Roles = RoleNames.User)]
@@ -316,7 +316,10 @@ public class ProductsController : ControllerBase
         {
             return BadRequest();
         }
-        var products = dataContext.Set<ProductUser>().Where(x => x.UserId == userId).Select(x => x.Product);
+        var products = dataContext.Set<ProductUser>()
+            .Where(x => x.UserId == userId)
+            .Where(x => !(x.Product.Status == Product.StatusType.Inactive))
+            .Select(x => x.Product);
         if (products == null)
         {
             return NotFound();

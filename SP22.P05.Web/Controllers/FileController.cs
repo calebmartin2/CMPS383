@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SP22.P05.Web.Data;
+using SP22.P05.Web.Extensions;
+using SP22.P05.Web.Features.Authorization;
 using SP22.P05.Web.Features.Products;
 
 namespace SP22.P05.Web.Controllers;
@@ -14,7 +17,7 @@ public class FileController : Controller
         this.dataContext = dataContext;
 
     }
-    [HttpPost("updatefile")]
+    [HttpPost("updatefile"), Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult UpdateFile(IFormFile file, [FromForm] int productId)
     {
         var product = dataContext.Set<Product>().First(x => x.Id == productId);
@@ -52,9 +55,30 @@ public class FileController : Controller
         }
     }
 
-    [HttpGet("download/{productId}/{fileName}")]
-    public FileResult DownloadFile(int productId, string fileName)
+    [HttpGet("download/{productId}/{fileName}"), Authorize]
+    public IActionResult DownloadFile(int productId, string fileName)
     {
+        var product = dataContext.Set<Product>().First(x => x.Id == productId);
+        if (product == null)
+        {
+            return NotFound("Product not found");
+        }
+        if (product.Status == Product.StatusType.Inactive)
+        {
+            return BadRequest("Product is inactive");
+        }
+        int? userId = User.GetCurrentUserId();
+        // Check if user has item in library
+        if (User.IsInRole(RoleNames.User) && dataContext.Set<ProductUser>().First(x => x.UserId == userId && x.ProductId == productId) == null)
+        {
+            return BadRequest("User does not have item in library");
+        }
+        // Check if publisher has item in library
+        if ((User.IsInRole(RoleNames.Publisher) || User.IsInRole(RoleNames.PendingPublisher)) && dataContext.Set<Product>().First(x => x.PublisherId == userId) == null)
+        {
+            return BadRequest("Publisher does not own item");
+        }
+
         // UNSAFE CODE: user can pass something like ../../ and access files they should not have access to.
         string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", fileName);
         byte[] bytes = System.IO.File.ReadAllBytes(path);
@@ -92,7 +116,7 @@ public class FileController : Controller
         return File(bytes, "application/octet-stream", fileName);
     }
 
-    [HttpPost("uploadPic/{id}")]
+    [HttpPost("uploadPic/{id}"), Authorize(Roles = RoleNames.AdminOrPublisher)]
     //https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
     public async Task<ActionResult> UploadPicturesAsync(List<IFormFile> pictures, int id)
     {
