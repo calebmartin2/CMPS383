@@ -37,10 +37,10 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("manage"), Authorize(Roles = RoleNames.Admin)]
-    public ProductDto[] GetManageAllProducts()
+    public IEnumerable<ProductDto> GetManageAllProducts()
     {
         var products = dataContext.Set<Product>();
-        return productService.GetProductDtos(products).ToArray();
+        return productService.GetProductDtos(products);
     }
 
     [HttpGet, Route("{id}")]
@@ -59,14 +59,14 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost("select")]
-    public ProductDto[] GetAllProducts(int[] id)
+    public IEnumerable<ProductDto> GetAllProducts(int[] id)
     {
         var products = dataContext.Set<Product>().Where(x => id.Contains(x.Id));
         return productService.GetProductDtos(products).ToArray();
     }
 
     [HttpGet, Route("sales")]
-    public ProductDto[] GetProductsOnSale()
+    public IEnumerable<ProductDto> GetProductsOnSale()
     {
         var products = dataContext.Set<Product>();
         return productService.GetProductDtos(products).Where(x => x.SalePrice != null).ToArray();
@@ -300,7 +300,7 @@ public class ProductsController : ControllerBase
 
 
     [HttpGet("/api/publisher/products"), Authorize(Roles = RoleNames.Publisher)]
-    public ProductDto[] GetPublisherProducts()
+    public IEnumerable<ProductDto> GetPublisherProducts()
     {
         var products = dataContext.Set<Product>();
         var publisherId = User.GetCurrentUserId();
