@@ -316,7 +316,10 @@ public class ProductsController : ControllerBase
         {
             return BadRequest();
         }
-        var products = dataContext.Set<ProductUser>().Where(x => x.UserId == userId).Select(x => x.Product);
+        var products = dataContext.Set<ProductUser>()
+            .Where(x => x.UserId == userId)
+            .Where(x => !(x.Product.Status == Product.StatusType.Inactive))
+            .Select(x => x.Product);
         if (products == null)
         {
             return NotFound();
