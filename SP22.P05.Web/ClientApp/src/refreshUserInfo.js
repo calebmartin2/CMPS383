@@ -1,11 +1,11 @@
 import axios from "axios";
+import { isEqual } from "lodash";
 export function refreshUserInfo() {
       // this is nonsense, but we're stuck with it
-    var _ = require('lodash');
     axios.get('/api/authentication/me', {
     })
       .then(function (response) {
-        if (!_.isEqual(JSON.parse(localStorage.getItem('user')), response.data)) {
+        if (!isEqual(JSON.parse(localStorage.getItem('user')), response.data)) {
           localStorage.removeItem('user');
           localStorage.setItem('user', JSON.stringify(response.data))
           console.error("User data different, refreshing.")

@@ -6,6 +6,7 @@ import NotFoundPage from "../NotFoundPage";
 import { useNavigate } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 import { ProductCarousel } from "./Carousel";
+import { uniq } from "lodash";
 export function ProductDetail({ setAmountCart }) {
     let navigate = useNavigate();
 
@@ -13,7 +14,6 @@ export function ProductDetail({ setAmountCart }) {
     const [product, setProduct] = useState();
     const [loading, setLoading] = useState(true);
     const [inCart, setInCart] = useState(false);
-    var _ = require('lodash');
 
     useEffect(() => {
         var allCart = JSON.parse(localStorage.getItem("cart"));
@@ -47,7 +47,7 @@ export function ProductDetail({ setAmountCart }) {
         }
         allCart.push(productId);
         //https://stackoverflow.com/questions/31740155/lodash-remove-duplicates-from-array
-        localStorage.setItem("cart", JSON.stringify(_.uniqWith(allCart, _.isEqual)));
+        localStorage.setItem("cart", JSON.stringify(uniq(allCart)));
         setInCart(true);
         setAmountCart(allCart.length);
     }
