@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Button, Form } from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -14,7 +14,7 @@ export function PublisherSignUp() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [show, setShow] = useState(false);
     const [isLoading, setLoading] = useState(false);
-
+    const [success] = useState(true);
 
     useEffect(() => {
         document.title = "ICE - Publisher Sign Up"
@@ -39,7 +39,7 @@ export function PublisherSignUp() {
         })
             .then(function (response) {
                 console.log(response.data);
-                navigate("/Login", { replace: true });
+                navigate("/Login", {state: {success: success } });
                 setLoading(false);
             })
             .catch(function (error) {
@@ -78,7 +78,13 @@ export function PublisherSignUp() {
                     <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms and Conditions</Link></>}/> 
                 </Form.Group>
                 <Button variant="primary" type="submit" className="custom-primary-btn" disabled={isLoading}>
-                    SIGN UP
+                {isLoading ? <><Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                    /> SIGN UP </> : 'SIGN UP'}
                 </Button>
                 <Link to="/Login" style={{ color: "#84AEC8" }}><br />
                     Already a Publisher?

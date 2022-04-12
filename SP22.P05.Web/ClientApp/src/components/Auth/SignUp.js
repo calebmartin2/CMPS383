@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -66,7 +66,13 @@ export function SignUp() {
                     <Form.Check required type="checkbox" label={<>I agree to the <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#84AEC8" }}>Terms and Conditions</Link></>} />
                 </Form.Group>
                 <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }} disabled={isLoading}>
-                    SIGN UP
+                {isLoading ? <><Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                    /> SIGNING UP </> : 'SIGN UP'}
                 </Button>
                 <Link to="/Login" style={{ color: "#84AEC8" }}><br />
                     Already a Member?

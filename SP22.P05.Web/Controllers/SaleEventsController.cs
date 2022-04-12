@@ -45,8 +45,7 @@ public class SaleEventsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpPost, Authorize(Roles = RoleNames.Admin)]
     public ActionResult<SaleEventDto> CreateSalesEvent(SaleEventDto saleEventDto)
     {
         if (saleEventDto.StartUtc >= saleEventDto.EndUtc)
@@ -80,8 +79,7 @@ public class SaleEventsController : ControllerBase
         return CreatedAtAction(nameof(GetSaleEventById), new { id = saleEventDto.Id }, saleEventDto);
     }
 
-    [HttpPut("{saleEventId}/add-product/{productId}")]
-    [Authorize(Roles = RoleNames.Admin)]
+    [HttpPut("{saleEventId}/add-product/{productId}"), Authorize(Roles = RoleNames.Admin)]
     public ActionResult<SaleEventDto> AddProductToSale(int saleEventId, int productId, SaleEventProductDto body)
     {
         var saleEvents = dataContext.Set<SaleEvent>();

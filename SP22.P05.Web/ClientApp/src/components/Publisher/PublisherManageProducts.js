@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from 'react';
-import { Breadcrumb, Button, Dropdown, DropdownButton, Form, InputGroup, Modal, Table } from "react-bootstrap";
+import { Breadcrumb, Button, Dropdown, DropdownButton, Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { AddOrEditProduct } from "./AddOrEditProduct";
+import { UpdateProduct } from "./UpdateProduct";
 
 export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
@@ -16,7 +18,6 @@ export default function PublisherManageProducts() {
     const [isEdit, setIsEdit] = useState(false);
     const [isUpdateFile, setIsUpdateFile] = useState(false);
     const [productId, setProductId] = useState("");
-    // const [file, setFile] = useState("");
     const fileRef = useRef(null);
     const iconRef = useRef(null);
     const pictureRef = useRef(null);
@@ -30,7 +31,6 @@ export default function PublisherManageProducts() {
         setShow(false);
         setIsEdit(false);
         setIsUpdateFile(false);
-        // setFile(null);
     }
     const handleShow = () => setShow(true);
 
@@ -50,7 +50,6 @@ export default function PublisherManageProducts() {
 
     useEffect(() => {
         document.title = "ICE - Manage Products"
-
         fetchProducts();
     }, [])
 
@@ -67,8 +66,6 @@ export default function PublisherManageProducts() {
         for (var i = 0; i < pictureRef.current.files.length; i++) {
             bodyFormData.append("pictures", pictureRef.current.files[i]);
         }
-        
-
 
         axios({
             method: "post",
@@ -103,7 +100,6 @@ export default function PublisherManageProducts() {
         for (var i = 0; i < pictureRef.current.files.length; i++) {
             bodyFormData.append("pictures", pictureRef.current.files[i]);
         }
-
         axios({
             method: "put",
             url: "/api/products/" + productId,
@@ -120,7 +116,6 @@ export default function PublisherManageProducts() {
                 console.log(error);
                 setAddEditLoading(false);
             })
-
     }
 
     function handleEditShow(product) {
@@ -142,7 +137,7 @@ export default function PublisherManageProducts() {
         console.log("PROD: " + productId);
         axios({
             method: "post",
-            url: "/api/products/updatefile",
+            url: "/api/file/updatefile",
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
         })
@@ -165,7 +160,6 @@ export default function PublisherManageProducts() {
         setIsUpdateFile(true);
         handleShow();
     }
-
 
     function showModalTitle() {
         if (isEdit) {
@@ -215,7 +209,7 @@ export default function PublisherManageProducts() {
                                     <td>
                                         <DropdownButton id="dropdown-item-button" title="Actions">
                                             <Dropdown.Item as="button"><Link to={`/product/${product.id}/${product.name.replace(/ /g, "_")}`} style={{ textDecoration: 'none' }}>Go to Store Page</Link></Dropdown.Item>
-                                            <Dropdown.Item as="button"><Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download>Download</Link></Dropdown.Item>
+                                            <Dropdown.Item as="button"><Link to={product.fileName} target="_blank" download>Download</Link></Dropdown.Item>
                                             <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit Info</Dropdown.Item>
                                             <Dropdown.Item as="button" onClick={() => handleUpdateFileShow(product)} >Update File</Dropdown.Item>
                                         </DropdownButton>
@@ -232,66 +226,12 @@ export default function PublisherManageProducts() {
     );
 
     function addOrEditForm() {
-        return <Form onSubmit={isEdit ? handleEdit : handleAdd}>
-            <Form.Group className="mb-2" controlId="formBasicName">
-                <Form.Label>Name</Form.Label>
-                <Form.Control required type="text" placeholder="Enter Name" maxLength="120" value={name} onChange={(e) => setName(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-2" controlId="formBasicBlurb">
-                <Form.Label>Blurb</Form.Label>
-                <Form.Control required type="text" placeholder="Blurb" maxLength="240" value={blurb} onChange={(e) => setBlurb(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-2" controlId="formBasicDescription">
-                <Form.Label>Description</Form.Label>
-                <Form.Control required as="textarea" rows={5} placeholder="Description" maxLength="2000" value={description} onChange={(e) => setDescription(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-4" controlId="formBasicPrice">
-                <Form.Label>Price</Form.Label>
-                <InputGroup>
-                    <InputGroup.Text>$</InputGroup.Text>
-                    <Form.Control required min="0.01" step="0.01" max="999.99" type="number" placeholder="0.00" value={price} onChange={(e) => setPrice(e.target.value)} />
-                </InputGroup>
-            </Form.Group>
-            {!isEdit && <Form.Group className="mb-4">
-                <Form.Label>File</Form.Label>
-                <Form.Control type="file" ref={fileRef}></Form.Control>
-            </Form.Group>}
-            <Form.Group className="mb-4">
-                <Form.Label>Icon (must be 1:1, max size 100KiB)</Form.Label>
-                <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={iconRef}></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-4">
-                <Form.Label>Pictures</Form.Label>
-                <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={pictureRef} multiple></Form.Control>
-            </Form.Group>
-            <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
-                {isEdit ? <>Save Changes</> : <>Add</>}
-            </Button>
-            <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
-                Discard
-            </Button>
-            {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
-        </Form>;
+        return AddOrEditProduct(isEdit, handleEdit, handleAdd, name, setName, blurb, setBlurb, description, setDescription, price, setPrice, fileRef, iconRef, pictureRef, addEditLoading, handleClose, addProductError);
     }
+
     function updateFileForm() {
         return (
-            <Form onSubmit={handleUpdateFile}>
-                <InputGroup>
-                    <Form.Group className="mb-4">
-                        <Form.Label>File</Form.Label>
-                        <Form.Control required type="file" ref={fileRef}></Form.Control>
-                    </Form.Group>
-                </InputGroup>
-                <Button className="custom-primary-btn" variant="primary" type="submit" disabled={addEditLoading}>
-                    Update File
-                </Button>
-                <Button variant="danger" onClick={handleClose} style={{marginLeft: "0.5em"}}>
-                    Discard
-                </Button>
-                {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
-            </Form>
+            UpdateProduct(handleUpdateFile, fileRef, addEditLoading, handleClose, addProductError)
         )
     }
 }
-
-
