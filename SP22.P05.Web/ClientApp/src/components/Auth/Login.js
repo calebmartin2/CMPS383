@@ -41,7 +41,8 @@ export function Login({ setAmountCart }) {
                 if (response.data.roles.includes('User')) {
                     intializeCart(response, setAmountCart, navigate);
                 } else {
-                    navigate("/")
+                    localStorage.removeItem('cart');
+                    navigate("/");
                 }
             })
             .catch(function (error) {
