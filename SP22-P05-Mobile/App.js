@@ -4,11 +4,12 @@ import HomeScreen from './Screens/HomeScreen.js';
 import ProductInfo from './Screens/ProductInfo.js';
 import LoginScreen from './Screens/LoginScreen.js';
 import SignUpScreen from './Screens/SignUpScreen.js';
+import LibraryScreen from './Screens/LibraryScreen.js';
 import TermsAndConditions from './Screens/TermsAndConditons.js';
 import { AuthCookieProvider } from './Authorization/AuthCookieProvider.js';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import ShoppingCart from './Screens/ShoppingCart.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,8 @@ function Root() {
             : 'ios-person-circle';
         } else if (route.name === 'Store') {
           iconName = focused ? 'ios-apps' : 'ios-apps';
+        } else if (route.name === 'Shopping Cart') {
+          iconName = focused ? 'ios-cart' : 'ios-cart';
         }
 
         // You can return any component that you like here!
@@ -57,6 +60,16 @@ function Root() {
           fontWeight: 'bold',
         },
       }}/>
+      <Tab.Screen name="Shopping Cart" component={ShoppingCart} options={{
+        title: 'Shopping Cart',
+        headerStyle: {
+          backgroundColor: 'rgb(33,37,41)',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}/>
     </Tab.Navigator>
   )
 }
@@ -76,6 +89,16 @@ function App() {
           <Stack.Screen name="ICE - Store" component={HomeScreen} 
           />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Library" component={LibraryScreen} options ={{
+            title: 'Library',
+            headerStyle: {
+              backgroundColor: 'rgb(33,37,41)'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            }}} />
+
           <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} options={{
         title: 'Terms and Conditions', headerStyle: {
           backgroundColor: 'rgb(33,37,41)',
