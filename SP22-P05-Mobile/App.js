@@ -28,6 +28,8 @@ function Root() {
             : 'ios-person-circle';
         } else if (route.name === 'Store') {
           iconName = focused ? 'ios-apps' : 'ios-apps';
+        } else if (route.name === 'Shopping Cart') {
+          iconName = focused ? 'ios-cart' : 'ios-cart';
         }
 
         // You can return any component that you like here!
