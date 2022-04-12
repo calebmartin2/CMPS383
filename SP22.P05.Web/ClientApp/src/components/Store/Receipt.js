@@ -31,7 +31,7 @@ export default function Receipt() {
             {products.map((product) => (
                 <div key={product.id}>
                     <div> <img style={{ height: "5em", width: "5em", marginBottom: "1em" }} src={product.iconName} alt="Logo of product" /> {product.name} ${product.price.toFixed(2)}
-                        <Link to={`/api/products/download/${product.id}/${product.fileName}`} target="_blank" download
+                        <Link to={product.fileName} target="_blank" download
                             style={{ backgroundColor: "green", color: "#ddd", padding: "0.2em", marginLeft: "0.5em", textDecoration: "none" }}>Download
                         </Link>
                     </div>
