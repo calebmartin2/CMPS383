@@ -31,8 +31,20 @@ public class ProductsController : ControllerBase
         if (!String.IsNullOrEmpty(query)) {
             products = products.Where(x => x.Name!.Contains(query));
         }
-        var retval = productService.GetProductDtos(products);
-        // Get the users library, only if they are a user
+        var retval = productService.GetProductDtos(products).ToList();
+
+        
+        if (User.IsInRole(RoleNames.User))
+        {
+
+            var userId = User.GetCurrentUserId();
+            var productUser = dataContext.Set<ProductUser>().Where(x => x.UserId == userId);
+            foreach (var product in retval)
+            {
+                product.IsInLibrary = !(productUser.FirstOrDefault(x => x.ProductId == product.Id) == null);
+            }
+        }
+
         return retval;
     }
 
@@ -112,9 +124,15 @@ public class ProductsController : ControllerBase
         List<Picture> pictureList = new List<Picture>();
         try
         {
+            //foreach (var picture in productDto.Pictures)
+            //{
+                //Validate images are 16:9
+                //Valide image sizes are 5MiB (5242880 bytes)
+            //}
             // Handle adding pictures
             foreach (var formFile in productDto.Pictures)
             {
+                
                 if (formFile.Length > 0)
                 {
                     string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
