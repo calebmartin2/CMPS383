@@ -1,12 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using SP22.P05.Web.Data;
 using SP22.P05.Web.Features.Authorization;
+using SP22.P05.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataContext")));
 
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<DataContext>();
+
+//Services
+builder.Services.AddTransient<IProductService, ProductService>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

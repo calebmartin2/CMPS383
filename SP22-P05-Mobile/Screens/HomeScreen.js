@@ -34,11 +34,6 @@ export default function HomeScreen({ navigation }) {
         fetchProducts();
     }, [])
 
-
-    function getIconLink(id) {
-        return (baseUrl + `/api/products/icon/${id}`)
-    }
-
     return (
         <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.container}>
@@ -49,7 +44,7 @@ export default function HomeScreen({ navigation }) {
                             <Grid>
                                 <Col style={{ width: 120 }}>
                                 <Image style={{width: 100,
-    height: 100,}} source={{ uri: getIconLink(product.id) }}/>
+    height: 100,}} source={{ uri: baseUrl + product.iconName }}/>
 
                                 </Col>
                                 <Col>

@@ -104,6 +104,10 @@ export default function LoginScreen({ navigation }) {
         :
         <View style={styles.container}>
           <Text style={styles.username}>Hello, {userName}!</Text>
+          <Button
+            title = "Go To Library"
+            onPress={() => navigation.navigate('Library')}
+          />
           <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
             <Text style={styles.loginText}>LOGOUT</Text>
           </TouchableOpacity>

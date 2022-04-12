@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button, Row, Col } from "react-bootstrap";
+import { Breadcrumb, Button, Row, Col, Spinner } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "../NotFoundPage";
 import { useNavigate } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 import { ProductCarousel } from "./Carousel";
+import { uniq } from "lodash";
 export function ProductDetail({ setAmountCart }) {
     let navigate = useNavigate();
 
@@ -13,7 +14,6 @@ export function ProductDetail({ setAmountCart }) {
     const [product, setProduct] = useState();
     const [loading, setLoading] = useState(true);
     const [inCart, setInCart] = useState(false);
-    var _ = require('lodash');
 
     useEffect(() => {
         var allCart = JSON.parse(localStorage.getItem("cart"));
@@ -47,7 +47,7 @@ export function ProductDetail({ setAmountCart }) {
         }
         allCart.push(productId);
         //https://stackoverflow.com/questions/31740155/lodash-remove-duplicates-from-array
-        localStorage.setItem("cart", JSON.stringify(_.uniqWith(allCart, _.isEqual)));
+        localStorage.setItem("cart", JSON.stringify(uniq(allCart)));
         setInCart(true);
         setAmountCart(allCart.length);
     }
@@ -69,7 +69,7 @@ export function ProductDetail({ setAmountCart }) {
 
     return (
         <>
-            {loading ? "Loading..." : product ?
+            {loading ?  <Spinner animation="border" variant="info" /> : product ?
                 <>
                     <Breadcrumb>
                         <Breadcrumb.Item linkAs={Link} to="/" linkProps={{ to: "/" }}>Store</Breadcrumb.Item>
@@ -83,10 +83,11 @@ export function ProductDetail({ setAmountCart }) {
                         </Col>
                         <Col>
                             <p>Publisher: {product.publisherName}</p>
-                            <p>{product.blurb}</p>
                             <p>{product.description}</p>
-                            <p>${product.price.toFixed(2)}</p>
-                            <AddToCartButton />
+                            <div style={{background: "rgb(33 37 41)", padding: "1em", width: "fit-content", borderRadius: "0.5em"}}>
+                                <span style={{marginRight: "1em"}}>${product.price.toFixed(2)}</span>
+                                <AddToCartButton />
+                            </div>
                         </Col>
                     </Row>
 

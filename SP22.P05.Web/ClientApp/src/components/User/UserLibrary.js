@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Col, Form, FormControl, Row } from "react-bootstrap";
+import { Col, Form, FormControl, Row, Spinner } from "react-bootstrap";
 import { handleCartView } from "../Auth/checkForRole";
 import { ProductCardLibrary } from "./ProductCardLibrary";
 export default function UserLibrary() {
@@ -11,41 +11,44 @@ export default function UserLibrary() {
     useEffect(() => {
         const controller = new AbortController();
         document.title = "ICE - Library"
-        axios({
-            signal: controller.signal,
-            url: '/api/products/library',
-            params: { query: search },
-            method: 'get',
-        })
-            .then(function (response) {
-                setLoading(false);
-                setProducts(response.data);
-
+        const delayDebounceFn = setTimeout(() => {
+            axios({
+                signal: controller.signal,
+                url: '/api/products/library',
+                params: { query: search },
+                method: 'get',
             })
-            .catch(function (error) {
-                setLoading(false);
-                console.log(error);
-            });
+                .then(function (response) {
+                    setLoading(false);
+                    setProducts(response.data);
+
+                })
+                .catch(function (error) {
+                    setLoading(false);
+                    console.log(error);
+                });
+        }, 100)
         return () => {
             controller.abort();
+            clearTimeout(delayDebounceFn);
         }
     }, [search]);
 
     return (
         <>
             {loading
-                ? <h2>Loading...</h2>
+                ? <Spinner animation="border" variant="info" />
                 : <>{handleCartView()}
                     <Row>
                         <Col xs={4} md={6} lg={8}>
                             <h1>LIBRARY</h1>
-                            {!products.length && <h3 style={{ color: "lightGray" }}>Product not in library.</h3>}
+                            {!products.length && <h3 style={{ color: "lightGray" }}>No products.</h3>}
                         </Col>
                         <Col xs={8} md={6} lg={4}>
                             <Form className="d-flex" onSubmit={e => { e.preventDefault() }}>
                                 <FormControl
                                     type="text"
-                                    placeholder="Search"
+                                    placeholder="Search by Name"
                                     className="me-2"
                                     onChange={(e) => setSearch(e.target.value)}
                                 />

@@ -5,6 +5,7 @@ import { useNavigate  } from "react-router-dom";
 import axios from "axios";
 
 export function Home() {
+
   const [search, setSearch] = useState("");
   const navigate = useNavigate()
 
@@ -23,7 +24,7 @@ export function Home() {
           <Form className="d-flex" onSubmit={(e) => handleSearch(e)}>
             <FormControl
               type="search"
-              placeholder="Search"
+              placeholder="Search by Name"
               className="me-2"
               onChange={(e) => setSearch(e.target.value)}
               required

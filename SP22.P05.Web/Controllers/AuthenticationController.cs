@@ -22,8 +22,7 @@ namespace SP22.P05.Web.Controllers
             this.userManager = userManager;
         }
 
-        [HttpGet("me")]
-        [Authorize]
+        [HttpGet("me"), Authorize]
         public async Task<ActionResult<UserDto>> Me()
         {
             var username = User.GetCurrentUserName();
@@ -51,8 +50,7 @@ namespace SP22.P05.Web.Controllers
             return Ok(resultDto);
         }
 
-        [HttpPost("logout")]
-        [Authorize]
+        [HttpPost("logout"), Authorize]
         public async Task<ActionResult> Logout()
         {
             await signInManager.SignOutAsync();
