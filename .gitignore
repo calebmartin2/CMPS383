@@ -263,3 +263,4 @@ paket-files/
 __pycache__/
 *.pyc
 SP22.P05.Web/ProductFiles
+SP22-P05-Mobile/BaseUrl.js
