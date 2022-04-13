@@ -100,6 +100,27 @@ public class ProductsController : ControllerBase
                 return BadRequest("Image not 1:1 aspect ratio");
             }
         }
+        foreach (var picture in productDto.Pictures)
+        {
+            //using (var image = new MagickImage(picture))
+            using (var image = new MagickImage(picture.OpenReadStream()))
+            {
+                double ratio = (double)image.Width / image.Height;
+
+
+                if (ratio < 1.770 || ratio > 1.78)
+                {
+                    return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
+                }
+
+                if (picture.Length > 5242880)
+                {
+                    return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
+                }
+
+            }
+
+        }
         if (productDto.icon.Length > 102400)
         {
             return BadRequest("Icon file is too large. Max file size is 100KiB");
@@ -124,11 +145,7 @@ public class ProductsController : ControllerBase
         List<Picture> pictureList = new List<Picture>();
         try
         {
-            //foreach (var picture in productDto.Pictures)
-            //{
-                //Validate images are 16:9
-                //Valide image sizes are 5MiB (5242880 bytes)
-            //}
+           
             // Handle adding pictures
             foreach (var formFile in productDto.Pictures)
             {
