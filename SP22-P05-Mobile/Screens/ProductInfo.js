@@ -1,9 +1,11 @@
 import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-elements';
-
+import {useContext} from "react";
+import { Button, Text } from 'react-native-elements';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProductInfo({ route }) {
-    const { product } = route.params;
+    const { product } = route.params; 
+
     return (
         <>
             <View style={styles.container}>
@@ -18,6 +20,7 @@ export default function ProductInfo({ route }) {
                     ))}
                 </View> */}
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                <Button title="Add to cart"/>
             </View>
         </>
     )

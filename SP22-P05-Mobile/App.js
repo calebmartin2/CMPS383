@@ -10,6 +10,7 @@ import { AuthCookieProvider } from './Authorization/AuthCookieProvider.js';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ShoppingCart from './Screens/ShoppingCart.js';
+import { CartItemProvider } from './Authorization/CartItemProvider.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -79,6 +80,7 @@ function App() {
 
   return (
     <AuthCookieProvider>
+      <CartItemProvider>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
@@ -129,6 +131,7 @@ function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      </CartItemProvider>
     </AuthCookieProvider>
   );
 }
