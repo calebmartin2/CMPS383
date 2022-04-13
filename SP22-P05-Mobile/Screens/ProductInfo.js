@@ -2,10 +2,14 @@ import { StyleSheet, View } from 'react-native';
 import {useContext} from "react";
 import { Button, Text } from 'react-native-elements';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import cartContext from "../Authorization/CartItemProvider"
 
 export default function ProductInfo({ route }) {
     const { product } = route.params; 
-
+    const { cartItem, saveCartItem} = useContext(cartContext);
+    function handleAddCart(id) {
+        saveCartItem(JSON.stringify(id));
+    }
     return (
         <>
             <View style={styles.container}>
@@ -20,11 +24,13 @@ export default function ProductInfo({ route }) {
                     ))}
                 </View> */}
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                <Button title="Add to cart"/>
+                <Button title="Add to cart" onPress={() => handleAddCart(product.id)}/>
             </View>
         </>
     )
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
