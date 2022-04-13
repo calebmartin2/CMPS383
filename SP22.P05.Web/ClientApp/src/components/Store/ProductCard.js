@@ -24,9 +24,12 @@ export function ProductCard({ myProduct, cart }) {
                         </table>
                     </Card.Body>
                     <Card.Footer>
-                        <Card.Text style={{ float: "left", color: "#999" }}>{myProduct.publisherName}</Card.Text>
-                         {cart.includes(myProduct.id) && "In Cart "}
-                        ${myProduct.price.toFixed(2)}
+                        <Card.Text> <span style={{ float: "left", color: "#999" }}> {myProduct.publisherName}</span>
+                            {cart.includes(myProduct.id) && <span style={{ backgroundColor: "#0d6efd", paddingLeft: "0.2em", paddingRight: "0.2em" }}>In Cart</span>}&nbsp;
+                            {myProduct.isInLibrary && <span style={{ backgroundColor: "green", paddingLeft: "0.2em", paddingRight: "0.2em" }}>In Library</span>}&nbsp;
+
+                            ${myProduct.price.toFixed(2)}
+                        </Card.Text>
                     </Card.Footer>
                 </Card>
             </Link>

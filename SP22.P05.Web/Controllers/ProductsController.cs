@@ -124,9 +124,15 @@ public class ProductsController : ControllerBase
         List<Picture> pictureList = new List<Picture>();
         try
         {
+            //foreach (var picture in productDto.Pictures)
+            //{
+                //Validate images are 16:9
+                //Valide image sizes are 5MiB (5242880 bytes)
+            //}
             // Handle adding pictures
             foreach (var formFile in productDto.Pictures)
             {
+                
                 if (formFile.Length > 0)
                 {
                     string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
