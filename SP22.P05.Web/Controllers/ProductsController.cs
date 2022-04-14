@@ -31,9 +31,10 @@ public class ProductsController : ControllerBase
         if (!String.IsNullOrEmpty(query)) {
             products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
         }
+        products = products.OrderByDescending(x => x.UserInfos.Count());
         var retval = productService.GetProductDtos(products).ToList();
 
-        
+
         if (User.IsInRole(RoleNames.User))
         {
 
@@ -144,7 +145,7 @@ public class ProductsController : ControllerBase
             Blurb = productDto.Blurb,
             Price = productDto.Price,
             PublisherId = (int)publisherId,
-            Status = Product.StatusType.Active,
+            Status = Product.StatusType.Inactive,
             FileName = productDto.file.FileName,
             IconName = newIconGuid
         };
