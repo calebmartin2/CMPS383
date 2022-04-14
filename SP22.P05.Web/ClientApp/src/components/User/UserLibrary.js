@@ -48,7 +48,7 @@ export default function UserLibrary() {
                             <Form className="d-flex" onSubmit={e => { e.preventDefault() }}>
                                 <FormControl
                                     type="text"
-                                    placeholder="Search by Name"
+                                    placeholder="Search"
                                     className="me-2"
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
