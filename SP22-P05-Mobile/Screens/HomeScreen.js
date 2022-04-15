@@ -58,6 +58,7 @@ export default function HomeScreen({ navigation }) {
                             </Grid>
                             <View style={styles.container2}>
                                 <Text style={styles.price}>{product.publisherName}</Text>
+                                <Text style={styles.empty}> {product.isInLibrary && "IN LIBRARY"}</Text>
                                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
                             </View>
                         </Card>
@@ -103,5 +104,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
+    empty: {
+        color: 'rgb(128,128,128)',
+        fontSize: 18,
+        fontWeight: "300",
+    }
 });
 

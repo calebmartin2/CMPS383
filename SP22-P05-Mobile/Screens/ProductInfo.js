@@ -6,9 +6,9 @@ import cartContext from "../Authorization/CartItemProvider"
 
 export default function ProductInfo({ route }) {
     const { product } = route.params; 
-    const { cartItem, saveCartItem} = useContext(cartContext);
+    const { cartItem, saveCartItem, appendCartItem} = useContext(cartContext);
     function handleAddCart(id) {
-        saveCartItem(JSON.stringify(id));
+        appendCartItem(JSON.stringify(id));
     }
     return (
         <>
