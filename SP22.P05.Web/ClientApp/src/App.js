@@ -1,28 +1,27 @@
+import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
 import { AdminDashboard } from "./components/Admin/AdminDashboard";
 import { AdminManageProducts } from "./components/Admin/AdminManageProducts";
-import { AdminManageTags } from "./components/Admin/AdminManageTags";
 import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
 import { ManagePublishers } from "./components/Admin/ManagePublishers";
-import Cart from "./components/Store/Cart";
-import { Home } from "./components/Store/Store";
+import { checkForRole } from "./components/Auth/checkForRole";
 import Login from "./components/Auth/Login";
-import { Navmenu } from "./components/Navmenu";
-import NotFoundPage from "./components/NotFoundPage";
-import { ProductDetail } from "./components/Store/ProductDetail";
-import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
-import PublisherManageProducts from "./components/Publisher/PublisherManageProducts";
 import PublisherSignUp from "./components/Auth/PublisherSignUp";
 import SignUp from "./components/Auth/SignUp";
-import { TermsOfAgreement } from "./TermsOfAgreement";
-import { useEffect, useState } from "react";
+import { Navmenu } from "./components/Navmenu";
+import NotFoundPage from "./components/NotFoundPage";
+import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
+import PublisherManageProducts from "./components/Publisher/PublisherManageProducts";
+import Cart from "./components/Store/Cart";
+import { ProductDetail } from "./components/Store/ProductDetail";
+import Receipt from "./components/Store/Receipt";
+import { Search } from "./components/Store/Search";
+import { Home } from "./components/Store/Store";
+import syncCart from "./components/User/syncCart";
 import UserLibrary from "./components/User/UserLibrary";
 import { refreshUserInfo } from "./refreshUserInfo";
-import Receipt from "./components/Store/Receipt";
-import syncCart from "./components/User/syncCart";
-import { checkForRole } from "./components/Auth/checkForRole";
-import {Search} from "./components/Store/Search"
+import { TermsOfAgreement } from "./TermsOfAgreement";
 
 function App() {
 
@@ -59,7 +58,6 @@ function App() {
           <Route path="/publisher/signup" element={<PublisherSignUp />} />
           <Route path="/publisher/manage-products" element={<PublisherManageProducts />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route exact path="/admin/manage-tags" element={<AdminManageTags />} />
           <Route exact path="/admin/verify-publishers" element={<AdminVerifyPublishers />} />
           <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
           <Route path="/admin/manage-products" element={<AdminManageProducts />} />
