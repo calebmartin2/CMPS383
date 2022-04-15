@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { Button, Card, CloseButton } from "react-native-elements";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, StyleSheet, View, ScrollView, TouchableOpacity, RefreshControl, Image } from 'react-native';
 import baseUrl from "../BaseUrl";
 import cartContext from "../Authorization/CartItemProvider";
@@ -72,7 +71,6 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
         return (
             <>
                 <Text style={styles.empty}>No items in cart</Text>
-                {/* <Button onPress={() => { navigation.navigate("ICE - Store", { replace: false }) }}>Continue Shopping</Button> */}
             </>
         )
     }
@@ -110,6 +108,7 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                                 </Card>
                             </TouchableOpacity>
                         ))}
+                        <Text style={styles.price}>Total: ${calculateTotal()}</Text>
                         < Button title="buy items" style={{marginTop: 20}} onPress={buyItems}/>
                         < Button title="remove all items" style={{marginTop: 10}} onPress={removeAllItemCart} />
                     </>

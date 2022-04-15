@@ -38,7 +38,6 @@ export function CartItemProvider({ children }) {
         async (item) => {
             await AsyncStorage.getItem('cart', (err, result) => {
                 if (result !== null) {
-                    console.log('Data Found', result);
                     var newIds = JSON.parse(result).concat(item);
                     console.log(newIds)
                     AsyncStorage.setItem('cart', JSON.stringify(newIds));

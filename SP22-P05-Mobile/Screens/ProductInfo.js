@@ -1,7 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import {useContext} from "react";
 import { Button, Text } from 'react-native-elements';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import cartContext from "../Authorization/CartItemProvider"
 
 export default function ProductInfo({ route }) {
@@ -17,12 +16,6 @@ export default function ProductInfo({ route }) {
                 <Text style={styles.publisherName}>Publisher: {product.publisherName}</Text>
                 <Text style={styles.blurb}>{product.blurb}</Text>
                 <Text style={styles.description}>{product.description}</Text>
-                {/* <View style={styles.tagList}>
-                    <Text style={styles.tags}>Tags: </Text>
-                    {product.tags.map((tags, index) => (
-                        <Text key={tags} style={styles.tags}>{(index ? ', ' : '') + tags }</Text>
-                    ))}
-                </View> */}
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
                 <Button title="Add to cart" onPress={() => handleAddCart(product.id)}/>
             </View>

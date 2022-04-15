@@ -61,9 +61,6 @@ export default function SignUpScreen({ navigation }) {
           title="Terms and Conditions"
           onPress={() => navigation.navigate('TermsAndConditions')}
         />
-        {/* <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-          <Text style={styles.signUpText}>SIGN UP</Text>
-        </TouchableOpacity> */}
         < Button title="Sign Up" style={{marginTop: 10}} onPress={handleSignUp}/>
       </View>
     </>
