@@ -28,7 +28,8 @@ public class ProductsController : ControllerBase
     public IEnumerable<ProductDto> GetAllProducts(string? query)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
-        if (!String.IsNullOrEmpty(query)) {
+        if (!String.IsNullOrEmpty(query))
+        {
             products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
         }
         products = products.OrderByDescending(x => x.UserInfos.Count());
@@ -61,14 +62,26 @@ public class ProductsController : ControllerBase
     {
         int? userId = User.GetCurrentUserId();
         var products = dataContext.Set<Product>();
-        var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
-        if (result == null)
+        if (User.IsInRole(RoleNames.Admin) || User.IsInRole(RoleNames.Publisher))
         {
-            return NotFound();
+            var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
-        var productUsers = dataContext.Set<ProductUser>();
-        result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
-        return Ok(result);
+        else
+        {
+            var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var productUsers = dataContext.Set<ProductUser>();
+            result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
+            return Ok(result);
+        }
     }
 
     [HttpPost("select")]
@@ -156,11 +169,11 @@ public class ProductsController : ControllerBase
         List<Picture> pictureList = new List<Picture>();
         try
         {
-           
+
             // Handle adding pictures
             foreach (var formFile in productDto.Pictures)
             {
-                
+
                 if (formFile.Length > 0)
                 {
                     string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
