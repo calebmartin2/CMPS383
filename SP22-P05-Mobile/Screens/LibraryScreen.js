@@ -22,7 +22,7 @@ export default function UserLibrary() {
         wait(1000).then(() => setRefreshing(false));
     }, []);
 
-    async function fetchLibrary(){
+    async function fetchLibrary() {
         axios({
             url: baseUrl + '/api/products/library',
             method: 'get',
@@ -43,32 +43,34 @@ export default function UserLibrary() {
 
     return (
         <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View style={styles.container}>
-            <StatusBar style="light" />
-            {!products.length && <Text style = {styles.empty}>no products in library</Text>}
-            {products.map((product) => (
-                    <Card containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
+            <View style={styles.container}>
+                <StatusBar style="light" />
+                {!products.length && <Text style={styles.empty}>no products in library</Text>}
+                {products.map((product) => (
+                    <Card key={product.id} containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
                         <Grid>
                             <Col style={{ width: 120 }}>
-                            <Image style={{width: 100,
-height: 100,}} source={{ uri: baseUrl + product.iconName }}/>
+                                <Image style={{
+                                    width: 100,
+                                    height: 100,
+                                }} source={{ uri: baseUrl + product.iconName }} />
 
                             </Col>
                             <Col>
                                 <Row>
-                        <Card.Title style={styles.title}>{product.name} </Card.Title>
+                                    <Card.Title style={styles.title}>{product.name} </Card.Title>
                                 </Row>
                                 <Row>
-                        <Text style={styles.blurb}>{product.blurb}</Text>
+                                    <Text style={styles.blurb}>{product.blurb}</Text>
                                 </Row>
                             </Col>
                         </Grid>
                     </Card>
-            ))
-            }
-        </View>
-    </ScrollView >
-);
+                ))
+                }
+            </View>
+        </ScrollView >
+    );
 }
 
 const styles = StyleSheet.create({

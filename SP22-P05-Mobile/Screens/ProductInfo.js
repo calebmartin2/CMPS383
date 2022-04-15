@@ -1,9 +1,14 @@
 import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-elements';
-
+import {useContext} from "react";
+import { Button, Text } from 'react-native-elements';
+import cartContext from "../Authorization/CartItemProvider"
 
 export default function ProductInfo({ route }) {
-    const { product } = route.params;
+    const { product } = route.params; 
+    const { cartItem, saveCartItem, appendCartItem} = useContext(cartContext);
+    function handleAddCart(id) {
+        appendCartItem(JSON.stringify(id));
+    }
     return (
         <>
             <View style={styles.container}>
@@ -11,17 +16,14 @@ export default function ProductInfo({ route }) {
                 <Text style={styles.publisherName}>Publisher: {product.publisherName}</Text>
                 <Text style={styles.blurb}>{product.blurb}</Text>
                 <Text style={styles.description}>{product.description}</Text>
-                {/* <View style={styles.tagList}>
-                    <Text style={styles.tags}>Tags: </Text>
-                    {product.tags.map((tags, index) => (
-                        <Text key={tags} style={styles.tags}>{(index ? ', ' : '') + tags }</Text>
-                    ))}
-                </View> */}
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                <Button title="Add to cart" onPress={() => handleAddCart(product.id)}/>
             </View>
         </>
     )
 }
+
+
 
 const styles = StyleSheet.create({
     container: {

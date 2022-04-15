@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useContext, useEffect } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button } from "react-native";
+import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert } from "react-native";
+import { Button } from 'react-native-elements';
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 import authCookieContext from '../Authorization/AuthCookieProvider';
@@ -93,24 +94,14 @@ export default function LoginScreen({ navigation }) {
             placeholder="Password"
           />
         </SafeAreaView>
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
-        <Button
-          title="Sign Up"
-          onPress={() => navigation.navigate('SignUp')}
-        />
+        < Button title="Login" onPress={handleLogin}/>
+        < Button title="Sign Up" style={{marginTop: 10}} onPress={() => navigation.navigate('SignUp')}/>
       </View>
         :
         <View style={styles.container}>
           <Text style={styles.username}>Hello, {userName}!</Text>
-          <Button
-            title = "Go To Library"
-            onPress={() => navigation.navigate('Library')}
-          />
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
-            <Text style={styles.loginText}>LOGOUT</Text>
-          </TouchableOpacity>
+          < Button title="View Library" onPress={() => navigation.navigate('Library')}/>
+          < Button title="Logout" style={{marginTop: 10}} onPress={handleLogout}/>
         </View>}
     </>
   );
@@ -148,10 +139,9 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 20,
-    paddingLeft: 20,
     fontWeight: "bold",
     margin: 15,
-    textAlign: 'left',
+    textAlign: 'center',
     color: 'rgb(255,255,255)'
   },
   scrollView: {

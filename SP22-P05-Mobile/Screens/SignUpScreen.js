@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button } from "react-native";
+import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button as Button2 } from "react-native";
+import { Button } from 'react-native-elements';
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 
@@ -56,13 +57,11 @@ export default function SignUpScreen({ navigation }) {
             placeholder="Confirm Password"
           />
         </SafeAreaView>
-        <Button
+        <Button2
           title="Terms and Conditions"
           onPress={() => navigation.navigate('TermsAndConditions')}
         />
-        <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-          <Text style={styles.signUpText}>SIGN UP</Text>
-        </TouchableOpacity>
+        < Button title="Sign Up" style={{marginTop: 10}} onPress={handleSignUp}/>
       </View>
     </>
   );
