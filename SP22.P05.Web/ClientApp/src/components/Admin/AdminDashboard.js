@@ -19,13 +19,6 @@ export function AdminDashboard() {
 
             <h1>Admin Dashboard</h1>
             <Row xs={1} md={3} className="g-4 text-center">
-                {/* <Col>
-                    <Card bg='dark' className="h-100">
-                        <Card.Body as={Link} to="./manage-tags" style={linkStyle}>
-                            Manage Tags
-                        </Card.Body>
-                    </Card>
-                </Col> */}
                 <Col>
                     <Card bg='dark' className="h-100 blue-border">
                         <Card.Body as={Link} to="./verify-publishers" style={linkStyle}>
