@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from 'react';
-import { Breadcrumb, Button, Dropdown, DropdownButton, Modal, Table } from "react-bootstrap";
+import { Breadcrumb, Button, Dropdown, DropdownButton, Modal, Table, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AddOrEditProduct } from "./AddOrEditProduct";
 import { UpdateProduct } from "./UpdateProduct";
@@ -185,7 +185,9 @@ export default function PublisherManageProducts() {
                 </Modal.Body>
             </Modal>
 
-            {loading ? "Loading" : products.length > 0 && !loading ?
+            {loading
+                ? <Spinner animation="border" variant="info" />
+                 : products.length > 0 && !loading ?
                 <>
                     <Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
                         Add Product

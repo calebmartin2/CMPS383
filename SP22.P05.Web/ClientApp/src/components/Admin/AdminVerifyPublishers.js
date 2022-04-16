@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Dropdown, DropdownButton, Table } from "react-bootstrap";
+import { Breadcrumb, Dropdown, DropdownButton, Table, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 
@@ -64,7 +64,9 @@ export function AdminVerifyPublishers() {
                 <Breadcrumb.Item active>Verify Incoming Publishers</Breadcrumb.Item>
             </Breadcrumb>
             <h1>Verify Incoming Publishers</h1>
-            {!loading ? "Loading" : pendingPublisher.length > 0 && loading ?
+            {!loading
+                ? <Spinner animation="border" variant="info" />
+                : pendingPublisher.length > 0 && loading ?
                 <Table striped bordered hover variant="dark">
                     <thead>
                         <tr>

@@ -28,12 +28,14 @@ public class ProductsController : ControllerBase
     public IEnumerable<ProductDto> GetAllProducts(string? query)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
-        if (!String.IsNullOrEmpty(query)) {
-            products = products.Where(x => x.Name!.Contains(query));
+        if (!String.IsNullOrEmpty(query))
+        {
+            products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
         }
+        products = products.OrderByDescending(x => x.UserInfos.Count());
         var retval = productService.GetProductDtos(products).ToList();
 
-        
+
         if (User.IsInRole(RoleNames.User))
         {
 
@@ -60,14 +62,26 @@ public class ProductsController : ControllerBase
     {
         int? userId = User.GetCurrentUserId();
         var products = dataContext.Set<Product>();
-        var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
-        if (result == null)
+        if (User.IsInRole(RoleNames.Admin) || User.IsInRole(RoleNames.Publisher))
         {
-            return NotFound();
+            var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
-        var productUsers = dataContext.Set<ProductUser>();
-        result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
-        return Ok(result);
+        else
+        {
+            var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var productUsers = dataContext.Set<ProductUser>();
+            result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
+            return Ok(result);
+        }
     }
 
     [HttpPost("select")]
@@ -93,6 +107,7 @@ public class ProductsController : ControllerBase
         {
             return BadRequest();
         }
+
         using (var image = new MagickImage(productDto.icon.OpenReadStream()))
         {
             if (image.Width != image.Height)
@@ -100,9 +115,15 @@ public class ProductsController : ControllerBase
                 return BadRequest("Image not 1:1 aspect ratio");
             }
         }
+
+        if (productDto.icon.Length > 102400)
+        {
+            return BadRequest("Icon file is too large. Max file size is 100KiB");
+        }
+
+
         foreach (var picture in productDto.Pictures)
         {
-            //using (var image = new MagickImage(picture))
             using (var image = new MagickImage(picture.OpenReadStream()))
             {
                 double ratio = (double)image.Width / image.Height;
@@ -118,12 +139,15 @@ public class ProductsController : ControllerBase
                     return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
                 }
 
+                //Strip metadata?
+                /*image.Strip();
+
+                //Reformat Image to jpeg
+                image.Format = MagickFormat.Jpeg;
+                //Resize?*/
+
             }
 
-        }
-        if (productDto.icon.Length > 102400)
-        {
-            return BadRequest("Icon file is too large. Max file size is 100KiB");
         }
 
         var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
@@ -134,7 +158,7 @@ public class ProductsController : ControllerBase
             Blurb = productDto.Blurb,
             Price = productDto.Price,
             PublisherId = (int)publisherId,
-            Status = Product.StatusType.Active,
+            Status = Product.StatusType.Inactive,
             FileName = productDto.file.FileName,
             IconName = newIconGuid
         };
@@ -145,11 +169,11 @@ public class ProductsController : ControllerBase
         List<Picture> pictureList = new List<Picture>();
         try
         {
-           
+
             // Handle adding pictures
             foreach (var formFile in productDto.Pictures)
             {
-                
+
                 if (formFile.Length > 0)
                 {
                     string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
@@ -176,7 +200,15 @@ public class ProductsController : ControllerBase
             }
             using (Stream stream = new FileStream(iconPath, FileMode.Create))
             {
-                productDto.icon.CopyTo(stream);
+
+                //Image reincodeing
+                /*var image = new MagickImage(productDto.icon.OpenReadStream());
+
+                image.Strip();
+
+                //Reformat Image to jpeg
+                image.Format = MagickFormat.Jpeg;
+                productDto.icon.CopyTo(stream);*/
             }
         }
         catch (Exception ex)

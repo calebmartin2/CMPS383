@@ -21,7 +21,6 @@ public class Product
     public StatusType Status { get; set; }
     public virtual ICollection<SaleEventProduct> SaleEventProducts { get; set; } = new List<SaleEventProduct>();
     public virtual ICollection<ProductUser> UserInfos { get; set; } = new List<ProductUser>();
-    public virtual ICollection<ProductTag> Tags { get; set; } = new List<ProductTag>();
     public virtual PublisherInfo? Publisher { get; set; }
     public int PublisherId { get; set; }
     public string FileName { get; set; } = string.Empty;
