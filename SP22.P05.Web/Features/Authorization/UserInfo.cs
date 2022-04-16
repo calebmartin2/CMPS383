@@ -6,7 +6,7 @@ namespace SP22.P05.Web.Features.Authorization;
 
 public class UserInfo
 {
-    public User? User { get; set; }
+    public User User { get; set; } = null!;
     public int UserId { get; set; }
     [MaxLength(120)]
     public string FirstName { get; set; } = string.Empty;

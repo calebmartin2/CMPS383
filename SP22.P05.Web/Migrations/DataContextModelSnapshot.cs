@@ -130,7 +130,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductUser");
+                    b.ToTable("ProductUser", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.PublisherInfo", b =>
@@ -145,7 +145,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("PublisherInfo");
+                    b.ToTable("PublisherInfo", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.Role", b =>
@@ -263,7 +263,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("UserInfo");
+                    b.ToTable("UserInfo", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Authorization.UserRole", b =>
@@ -301,7 +301,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Picture");
+                    b.ToTable("Picture", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Products.Product", b =>
@@ -348,7 +348,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEvent", b =>
@@ -372,7 +372,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SaleEvent");
+                    b.ToTable("SaleEvent", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Sales.SaleEventProduct", b =>
@@ -398,7 +398,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("SaleEventId");
 
-                    b.ToTable("SaleEventProduct");
+                    b.ToTable("SaleEventProduct", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Transactions.CartProduct", b =>
@@ -413,7 +413,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartProduct");
+                    b.ToTable("CartProduct", (string)null);
                 });
 
             modelBuilder.Entity("SP22.P05.Web.Features.Transactions.Order", b =>
@@ -437,7 +437,7 @@ namespace SP22.P03.Web.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

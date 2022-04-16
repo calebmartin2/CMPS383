@@ -200,7 +200,7 @@ public class ProductsController : ControllerBase
             }
             using (Stream stream = new FileStream(iconPath, FileMode.Create))
             {
-
+                productDto.icon.CopyTo(stream);
                 //Image reincodeing
                 /*var image = new MagickImage(productDto.icon.OpenReadStream());
 
