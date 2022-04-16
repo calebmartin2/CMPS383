@@ -31,13 +31,13 @@ export default function Receipt() {
             {products.map((product) => (
                 <div key={product.id}>
                     <div> <img style={{ height: "5em", width: "5em", marginBottom: "1em" }} src={product.iconName} alt="Logo of product" /> {product.name} ${product.price.toFixed(2)}
-                        <Link to={product.fileName} target="_blank" download
+                        {product.fileName && <Link to={product.fileName} target="_blank" download
                             style={{ backgroundColor: "green", color: "#ddd", padding: "0.2em", marginLeft: "0.5em", textDecoration: "none" }}>Download
-                        </Link>
+                        </Link>}
                     </div>
                 </div>
             ))}
-            <Button  onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button><br /><br />
+            <Button onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button><br /><br />
             <Button onClick={() => { navigate("/library", { replace: false }) }}>Go to Library</Button>
 
         </>
