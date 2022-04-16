@@ -7,9 +7,9 @@ namespace SP22.P05.Web.Features.Authorization;
 
 public class ProductUser
 {
-    public virtual User? User { get; set; }
+    public virtual User User { get; set; } = null!;
     public int UserId { get; set; }
-    public virtual Product? Product { get; set; }
+    public virtual Product Product { get; set; } = null!;
     public int ProductId { get; set; }
     public virtual Order? Order { get; set; }
     public decimal Price { get; set; }
