@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Breadcrumb, Button, Dropdown, DropdownButton, Modal, Table, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AddOrEditProduct } from "./AddOrEditProduct";
+import { AddProduct } from "./AddProductModal";
 import { UpdateProduct } from "./UpdateProduct";
 
 export default function PublisherManageProducts() {
@@ -22,13 +23,14 @@ export default function PublisherManageProducts() {
     const iconRef = useRef(null);
     const pictureRef = useRef(null);
 
+    const [modalType, setModalType] = useState(null);
+
     const handleClose = () => {
         setName("");
         setDescription("");
         setPrice("");
         setBlurb("");
         setAddProductError(false);
-        setShow(false);
         setIsEdit(false);
         setIsUpdateFile(false);
     }
@@ -53,37 +55,37 @@ export default function PublisherManageProducts() {
         fetchProducts();
     }, [])
 
-    const handleAdd = (e) => {
-        setAddEditLoading(true);
-        e.preventDefault();
-        var bodyFormData = new FormData();
-        bodyFormData.append('name', name);
-        bodyFormData.append('description', description);
-        bodyFormData.append('blurb', blurb);
-        bodyFormData.append('price', price)
-        bodyFormData.append('file', fileRef.current.files[0])
-        bodyFormData.append('icon', iconRef.current.files[0])
-        for (var i = 0; i < pictureRef.current.files.length; i++) {
-            bodyFormData.append("pictures", pictureRef.current.files[i]);
-        }
+    // const handleAdd = (e) => {
+    //     setAddEditLoading(true);
+    //     e.preventDefault();
+    //     var bodyFormData = new FormData();
+    //     bodyFormData.append('name', name);
+    //     bodyFormData.append('description', description);
+    //     bodyFormData.append('blurb', blurb);
+    //     bodyFormData.append('price', price)
+    //     bodyFormData.append('file', fileRef.current.files[0])
+    //     bodyFormData.append('icon', iconRef.current.files[0])
+    //     for (var i = 0; i < pictureRef.current.files.length; i++) {
+    //         bodyFormData.append("pictures", pictureRef.current.files[i]);
+    //     }
 
-        axios({
-            method: "post",
-            url: "/api/products",
-            data: bodyFormData,
-            headers: { "Content-Type": "multipart/form-data" },
-        })
-            .then(function (response) {
-                fetchProducts();
-                handleClose();
-                setAddEditLoading(false);
-            })
-            .catch(function (response) {
-                setAddProductError(true);
-                console.log(response);
-                setAddEditLoading(false);
-            });
-    }
+    //     axios({
+    //         method: "post",
+    //         url: "/api/products",
+    //         data: bodyFormData,
+    //         headers: { "Content-Type": "multipart/form-data" },
+    //     })
+    //         .then(function (response) {
+    //             fetchProducts();
+    //             handleClose();
+    //             setAddEditLoading(false);
+    //         })
+    //         .catch(function (response) {
+    //             setAddProductError(true);
+    //             console.log(response);
+    //             setAddEditLoading(false);
+    //         });
+    // }
 
 
     const handleEdit = (e) => {
@@ -179,61 +181,58 @@ export default function PublisherManageProducts() {
             </Breadcrumb>
 
             <Modal show={show} onHide={handleClose}>
-                <Modal.Header><Modal.Title>{showModalTitle()}</Modal.Title></Modal.Header>
-                <Modal.Body>
-                    {isUpdateFile ? updateFileForm() : addOrEditForm()}
-                </Modal.Body>
+                <AddProduct handleClose={handleClose} fetchProducts={fetchProducts} />
             </Modal>
 
             {loading
                 ? <Spinner animation="border" variant="info" />
-                 : products.length > 0 && !loading ?
-                <>
-                    <Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
-                        Add Product
-                    </Button>
-                    <Table striped bordered hover variant="dark">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {products.map((product) => (
-                                <tr key={product.id}>
-                                    <td>{product.name}</td>
-                                    <td>${product.price.toFixed(2)}</td>
-                                    {/* Shouldn't be hardcoding this, stuck with it for now */}
-                                    <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
-                                    <td>
-                                        <DropdownButton id="dropdown-item-button" title="Actions">
-                                            <Dropdown.Item as="button"><Link to={`/product/${product.id}/${product.name.replace(/ /g, "_")}`} style={{ textDecoration: 'none' }}>Go to Store Page</Link></Dropdown.Item>
-                                            {product.fileName && <Dropdown.Item as="button"> <Link to={product.fileName} target="_blank" download>Download</Link></Dropdown.Item>}
-                                            <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit Info</Dropdown.Item>
-                                            <Dropdown.Item as="button" onClick={() => handleUpdateFileShow(product)} >Update File</Dropdown.Item>
-                                        </DropdownButton>
-                                    </td>
+                : products.length > 0 && !loading ?
+                    <>
+                        <Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
+                            Add Product
+                        </Button>
+                        <Table striped bordered hover variant="dark">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))
-                            }
-                        </tbody>
-                    </Table></>
-                : <><Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
-                    Add Product
-                </Button><h1>No products</h1></>}
+                            </thead>
+                            <tbody>
+                                {products.map((product) => (
+                                    <tr key={product.id}>
+                                        <td>{product.name}</td>
+                                        <td>${product.price.toFixed(2)}</td>
+                                        {/* Shouldn't be hardcoding this, stuck with it for now */}
+                                        <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
+                                        <td>
+                                            <DropdownButton id="dropdown-item-button" title="Actions">
+                                                <Dropdown.Item as="button"><Link to={`/product/${product.id}/${product.name.replace(/ /g, "_")}`} style={{ textDecoration: 'none' }}>Go to Store Page</Link></Dropdown.Item>
+                                                {product.fileName && <Dropdown.Item as="button"> <Link to={product.fileName} target="_blank" download>Download</Link></Dropdown.Item>}
+                                                <Dropdown.Item as="button" onClick={() => handleEditShow(product)} >Edit Info</Dropdown.Item>
+                                                <Dropdown.Item as="button" onClick={() => handleUpdateFileShow(product)} >Update File</Dropdown.Item>
+                                            </DropdownButton>
+                                        </td>
+                                    </tr>
+                                ))
+                                }
+                            </tbody>
+                        </Table></>
+                    : <><Button variant="primary" className="custom-primary-btn mb-3" onClick={handleShow}>
+                        Add Product
+                    </Button><h1>No products</h1></>}
         </>
     );
 
-    function addOrEditForm() {
-        return AddOrEditProduct(isEdit, handleEdit, handleAdd, name, setName, blurb, setBlurb, description, setDescription, price, setPrice, fileRef, iconRef, pictureRef, addEditLoading, handleClose, addProductError);
-    }
+    // function addOrEditForm() {
+    //     return AddOrEditProduct(isEdit, handleEdit, handleAdd, name, setName, blurb, setBlurb, description, setDescription, price, setPrice, fileRef, iconRef, pictureRef, addEditLoading, handleClose, addProductError);
+    // }
 
-    function updateFileForm() {
-        return (
-            UpdateProduct(handleUpdateFile, fileRef, addEditLoading, handleClose, addProductError)
-        )
-    }
+    // function updateFileForm() {
+    //     return (
+    //         UpdateProduct(handleUpdateFile, fileRef, addEditLoading, handleClose, addProductError)
+    //     )
+    // }
 }
