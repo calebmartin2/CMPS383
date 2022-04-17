@@ -26,11 +26,11 @@ export function AddOrEditProduct(isEdit, handleEdit, handleAdd, name, setName, b
             <Form.Control type="file" ref={fileRef}></Form.Control>
         </Form.Group>}
         <Form.Group className="mb-4">
-            <Form.Label>Icon (must be 1:1, max size 100KiB)</Form.Label>
+            <Form.Label>Icon (must be 1:1, max size 100KiB){isEdit && " (unchanged)" }</Form.Label>
             <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={iconRef}></Form.Control>
         </Form.Group>
         <Form.Group className="mb-4">
-            <Form.Label>Pictures (must be 16:9, max size 5MiB)</Form.Label>
+            <Form.Label>Pictures (must be 16:9, max size 5MiB) {isEdit && " (unchanged)" }</Form.Label>
             <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={pictureRef} multiple></Form.Control>
         </Form.Group>
         <Modal.Footer>
