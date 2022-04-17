@@ -2,7 +2,7 @@ import { Button, Form, InputGroup, Modal, Spinner } from "react-bootstrap";
 import { useState, useRef } from "react";
 import axios from "axios";
 
-export function AddProduct({ handleClose, fetchProducts}) {
+export function AddProduct({ handleClose}) {
 
     const [addLoading, setAddLoading] = useState(false);
     const [addProductError, setAddProductError] = useState(false);
@@ -35,9 +35,8 @@ export function AddProduct({ handleClose, fetchProducts}) {
             headers: { "Content-Type": "multipart/form-data" },
         })
             .then(function (response) {
-                fetchProducts();
                 handleClose();
-                setAddLoading(false);
+                // setAddLoading(false);
             })
             .catch(function (response) {
                 setAddProductError(true);
@@ -48,7 +47,7 @@ export function AddProduct({ handleClose, fetchProducts}) {
 
     return (
         <>
-            <Modal.Header><Modal.Title>Add2 Product</Modal.Title></Modal.Header>
+            <Modal.Header><Modal.Title>Add Product</Modal.Title></Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleAdd}>
                     <Form.Group className="mb-2" controlId="formBasicName">

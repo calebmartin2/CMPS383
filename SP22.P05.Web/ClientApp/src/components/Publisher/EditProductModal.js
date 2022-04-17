@@ -2,7 +2,7 @@ import { Button, Form, InputGroup, Modal, Spinner } from "react-bootstrap";
 import { useState, useRef } from "react";
 import axios from "axios";
 
-export function EditProduct({ product, handleClose, fetchProducts }) {
+export function EditProduct({ product, handleClose}) {
 
     const [loading, setLoading] = useState(false);
     const [addProductError, setAddProductError] = useState(false);
@@ -34,7 +34,6 @@ export function EditProduct({ product, handleClose, fetchProducts }) {
             headers: { "Content-Type": "multipart/form-data" },
         })
             .then(function (response) {
-                fetchProducts();
                 handleClose();
                 setLoading(false);
             })
@@ -47,7 +46,8 @@ export function EditProduct({ product, handleClose, fetchProducts }) {
 
     return (
         <>
-            <Modal.Header><Modal.Title>Edit2 Product</Modal.Title></Modal.Header>
+            <Modal.Header><Modal.Title>Edit Product</Modal.Title></Modal.Header>
+            <Modal.Body>
             <Form onSubmit={handleEdit}>
                 <Form.Group className="mb-2" controlId="formBasicName">
                     <Form.Label>Name</Form.Label>
@@ -69,11 +69,11 @@ export function EditProduct({ product, handleClose, fetchProducts }) {
                     </InputGroup>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                    <Form.Label>Icon (must be 1:1, max size 100KiB) " (unchanged)"</Form.Label>
+                    <Form.Label>Icon (must be 1:1, max size 100KiB) (unchanged)</Form.Label>
                     <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={iconRef}></Form.Control>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                    <Form.Label>Pictures (must be 16:9, max size 5MiB) (unchanged)"</Form.Label>
+                    <Form.Label>Pictures (must be 16:9, max size 5MiB) (unchanged)</Form.Label>
                     <Form.Control type="file" accept="image/png, image/jpeg, image/webp" ref={pictureRef} multiple></Form.Control>
                 </Form.Group>
                 <Modal.Footer>
@@ -91,7 +91,7 @@ export function EditProduct({ product, handleClose, fetchProducts }) {
                 </Modal.Footer>
                 {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
             </Form>
-        </>
-
+            </Modal.Body>
+            </>
     )
 }
