@@ -2,7 +2,7 @@ import { Button, Form, InputGroup, Modal, Spinner } from "react-bootstrap";
 import { useState, useRef } from "react";
 import axios from "axios";
 
-export function AddProduct({ fetchProducts}) {
+export function AddProduct({ handleClose, fetchProducts}) {
 
     const [addLoading, setAddLoading] = useState(false);
     const [addProductError, setAddProductError] = useState(false);
@@ -13,10 +13,7 @@ export function AddProduct({ fetchProducts}) {
     const fileRef = useRef(null);
     const iconRef = useRef(null);
     const pictureRef = useRef(null);
-    const [show, setShow] = useState(false);
-    const handleShow = () => setShow(true);
     
-
     const handleAdd = (e) => {
         setAddLoading(true);
         e.preventDefault();
@@ -39,7 +36,7 @@ export function AddProduct({ fetchProducts}) {
         })
             .then(function (response) {
                 fetchProducts();
-                setShow(false);
+                handleClose();
                 setAddLoading(false);
             })
             .catch(function (response) {
@@ -94,7 +91,7 @@ export function AddProduct({ fetchProducts}) {
                                 role="status"
                                 aria-hidden="true" />Uploading</> : <>Add</>}
                         </Button>
-                        <Button variant="danger" onClick={() => setShow(false)}>
+                        <Button variant="danger" onClick={handleClose}>
                             Discard
                         </Button>
                     </Modal.Footer>

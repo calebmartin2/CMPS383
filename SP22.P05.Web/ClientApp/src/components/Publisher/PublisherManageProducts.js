@@ -30,6 +30,7 @@ export default function PublisherManageProducts() {
         setDescription("");
         setPrice("");
         setBlurb("");
+        setShow(false);
         setAddProductError(false);
         setIsEdit(false);
         setIsUpdateFile(false);
