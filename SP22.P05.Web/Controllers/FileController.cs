@@ -54,20 +54,26 @@ public class FileController : Controller
     [HttpGet("download/{productId}/{fileName}"), Authorize]
     public IActionResult DownloadFile(int productId, string fileName)
     {
-        var product = dataContext.Set<Product>().First(x => x.Id == productId);
+        var products = dataContext.Set<Product>();
+        var product = products.First(x => x.Id == productId);
+
         if (product == null)
             return NotFound("Product not found");
+
         if (User.IsInRole(RoleNames.User) && product.Status == Product.StatusType.Inactive)
             return Unauthorized("Product is inactive");
+
         int? userId = User.GetCurrentUserId();
+
         // Check if user has item in library
-        if (User.IsInRole(RoleNames.User) && dataContext.Set<ProductUser>().First(x => x.UserId == userId && x.ProductId == productId) == null)
+        if (User.IsInRole(RoleNames.User) && !dataContext.Set<ProductUser>().Any(x => x.UserId == userId && x.ProductId == productId))
             return BadRequest("User does not have item in library");
+
         // Check if publisher owns item
-        if ((User.IsInRole(RoleNames.Publisher) || User.IsInRole(RoleNames.PendingPublisher)) && dataContext.Set<Product>().First(x => x.PublisherId == userId) == null)
+        if ((User.IsInRole(RoleNames.Publisher) || User.IsInRole(RoleNames.PendingPublisher)) && !products.Any(x => x.PublisherId == userId))
             return BadRequest("Publisher does not own item");
 
-        var path = Path.Combine(Directory.GetCurrentDirectory(), $@"ProductFiles//{productId}//", fileName);
+        var path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", fileName);
         byte[] bytes = System.IO.File.ReadAllBytes(path);
         return File(bytes, "application/octet-stream", fileName);
     }
