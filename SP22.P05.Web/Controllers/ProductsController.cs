@@ -41,7 +41,7 @@ public class ProductsController : ControllerBase
             var productUser = dataContext.Set<ProductUser>().Where(x => x.UserId == userId);
             foreach (var product in retval)
             {
-                product.IsInLibrary = !(productUser.FirstOrDefault(x => x.ProductId == product.Id) == null);
+                product.IsInLibrary = productUser.Any(x => x.ProductId == product.Id);
             }
         }
 
@@ -51,7 +51,7 @@ public class ProductsController : ControllerBase
     [HttpGet("manage"), Authorize(Roles = RoleNames.Admin)]
     public IEnumerable<ProductDto> GetManageAllProducts()
     {
-        var products = dataContext.Set<Product>();
+        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
         return productService.GetProductDtos(products);
     }
 
@@ -241,7 +241,7 @@ public class ProductsController : ControllerBase
         var pictureList = new List<Picture>();
         if (productDto.Pictures != null)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
             DirectoryInfo di = new DirectoryInfo(path);
             if (di.Exists)
             {
@@ -345,12 +345,10 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
-
-
     [HttpGet("/api/publisher/products"), Authorize(Roles = RoleNames.Publisher)]
     public IEnumerable<ProductDto> GetPublisherProducts()
     {
-        var products = dataContext.Set<Product>();
+        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
         var publisherId = User.GetCurrentUserId();
 
         return productService.GetProductDtos(products.Where(x => x.PublisherId == publisherId));
@@ -359,23 +357,20 @@ public class ProductsController : ControllerBase
     [HttpGet("library"), Authorize(Roles = RoleNames.User)]
     public ActionResult<ProductDto> GetLibrary(string? query)
     {
-        int? userId = User.GetCurrentUserId();
+        var userId = User.GetCurrentUserId();
 
         if (userId == null)
             return BadRequest();
 
         var products = dataContext.Set<ProductUser>()
             .Where(x => x.UserId == userId)
-            .Where(x => !(x.Product.Status == Product.StatusType.Inactive))
+            .Where(x => x.Product.Status != Product.StatusType.Inactive)
             .Select(x => x.Product);
-
-        if (products == null)
-            return NotFound();
 
         if (!String.IsNullOrEmpty(query))
             products = products.Where(x => x.Name!.Contains(query));
 
-        return Ok(productService.GetProductDtos(products));
+        return Ok(productService.GetProductDtos(products).OrderBy(x => x.Name));
 
     }
 
