@@ -25,9 +25,8 @@ public class FileController : Controller
         if (product == null)
             return BadRequest();
 
-        // delete product file
-        //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
-        string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//{product.FileName}");
+        // delete existing product file
+        var delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//{product.FileName}");
         FileInfo delFile = new FileInfo(delPath);
         if (delFile.Exists)
             delFile.Delete();
@@ -36,7 +35,7 @@ public class FileController : Controller
         //https://sankhadip.medium.com/how-to-upload-files-in-net-core-web-api-and-react-36a8fbf5c9e8
         try
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}", file.FileName);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}", file.FileName);
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}"));
             using (Stream stream = new FileStream(path, FileMode.Create))
             {
@@ -68,7 +67,7 @@ public class FileController : Controller
         if ((User.IsInRole(RoleNames.Publisher) || User.IsInRole(RoleNames.PendingPublisher)) && dataContext.Set<Product>().First(x => x.PublisherId == userId) == null)
             return BadRequest("Publisher does not own item");
 
-        string path = Path.Combine(Directory.GetCurrentDirectory(), $@"ProductFiles//{productId}//", fileName);
+        var path = Path.Combine(Directory.GetCurrentDirectory(), $@"ProductFiles//{productId}//", fileName);
         byte[] bytes = System.IO.File.ReadAllBytes(path);
         return File(bytes, "application/octet-stream", fileName);
     }
@@ -82,7 +81,7 @@ public class FileController : Controller
         try
         {
             var iconName = dataContext.Set<Product>().First(x => x.Id == productId).IconName;
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//", iconName);
             byte[] bytes = System.IO.File.ReadAllBytes(path);
             return File(bytes, "image/*", iconName);
         }
@@ -98,7 +97,7 @@ public class FileController : Controller
     {
         int CacheAgeSeconds = 60 * 60 * 24; // 1 day
         Response.Headers[HeaderNames.CacheControl] = $"public,max-age={CacheAgeSeconds}";
-        string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//Pictures", fileName);
+        var path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productId}//Pictures", fileName);
         byte[] bytes = System.IO.File.ReadAllBytes(path);
         return File(bytes, "image/*", fileName);
     }
