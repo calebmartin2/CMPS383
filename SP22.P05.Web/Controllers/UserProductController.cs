@@ -9,16 +9,12 @@ using SP22.P05.Web.Features.Transactions;
 
 namespace SP22.P05.Web.Controllers;
 
-
 [Route("api/user-products")]
 [ApiController]
-
 
 public class UserProductController : Controller
 {
     private readonly DataContext dataContext;
-
-
     public UserProductController(DataContext dataContext, UserManager<User> userManager)
     {
         this.dataContext = dataContext;
@@ -29,11 +25,11 @@ public class UserProductController : Controller
     {
         var products = dataContext.Set<Product>();
         var totalAmount = products.Where(x => productId.Contains(x.Id)).Sum(x => x.Price);
-        int userId = Convert.ToInt32(User.GetCurrentUserId());
+        var userId = Convert.ToInt32(User.GetCurrentUserId());
         var addList = new List<ProductUser>() { };
         var order = new Order()
         {
-            UserId = (int)userId,
+            UserId = userId,
             Amount = totalAmount,
             Date = DateTimeOffset.Now,
         };
@@ -73,7 +69,7 @@ public class UserProductController : Controller
     public ActionResult<int[]> SyncCart(int[] cart)
     {
 
-        int userId = Convert.ToInt32(User.GetCurrentUserId());
+        var userId = Convert.ToInt32(User.GetCurrentUserId());
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active); // filter products that exist
         var userCart = dataContext.Set<CartProduct>().Where(x => x.UserId == userId);
         var userLibrary = dataContext.Set<ProductUser>().Where(x => x.UserId == userId);
@@ -105,7 +101,7 @@ public class UserProductController : Controller
     [HttpGet("get-cart"), Authorize(Roles = RoleNames.User)]
     public ActionResult<int[]> GetCart()
     {
-        int userId = Convert.ToInt32(User.GetCurrentUserId());
+        var userId = Convert.ToInt32(User.GetCurrentUserId());
         var userCart = dataContext.Set<CartProduct>().Where(x => x.UserId == userId);
         var retVal = (from item in userCart select item.ProductId).ToList();
 
