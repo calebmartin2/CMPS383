@@ -36,7 +36,6 @@ export function AddProduct({ handleClose}) {
         })
             .then(function (response) {
                 handleClose();
-                // setAddLoading(false);
             })
             .catch(function (response) {
                 setAddProductError(true);

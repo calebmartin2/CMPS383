@@ -2,7 +2,7 @@ import { Button, Form, InputGroup, Modal, Spinner } from "react-bootstrap";
 import { useRef, useState } from "react";
 import axios from "axios";
 
-export function UpdateProductFile({product, handleClose}) {
+export function UpdateProductFileModal({product, handleClose}) {
 
     const fileRef = useRef(null);
     const [addEditLoading, setAddEditLoading] = useState(false);

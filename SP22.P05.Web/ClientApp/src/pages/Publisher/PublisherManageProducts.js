@@ -2,9 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from 'react';
 import { Breadcrumb, Button, Dropdown, DropdownButton, Modal, Table, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { AddProduct } from "./AddProductModal";
-import { EditProduct } from "./EditProductModal";
-import { UpdateProductFile } from "./UpdateProductFile";
+import { AddProduct } from "../../components/AddProductModal";
+import { EditProduct } from "../../components/EditProductModal";
+import { UpdateProductFileModal } from "../../components/UpdateProductFileModal";
 
 export default function PublisherManageProducts() {
     const [products, setProducts] = useState([]);
@@ -65,7 +65,7 @@ export default function PublisherManageProducts() {
             <Modal show={show} onHide={handleClose}>
                 {modalType === "Add" && <AddProduct handleClose={handleClose} />}
                 {modalType === "Edit" && <EditProduct product={currentEditProduct} handleClose={handleClose} />}
-                {modalType === "UpdateFile" && <UpdateProductFile product={currentEditProduct} handleClose={handleClose} />}
+                {modalType === "UpdateFile" && <UpdateProductFileModal product={currentEditProduct} handleClose={handleClose} />}
             </Modal>
 
             {!loading && <Button variant="primary" className="custom-primary-btn mb-3" onClick={() => handleAddShow()}>Add Product</Button>}

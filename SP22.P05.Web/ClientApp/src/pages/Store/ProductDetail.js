@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Row, Col, Spinner } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import NotFoundPage from "../NotFoundPage";
+import NotFoundPage from "../../components/NotFoundPage";
 import { useNavigate } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 import { ProductCarousel } from "./Carousel";

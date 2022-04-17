@@ -16,7 +16,11 @@ export function SignUp() {
 
     useEffect(() => {
         document.title = "ICE - Sign Up"
-    }, []);
+        if (!password || !userName) {
+            return;
+        }
+        setShow(false);
+    }, [password, userName, confirmPassword]);
 
     const handleSignUp = (e) => {
         e.preventDefault();
@@ -42,7 +46,6 @@ export function SignUp() {
                 setLoading(false);
             });
     }
-
 
     return (
         <>
