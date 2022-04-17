@@ -127,11 +127,10 @@ public class ProductsController : ControllerBase
 
                 if (picture.Length > 5242880)
                     return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
-
             }
         }
 
-        var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
+        var newIconFileName = Guid.NewGuid().ToString() + ".png";
         var product = new Product
         {
             Name = productDto.Name,
@@ -141,7 +140,7 @@ public class ProductsController : ControllerBase
             PublisherId = (int)publisherId,
             Status = Product.StatusType.Inactive,
             FileName = productDto.file.FileName,
-            IconName = newIconGuid
+            IconName = newIconFileName
         };
 
         dataContext.Add(product);
@@ -153,41 +152,28 @@ public class ProductsController : ControllerBase
         try
         {
             // Handle adding pictures
-            foreach (var formFile in productDto.Pictures)
-            {
-                if (formFile.Length > 0)
-                {
-                    var myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
-                    Directory.CreateDirectory(myPath);
-                    var tempGuid = Guid.NewGuid().ToString();
-                    pictures.Add(new Picture { Name = tempGuid + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
-                    var pictureFilePath = Path.Combine(myPath, tempGuid + Path.GetExtension(formFile.FileName));
-
-                    using (var stream = System.IO.File.Create(pictureFilePath))
-                    {
-                        formFile.CopyTo(stream);
-                    }
-                }
-            }
+            NewMethod(productDto, pictures);
 
             dataContext.AddRange(pictures);
             dataContext.SaveChanges();
 
             var baseDirectory = $"ProductFiles//{productDto.Id}";
-
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), baseDirectory));
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), baseDirectory, productDto.file.FileName);
 
+            //write file to file
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 productDto.file.CopyTo(fileStream);
             }
 
-            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), baseDirectory, newIconGuid);
+            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), baseDirectory, newIconFileName);
 
+            //write icon to file
             using (var image = new MagickImage(productDto.icon.OpenReadStream()))
             {
                 image.Strip();
+                image.Resize(256, 256);
                 image.Write(iconPath);
             }
         }
@@ -199,13 +185,35 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productDto);
     }
 
+    private static void NewMethod(CreateProductDto productDto, List<Picture> pictures)
+    {
+        foreach (var formFile in productDto.Pictures)
+        {
+            if (formFile.Length > 0)
+            {
+                var myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
+                Directory.CreateDirectory(myPath);
+                var newPictureFileName = Guid.NewGuid().ToString() + ".jpg";
+                var pictureFilePath = Path.Combine(myPath, newPictureFileName);
+
+                pictures.Add(new Picture { Name = newPictureFileName, ProductId = productDto.Id });
+
+                using (var image = new MagickImage(formFile.OpenReadStream()))
+                {
+                    image.Strip();
+                    image.Write(pictureFilePath);
+                }
+            }
+        }
+    }
+
     [HttpPut("{id}"), Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] CreateProductDto productDto)
     {
         var products = dataContext.Set<Product>();
-        var current = products.FirstOrDefault(x => x.Id == id);
+        var product = products.FirstOrDefault(x => x.Id == id);
 
-        if (current == null)
+        if (product == null)
             return NotFound();
 
         // Handle updating icon
@@ -213,28 +221,32 @@ public class ProductsController : ControllerBase
         {
             if (productDto.icon.Length > 102400)
                 return BadRequest("Icon file is too large. Max file size is 100KiB");
-            var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
 
             // Delete existing file
-            if (current.IconName != null)
+            if (product.IconName != null)
             {
-                var delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", current.IconName);
+                var delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", product.IconName);
                 FileInfo delFile = new FileInfo(delPath);
                 if (delFile.Exists)
                     delFile.Delete();
             }
             // Add new icon file
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
-            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", newIconGuid);
-            using (Stream stream = new FileStream(iconPath, FileMode.Create))
+            var newIconFileName = Guid.NewGuid().ToString() + ".png";
+            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", newIconFileName);
+
+            //write icon to file
+            using (var image = new MagickImage(productDto.icon.OpenReadStream()))
             {
-                productDto.icon.CopyTo(stream);
+                image.Strip();
+                image.Resize(256, 256);
+                image.Write(iconPath);
             }
-            current.IconName = newIconGuid;
+            product.IconName = newIconFileName;
         }
 
         // Handle updating pictures
-        List<Picture> pictureList = new List<Picture>();
+        var pictureList = new List<Picture>();
         if (productDto.Pictures != null)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
@@ -250,30 +262,34 @@ public class ProductsController : ControllerBase
                     dir.Delete(true);
                 }
             }
-            var removePictures = dataContext.Set<Picture>().Where(x => x.ProductId == current.Id);
+            var removePictures = dataContext.Set<Picture>().Where(x => x.ProductId == product.Id);
             dataContext.RemoveRange(removePictures);
             foreach (var formFile in productDto.Pictures)
             {
                 if (formFile.Length > 0)
                 {
-                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{current.Id}//Pictures");
-                    Directory.CreateDirectory(myPath);
+                    var myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{product.Id}//Pictures");
                     var newGuid = Guid.NewGuid();
-                    pictureList.Add(new Picture { Name = newGuid + Path.GetExtension(formFile.FileName), ProductId = current.Id });
-                    var pictureFilePath = Path.Combine(myPath, newGuid + Path.GetExtension(formFile.FileName));
-                    using (var stream = System.IO.File.Create(pictureFilePath))
+                    var pictureFilePath = Path.Combine(myPath, newGuid.ToString());
+
+                    Directory.CreateDirectory(myPath);
+                    pictureList.Add(new Picture { Name = newGuid + ".jpg", ProductId = product.Id });
+
+                    //write picture to file
+                    using (var image = new MagickImage(formFile.OpenReadStream()))
                     {
-                        formFile.CopyTo(stream);
+                        image.Strip();
+                        image.Write(pictureFilePath + ".jpg");
                     }
                 }
             }
             dataContext.AddRange(pictureList);
         }
 
-        current.Name = productDto.Name;
-        current.Price = productDto.Price;
-        current.Description = productDto.Description;
-        current.Blurb = productDto.Blurb;
+        product.Name = productDto.Name;
+        product.Price = productDto.Price;
+        product.Description = productDto.Description;
+        product.Blurb = productDto.Blurb;
         dataContext.SaveChanges();
 
         return Ok(productDto);
@@ -308,7 +324,6 @@ public class ProductsController : ControllerBase
         {
 
         }
-
 
         products.Remove(current);
         dataContext.SaveChanges();
