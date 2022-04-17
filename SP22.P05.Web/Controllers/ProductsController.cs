@@ -122,7 +122,7 @@ public class ProductsController : ControllerBase
             {
                 var ratio = (double)image.Width / image.Height;
 
-                if (ratio < 1.770 || ratio > 1.78)
+                if (ratio is < 1.770 or > 1.78)
                     return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
 
                 if (picture.Length > 5242880)
@@ -152,7 +152,24 @@ public class ProductsController : ControllerBase
         try
         {
             // Handle adding pictures
-            NewMethod(productDto, pictures);
+            foreach (var formFile in productDto.Pictures)
+            {
+                if (formFile.Length > 0)
+                {
+                    var myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
+                    Directory.CreateDirectory(myPath);
+                    var newPictureFileName = Guid.NewGuid() + ".jpg";
+                    var pictureFilePath = Path.Combine(myPath, newPictureFileName);
+
+                    pictures.Add(new Picture { Name = newPictureFileName, ProductId = productDto.Id });
+
+                    using (var image = new MagickImage(formFile.OpenReadStream()))
+                    {
+                        image.Strip();
+                        image.Write(pictureFilePath);
+                    }
+                }
+            }
 
             dataContext.AddRange(pictures);
             dataContext.SaveChanges();
@@ -185,28 +202,6 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productDto);
     }
 
-    private static void NewMethod(CreateProductDto productDto, List<Picture> pictures)
-    {
-        foreach (var formFile in productDto.Pictures)
-        {
-            if (formFile.Length > 0)
-            {
-                var myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
-                Directory.CreateDirectory(myPath);
-                var newPictureFileName = Guid.NewGuid().ToString() + ".jpg";
-                var pictureFilePath = Path.Combine(myPath, newPictureFileName);
-
-                pictures.Add(new Picture { Name = newPictureFileName, ProductId = productDto.Id });
-
-                using (var image = new MagickImage(formFile.OpenReadStream()))
-                {
-                    image.Strip();
-                    image.Write(pictureFilePath);
-                }
-            }
-        }
-    }
-
     [HttpPut("{id}"), Authorize(Roles = RoleNames.AdminOrPublisher)]
     public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] CreateProductDto productDto)
     {
@@ -223,13 +218,10 @@ public class ProductsController : ControllerBase
                 return BadRequest("Icon file is too large. Max file size is 100KiB");
 
             // Delete existing file
-            if (product.IconName != null)
-            {
-                var delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", product.IconName);
-                FileInfo delFile = new FileInfo(delPath);
-                if (delFile.Exists)
-                    delFile.Delete();
-            }
+            var delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", product.IconName);
+            var delFile = new FileInfo(delPath);
+            if (delFile.Exists)
+                delFile.Delete();
             // Add new icon file
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
             var newIconFileName = Guid.NewGuid().ToString() + ".png";
@@ -309,7 +301,7 @@ public class ProductsController : ControllerBase
         try
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}");
-            DirectoryInfo di = new DirectoryInfo(path);
+            var di = new DirectoryInfo(path);
 
             foreach (FileInfo file in di.GetFiles())
             {
