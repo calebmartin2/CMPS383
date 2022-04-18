@@ -3,7 +3,7 @@ import "./Navmenu.css";
 import iceLogo from '../content/ice_logo.png';
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { checkForRole } from "./Auth/checkForRole";
+import { checkForRole } from "../pages/Auth/checkForRole";
 import { useEffect } from "react";
 
 export function Navmenu({ amountCart, setAmountCart }) {
@@ -15,7 +15,6 @@ export function Navmenu({ amountCart, setAmountCart }) {
     
   }, [amountCart])
   
-
   function handleLogout() {
     localStorage.removeItem('user');
     localStorage.removeItem('cart');

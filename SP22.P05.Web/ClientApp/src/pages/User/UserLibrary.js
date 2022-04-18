@@ -33,7 +33,7 @@ export default function UserLibrary() {
             clearTimeout(delayDebounceFn);
         }
     }, [search]);
-
+        
     return (
         <>
             {loading
@@ -47,8 +47,8 @@ export default function UserLibrary() {
                         <Col xs={8} md={6} lg={4}>
                             <Form className="d-flex" onSubmit={e => { e.preventDefault() }}>
                                 <FormControl
-                                    type="text"
-                                    placeholder="Search by Name"
+                                    type="search"
+                                    placeholder="Search"
                                     className="me-2"
                                     onChange={(e) => setSearch(e.target.value)}
                                 />

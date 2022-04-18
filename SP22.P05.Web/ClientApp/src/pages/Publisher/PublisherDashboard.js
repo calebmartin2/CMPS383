@@ -10,7 +10,6 @@ export function PublisherDashboard() {
         color: 'white'
     };
 
-
     useEffect(() => {
         document.title = "ICE - Publisher Dashboard"
     }, [])

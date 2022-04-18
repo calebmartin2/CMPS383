@@ -29,7 +29,6 @@ namespace SP22.P05.Web.Services
                     SalePrice = x.CurrentSale == null ? null : x.CurrentSale.SaleEventPrice,
                     SaleEndUtc = x.CurrentSale == null ? null : x.CurrentSale.SaleEvent!.EndUtc,
                     PublisherName = x.Product.Publisher == null ? null : x.Product.Publisher.CompanyName,
-                    //Tags = x.Product.Tags.Select(x => x.Tag.Name).ToArray(),
                     Status = (int)x.Product.Status,
                     FileName = String.IsNullOrEmpty(x.Product.FileName) ? null : "/api/file/download/" + x.Product.Id + "/" + x.Product.FileName,
                     IconName = String.IsNullOrEmpty(x.Product.IconName) ? null : "/api/file/icon/"  + x.Product.Id,

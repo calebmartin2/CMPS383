@@ -13,18 +13,14 @@ export function Login({ setAmountCart }) {
     let navigate = useNavigate();
     const { success } = state || {};
 
-    useEffect(() => {
-        document.title = "ICE - Login"
-    }, []);
-
     // Hide error on form change
     useEffect(() => {
+        document.title = "ICE - Login"
         if (!password || !userName) {
             return;
         }
         setisLoginFail(false);
     }, [password, userName]);
-
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -41,7 +37,8 @@ export function Login({ setAmountCart }) {
                 if (response.data.roles.includes('User')) {
                     intializeCart(response, setAmountCart, navigate);
                 } else {
-                    navigate("/")
+                    localStorage.removeItem('cart');
+                    navigate("/");
                 }
             })
             .catch(function (error) {
@@ -50,18 +47,6 @@ export function Login({ setAmountCart }) {
                 setLoading(false);
 
             });
-
-    }
-
-    function AlertPassword() {
-        if (isLoginFail) {
-            return (
-                <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
-                    <Alert.Heading>Invalid Username or Password.</Alert.Heading>
-                </Alert>
-            )
-        }
-        return <></>
     }
 
     return (
@@ -78,7 +63,7 @@ export function Login({ setAmountCart }) {
                     <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
                 <Button type="submit" variant="primary" className="custom-primary-btn" style={{ marginBottom: "0.5em" }} disabled={isLoading}>
-                     {isLoading ? <><Spinner
+                    {isLoading ? <><Spinner
                         as="span"
                         animation="border"
                         size="sm"
@@ -90,7 +75,10 @@ export function Login({ setAmountCart }) {
                     New to ICE?
                 </Link>
             </Form>
-            <AlertPassword />
+            {isLoginFail && 
+            <Alert variant="danger" style={{ maxWidth: "25em", margin: "0em auto" }}>
+                <Alert.Heading>Invalid Username or Password.</Alert.Heading>
+            </Alert>}
         </>
     )
 }

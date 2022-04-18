@@ -23,7 +23,6 @@ public class ProductDto
     public DateTimeOffset? SaleEndUtc { get; set; }
     public string? PublisherName { get; set; }
     public int? Status { get; set; }
-    public string[] Tags { get; set; } = Array.Empty<string>();
     public bool? IsInLibrary { get; set; }
     public string? FileName { get; set; } = string.Empty;
     public string? IconName { get; set; } = string.Empty;

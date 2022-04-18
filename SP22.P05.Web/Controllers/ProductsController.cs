@@ -28,20 +28,20 @@ public class ProductsController : ControllerBase
     public IEnumerable<ProductDto> GetAllProducts(string? query)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
-        if (!String.IsNullOrEmpty(query)) {
-            products = products.Where(x => x.Name!.Contains(query));
-        }
+
+        if (!String.IsNullOrEmpty(query))
+            products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
+
+        products = products.OrderByDescending(x => x.UserInfos.Count());
         var retval = productService.GetProductDtos(products).ToList();
 
-        
         if (User.IsInRole(RoleNames.User))
         {
-
             var userId = User.GetCurrentUserId();
             var productUser = dataContext.Set<ProductUser>().Where(x => x.UserId == userId);
             foreach (var product in retval)
             {
-                product.IsInLibrary = !(productUser.FirstOrDefault(x => x.ProductId == product.Id) == null);
+                product.IsInLibrary = productUser.Any(x => x.ProductId == product.Id);
             }
         }
 
@@ -51,7 +51,7 @@ public class ProductsController : ControllerBase
     [HttpGet("manage"), Authorize(Roles = RoleNames.Admin)]
     public IEnumerable<ProductDto> GetManageAllProducts()
     {
-        var products = dataContext.Set<Product>();
+        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
         return productService.GetProductDtos(products);
     }
 
@@ -60,14 +60,27 @@ public class ProductsController : ControllerBase
     {
         int? userId = User.GetCurrentUserId();
         var products = dataContext.Set<Product>();
-        var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
-        if (result == null)
+        if (User.IsInRole(RoleNames.Admin) || User.IsInRole(RoleNames.Publisher))
         {
-            return NotFound();
+            var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
-        var productUsers = dataContext.Set<ProductUser>();
-        result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
-        return Ok(result);
+        else
+        {
+            var result = productService.GetProductDtos(products).FirstOrDefault(x => x.Id == id && (x.Status == (int)Product.StatusType.Active));
+
+            if (result == null)
+                return NotFound();
+
+            var productUsers = dataContext.Set<ProductUser>();
+            result.IsInLibrary = productUsers.FirstOrDefault(x => x.UserId == userId && x.ProductId == id) != null;
+
+            return Ok(result);
+        }
     }
 
     [HttpPost("select")]
@@ -89,23 +102,35 @@ public class ProductsController : ControllerBase
     {
         var publisherId = User.GetCurrentUserId();
         var publisherName = User.GetCurrentUserName();
+
         if (publisherId == null || productDto.file == null || productDto.icon == null || productDto.Pictures == null)
-        {
             return BadRequest();
-        }
+
         using (var image = new MagickImage(productDto.icon.OpenReadStream()))
         {
             if (image.Width != image.Height)
-            {
                 return BadRequest("Image not 1:1 aspect ratio");
-            }
-        }
-        if (productDto.icon.Length > 102400)
-        {
-            return BadRequest("Icon file is too large. Max file size is 100KiB");
         }
 
-        var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
+        if (productDto.icon.Length > 102400)
+            return BadRequest("Icon file is too large. Max file size is 100KiB");
+
+
+        foreach (var picture in productDto.Pictures)
+        {
+            using (var image = new MagickImage(picture.OpenReadStream()))
+            {
+                var ratio = (double)image.Width / image.Height;
+
+                if (ratio is < 1.770 or > 1.78)
+                    return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
+
+                if (picture.Length > 5242880)
+                    return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
+            }
+        }
+
+        var newIconFileName = Guid.NewGuid().ToString() + ".png";
         var product = new Product
         {
             Name = productDto.Name,
@@ -113,53 +138,60 @@ public class ProductsController : ControllerBase
             Blurb = productDto.Blurb,
             Price = productDto.Price,
             PublisherId = (int)publisherId,
-            Status = Product.StatusType.Active,
+            Status = Product.StatusType.Inactive,
             FileName = productDto.file.FileName,
-            IconName = newIconGuid
+            IconName = newIconFileName
         };
 
         dataContext.Add(product);
         dataContext.SaveChanges();
         productDto.Id = product.Id;
-        List<Picture> pictureList = new List<Picture>();
+
+        var pictures = new List<Picture>();
+
         try
         {
-            //foreach (var picture in productDto.Pictures)
-            //{
-                //Validate images are 16:9
-                //Valide image sizes are 5MiB (5242880 bytes)
-            //}
             // Handle adding pictures
             foreach (var formFile in productDto.Pictures)
             {
-                
                 if (formFile.Length > 0)
                 {
-                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
+                    var myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}//Pictures");
                     Directory.CreateDirectory(myPath);
-                    var tempGuid = Guid.NewGuid().ToString();
-                    pictureList.Add(new Picture { Name = tempGuid + Path.GetExtension(formFile.FileName), ProductId = productDto.Id });
-                    var pictureFilePath = Path.Combine(myPath, tempGuid + Path.GetExtension(formFile.FileName));
+                    var newPictureFileName = Guid.NewGuid() + ".jpg";
+                    var pictureFilePath = Path.Combine(myPath, newPictureFileName);
 
-                    using (var stream = System.IO.File.Create(pictureFilePath))
+                    pictures.Add(new Picture { Name = newPictureFileName, ProductId = productDto.Id });
+
+                    using (var image = new MagickImage(formFile.OpenReadStream()))
                     {
-                        formFile.CopyTo(stream);
+                        image.Strip();
+                        image.Write(pictureFilePath);
                     }
                 }
             }
-            dataContext.AddRange(pictureList);
+
+            dataContext.AddRange(pictures);
             dataContext.SaveChanges();
 
-            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}"));
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", productDto.file.FileName);
-            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{productDto.Id}", newIconGuid);
-            using (Stream stream = new FileStream(filePath, FileMode.Create))
+            var baseDirectory = $"ProductFiles//{productDto.Id}";
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), baseDirectory));
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), baseDirectory, productDto.file.FileName);
+
+            //write file to file
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                productDto.file.CopyTo(stream);
+                productDto.file.CopyTo(fileStream);
             }
-            using (Stream stream = new FileStream(iconPath, FileMode.Create))
+
+            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), baseDirectory, newIconFileName);
+
+            //write icon to file
+            using (var image = new MagickImage(productDto.icon.OpenReadStream()))
             {
-                productDto.icon.CopyTo(stream);
+                image.Strip();
+                image.Resize(256, 256);
+                image.Write(iconPath);
             }
         }
         catch (Exception ex)
@@ -174,46 +206,42 @@ public class ProductsController : ControllerBase
     public ActionResult<ProductDto> UpdateProduct(int id, [FromForm] CreateProductDto productDto)
     {
         var products = dataContext.Set<Product>();
-        var current = products.FirstOrDefault(x => x.Id == id);
-        if (current == null)
-        {
+        var product = products.FirstOrDefault(x => x.Id == id);
+
+        if (product == null)
             return NotFound();
-        }
 
         // Handle updating icon
         if (productDto.icon != null)
         {
             if (productDto.icon.Length > 102400)
-            {
                 return BadRequest("Icon file is too large. Max file size is 100KiB");
-            }
-            var newIconGuid = Guid.NewGuid().ToString() + Path.GetExtension(productDto.icon.FileName);
 
             // Delete existing file
-            if (current.IconName != null)
-            {
-                string delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", current.IconName);
-                FileInfo delFile = new FileInfo(delPath);
-                if (delFile.Exists)
-                {
-                    delFile.Delete();
-                }
-            }
+            var delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", product.IconName);
+            var delFile = new FileInfo(delPath);
+            if (delFile.Exists)
+                delFile.Delete();
             // Add new icon file
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}"));
-            string iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", newIconGuid);
-            using (Stream stream = new FileStream(iconPath, FileMode.Create))
+            var newIconFileName = Guid.NewGuid().ToString() + ".png";
+            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", newIconFileName);
+
+            //write icon to file
+            using (var image = new MagickImage(productDto.icon.OpenReadStream()))
             {
-                productDto.icon.CopyTo(stream);
+                image.Strip();
+                image.Resize(256, 256);
+                image.Write(iconPath);
             }
-            current.IconName = newIconGuid;
+            product.IconName = newIconFileName;
         }
 
         // Handle updating pictures
-        List<Picture> pictureList = new List<Picture>();
+        var pictureList = new List<Picture>();
         if (productDto.Pictures != null)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}//Pictures");
             DirectoryInfo di = new DirectoryInfo(path);
             if (di.Exists)
             {
@@ -226,30 +254,34 @@ public class ProductsController : ControllerBase
                     dir.Delete(true);
                 }
             }
-            var removePictures = dataContext.Set<Picture>().Where(x => x.ProductId == current.Id);
+            var removePictures = dataContext.Set<Picture>().Where(x => x.ProductId == product.Id);
             dataContext.RemoveRange(removePictures);
             foreach (var formFile in productDto.Pictures)
             {
                 if (formFile.Length > 0)
                 {
-                    string myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{current.Id}//Pictures");
-                    Directory.CreateDirectory(myPath);
+                    var myPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{product.Id}//Pictures");
                     var newGuid = Guid.NewGuid();
-                    pictureList.Add(new Picture { Name = newGuid + Path.GetExtension(formFile.FileName), ProductId = current.Id });
-                    var pictureFilePath = Path.Combine(myPath, newGuid + Path.GetExtension(formFile.FileName));
-                    using (var stream = System.IO.File.Create(pictureFilePath))
+                    var pictureFilePath = Path.Combine(myPath, newGuid.ToString());
+
+                    Directory.CreateDirectory(myPath);
+                    pictureList.Add(new Picture { Name = newGuid + ".jpg", ProductId = product.Id });
+
+                    //write picture to file
+                    using (var image = new MagickImage(formFile.OpenReadStream()))
                     {
-                        formFile.CopyTo(stream);
+                        image.Strip();
+                        image.Write(pictureFilePath + ".jpg");
                     }
                 }
             }
             dataContext.AddRange(pictureList);
         }
 
-        current.Name = productDto.Name;
-        current.Price = productDto.Price;
-        current.Description = productDto.Description;
-        current.Blurb = productDto.Blurb;
+        product.Name = productDto.Name;
+        product.Price = productDto.Price;
+        product.Description = productDto.Description;
+        product.Blurb = productDto.Blurb;
         dataContext.SaveChanges();
 
         return Ok(productDto);
@@ -260,17 +292,16 @@ public class ProductsController : ControllerBase
     {
         var products = dataContext.Set<Product>();
         var current = products.FirstOrDefault(x => x.Id == id);
+
         if (current == null)
-        {
             return NotFound();
-        }
 
         // delete directory associated with product, leaves blank folder but deletes all containing files
         //https://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
         try
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}");
-            DirectoryInfo di = new DirectoryInfo(path);
+            var di = new DirectoryInfo(path);
 
             foreach (FileInfo file in di.GetFiles())
             {
@@ -286,7 +317,6 @@ public class ProductsController : ControllerBase
 
         }
 
-
         products.Remove(current);
         dataContext.SaveChanges();
 
@@ -300,10 +330,10 @@ public class ProductsController : ControllerBase
         var product = dataContext.Set<Product>().FirstOrDefault(x => x.Id == id);
 
         if (product == null)
-        {
             return NotFound();
-        }
+
         product.Status = (Product.StatusType)status;
+
         // if status not active, delete cart items
         if (status != (int)Product.StatusType.Active)
         {
@@ -315,12 +345,10 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
-
-
     [HttpGet("/api/publisher/products"), Authorize(Roles = RoleNames.Publisher)]
     public IEnumerable<ProductDto> GetPublisherProducts()
     {
-        var products = dataContext.Set<Product>();
+        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
         var publisherId = User.GetCurrentUserId();
 
         return productService.GetProductDtos(products.Where(x => x.PublisherId == publisherId));
@@ -329,24 +357,20 @@ public class ProductsController : ControllerBase
     [HttpGet("library"), Authorize(Roles = RoleNames.User)]
     public ActionResult<ProductDto> GetLibrary(string? query)
     {
-        int? userId = User.GetCurrentUserId();
+        var userId = User.GetCurrentUserId();
+
         if (userId == null)
-        {
             return BadRequest();
-        }
+
         var products = dataContext.Set<ProductUser>()
             .Where(x => x.UserId == userId)
-            .Where(x => !(x.Product.Status == Product.StatusType.Inactive))
+            .Where(x => x.Product.Status != Product.StatusType.Inactive)
             .Select(x => x.Product);
-        if (products == null)
-        {
-            return NotFound();
-        }
+
         if (!String.IsNullOrEmpty(query))
-        {
             products = products.Where(x => x.Name!.Contains(query));
-        }
-        return Ok(productService.GetProductDtos(products));
+
+        return Ok(productService.GetProductDtos(products).OrderBy(x => x.Name));
 
     }
 
