@@ -19,14 +19,15 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
             setProducts([])
             return;
         }
+        console.log("cart Item" + cartItem)
         axios({
             url: baseUrl + '/api/products/select',
             method: 'post',
             data: JSON.parse(cartItem)
         })
             .then(function (response) {
+                console.log("SETTING STATE!!!")
                 setProducts(response.data);
-
             })
             .catch(function (error) {
                 setProducts([])
@@ -80,7 +81,27 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
 
     function handleRemoveItem(id) {
         removeItemCart(id)
-        setProducts([]);
+        // TODO: Don't just filter it manually just to update the state again
+        var array = JSON.parse(cartItem)
+        var filteredArray = array.filter(e => parseInt(e) !== id)
+        if (!filteredArray) {
+            setProducts([])
+            return;
+        }
+        console.log("cart Item" + filteredArray)
+        axios({
+            url: baseUrl + '/api/products/select',
+            method: 'post',
+            data: filteredArray
+        })
+            .then(function (response) {
+                console.log("SETTING STATE!!!")
+                setProducts(response.data);
+            })
+            .catch(function (error) {
+                setProducts([])
+                console.log(error);
+            });
     }
 
     return (

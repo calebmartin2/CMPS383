@@ -65,12 +65,10 @@ export function CartItemProvider({ children }) {
         async (item) => {
             console.log("REMOVING SINGLE ITEM: " + item)
             await AsyncStorage.getItem('cart', (err, result) => {
-                console.log("RES: " + result)
                 var array = JSON.parse(result)
                 var filteredArray = array.filter(e => parseInt(e) !== item)
-                console.log(filteredArray);
-                AsyncStorage.setItem('cart', JSON.stringify(filteredArray))
                 setCartItem(JSON.stringify(filteredArray))
+                AsyncStorage.setItem('cart', JSON.stringify(filteredArray))
             });
         }, [setCartItem]
     );
