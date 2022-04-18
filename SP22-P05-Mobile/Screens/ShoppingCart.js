@@ -80,6 +80,7 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
 
     function handleRemoveItem(id) {
         removeItemCart(id)
+        setProducts([]);
     }
 
     return (

@@ -70,8 +70,9 @@ export function CartItemProvider({ children }) {
                 var filteredArray = array.filter(e => parseInt(e) !== item)
                 console.log(filteredArray);
                 AsyncStorage.setItem('cart', JSON.stringify(filteredArray))
+                setCartItem(JSON.stringify(filteredArray))
             });
-        }
+        }, [setCartItem]
     );
 
     const context = {

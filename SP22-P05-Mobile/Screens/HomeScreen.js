@@ -43,16 +43,17 @@ export default function HomeScreen({ navigation }) {
                         <Card containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
                             <Grid>
                                 <Col style={{ width: 120 }}>
-                                <Image style={{width: 100,
-    height: 100,}} source={{ uri: baseUrl + product.iconName }}/>
-
+                                    <Image style={{
+                                        width: 100,
+                                        height: 100,
+                                    }} source={{ uri: baseUrl + product.iconName }} />
                                 </Col>
                                 <Col>
                                     <Row>
-                            <Card.Title style={styles.title}>{product.name} </Card.Title>
+                                        <Card.Title style={styles.title}>{product.name} </Card.Title>
                                     </Row>
                                     <Row>
-                            <Text style={styles.blurb}>{product.blurb}</Text>
+                                        <Text style={styles.blurb}>{product.blurb}</Text>
                                     </Row>
                                 </Col>
                             </Grid>
