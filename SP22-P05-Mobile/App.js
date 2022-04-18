@@ -42,7 +42,7 @@ function Root() {
       tabBarActiveBackgroundColor: 'rgb(33,37,41)'
     })}>
       <Tab.Screen name="Store" component={HomeScreen} options={{
-        title: 'ICE - Store',
+        title: 'Store',
         headerStyle: {
           backgroundColor: 'rgb(33,37,41)',
         },
@@ -88,7 +88,7 @@ function App() {
               component={Root}
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="ICE - Store" component={HomeScreen}
+            <Stack.Screen name="Store" component={HomeScreen}
             />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Library" component={LibraryScreen} options={{
