@@ -11,8 +11,8 @@ import authCookieContext from "../Authorization/AuthCookieProvider";
 export default function ShoppingCart({ setAmountCart, navigation }) {
 
     const [products, setProducts] = useState([]);
-    const { cartItem, removeAllItemCart } = useContext(cartContext);
-    const { authCookie, saveAuthCookie } = useContext(authCookieContext);
+    const { cartItem, removeAllItemCart, removeItemCart } = useContext(cartContext);
+    const { authCookie } = useContext(authCookieContext);
 
     function refreshCart() {
         if (!cartItem) {
@@ -78,6 +78,10 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
         setProducts([]);
     }
 
+    function handleRemoveItem(id) {
+        removeItemCart(id)
+    }
+
     return (
         <ScrollView style={styles.scrollView}>
             <View style={styles.container}>
@@ -108,12 +112,13 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                                         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
                                     </View>
                                 </Card>
+                                <Button title="remove item" onPress={() => handleRemoveItem(product.id)}/>
                             </TouchableOpacity>
                         ))}
                         <Text style={styles.price}>Total: ${calculateTotal()}</Text>
                         {console.log(authCookie)}
                         {authCookie === "AUTH_COOKIE" ? <Text style={styles.title}>Please log in to purchase</Text> : <Button title="buy items" style={{ marginTop: 20 }} onPress={buyItems} />}
-                        < Button title="remove all items" style={{ marginTop: 10 }} onPress={() => handleRemoveAllItemCart()} />
+                        <Button title="remove all items" style={{ marginTop: 10 }} onPress={() => handleRemoveAllItemCart()} />
                     </>
                 }
             </View>
