@@ -19,7 +19,6 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
             setProducts([])
             return;
         }
-        console.log("cart Item" + cartItem)
         axios({
             url: baseUrl + '/api/products/select',
             method: 'post',
@@ -60,6 +59,7 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
             .then(function (response) {
                 console.log(response);
                 removeAllItemCart()
+                setProducts([])
             })
             .catch(function (error) {
                 console.log(error);
@@ -88,14 +88,12 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
             setProducts([])
             return;
         }
-        console.log("cart Item" + filteredArray)
         axios({
             url: baseUrl + '/api/products/select',
             method: 'post',
             data: filteredArray
         })
             .then(function (response) {
-                console.log("SETTING STATE!!!")
                 setProducts(response.data);
             })
             .catch(function (error) {
