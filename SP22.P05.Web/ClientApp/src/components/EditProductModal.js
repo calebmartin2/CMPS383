@@ -10,6 +10,7 @@ export function EditProduct({ product, handleClose}) {
     const [description, setDescription] = useState(product.description);
     const [blurb, setBlurb] = useState(product.blurb);
     const [price, setPrice] = useState(product.price);
+    const [error, setError] = useState("");
     const iconRef = useRef(null);
     const pictureRef = useRef(null);
 
@@ -39,8 +40,8 @@ export function EditProduct({ product, handleClose}) {
             })
             .catch(function (error) {
                 setAddProductError(true);
-                console.log(error);
                 setLoading(false);
+                setError(error.response.data);
             })
     }
 
@@ -89,7 +90,7 @@ export function EditProduct({ product, handleClose}) {
                         Discard
                     </Button>
                 </Modal.Footer>
-                {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
+                {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission: {error}</p>}
             </Form>
             </Modal.Body>
             </>

@@ -2,7 +2,7 @@ import { Button, Form, InputGroup, Modal, Spinner } from "react-bootstrap";
 import { useState, useRef } from "react";
 import axios from "axios";
 
-export function AddProduct({ handleClose}) {
+export function AddProduct({ handleClose }) {
 
     const [addLoading, setAddLoading] = useState(false);
     const [addProductError, setAddProductError] = useState(false);
@@ -10,10 +10,11 @@ export function AddProduct({ handleClose}) {
     const [description, setDescription] = useState("");
     const [blurb, setBlurb] = useState("");
     const [price, setPrice] = useState("");
+    const [error, setError] = useState("");
     const fileRef = useRef(null);
     const iconRef = useRef(null);
     const pictureRef = useRef(null);
-    
+
     const handleAdd = (e) => {
         setAddLoading(true);
         e.preventDefault();
@@ -37,9 +38,10 @@ export function AddProduct({ handleClose}) {
             .then(function (response) {
                 handleClose();
             })
-            .catch(function (response) {
+            .catch(function (error) {
                 setAddProductError(true);
-                console.log(response);
+                console.log(error.response.data);
+                setError(error.response.data);
                 setAddLoading(false);
             });
     }
@@ -93,7 +95,7 @@ export function AddProduct({ handleClose}) {
                             Discard
                         </Button>
                     </Modal.Footer>
-                    {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission</p>}
+                    {addProductError && <p style={{ marginTop: "1em", background: "#500000", padding: "1em" }}>Invalid Submission: {error}</p>}
                 </Form>
             </Modal.Body>
         </>
