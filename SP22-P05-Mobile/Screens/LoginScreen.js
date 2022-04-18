@@ -37,14 +37,20 @@ export default function LoginScreen({ navigation }) {
       password: password
     })
       .then(function (response) {
-        setIsLoggedIn(true);
-        var cookie = response.headers["set-cookie"][0].split(";")[0];
-        async function temp() {
-          setUserName(response.data.userName);
-          await saveAuthCookie(cookie);
-          navigation.navigate('Root', { screen: 'Store' })
+        if (response.data.roles.includes("User")) {
+          setIsLoggedIn(true);
+          var cookie = response.headers["set-cookie"][0].split(";")[0];
+          async function temp() {
+            setUserName(response.data.userName);
+            await saveAuthCookie(cookie);
+            navigation.navigate('Root', { screen: 'Store' })
+          }
+          temp();
+        } else {
+          Alert.alert("Cannot log in as " + response.data.roles[0])
+          handleLogout();
         }
-        temp();
+
       })
       .catch(function (error) {
         console.log(error);
@@ -98,14 +104,14 @@ export default function LoginScreen({ navigation }) {
             placeholder="Password"
           />
         </SafeAreaView>
-        < Button title="Login" onPress={handleLogin}/>
-        < Button title="Sign Up" style={{marginTop: 10}} onPress={() => navigation.navigate('SignUp')}/>
+        < Button title="Login" onPress={handleLogin} />
+        < Button title="Sign Up" style={{ marginTop: 10 }} onPress={() => navigation.navigate('SignUp')} />
       </View>
         :
         <View style={styles.container}>
           <Text style={styles.username}>Hello, {userName}!</Text>
-          < Button title="View Library" onPress={() => navigation.navigate('Library')}/>
-          < Button title="Logout" style={{marginTop: 10}} onPress={handleLogout}/>
+          < Button title="View Library" onPress={() => navigation.navigate('Library')} />
+          < Button title="Logout" style={{ marginTop: 10 }} onPress={handleLogout} />
         </View>}
     </>
   );
