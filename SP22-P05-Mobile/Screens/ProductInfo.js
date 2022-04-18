@@ -6,9 +6,19 @@ import cartContext from "../Authorization/CartItemProvider"
 export default function ProductInfo({ route }) {
     const { product } = route.params; 
     const { cartItem, saveCartItem, appendCartItem} = useContext(cartContext);
+
     function handleAddCart(id) {
         appendCartItem(JSON.stringify(id));
     }
+
+    function renderAddCartButton() {
+        if (cartItem && cartItem.includes(product.id))
+            return <Button title="In Cart"/>
+        if (product.isInLibrary)
+            return <Button title="In Library"/>   
+        return <Button title="Add to cart" onPress={() => handleAddCart(product.id)}/>
+    }
+
     return (
         <>
             <View style={styles.container}>
@@ -17,15 +27,11 @@ export default function ProductInfo({ route }) {
                 <Text style={styles.blurb}>{product.blurb}</Text>
                 <Text style={styles.description}>{product.description}</Text>
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                {cartItem && cartItem.includes(product.id) ?
-                 <Button title="In Cart"/>
-                : <Button title="Add to cart" onPress={() => handleAddCart(product.id)}/>}
+                {renderAddCartButton()}
             </View>
         </>
     )
 }
-
-
 
 const styles = StyleSheet.create({
     container: {
