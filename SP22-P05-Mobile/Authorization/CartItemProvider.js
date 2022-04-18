@@ -38,10 +38,12 @@ export function CartItemProvider({ children }) {
         async (item) => {
             await AsyncStorage.getItem('cart', (err, result) => {
                 if (result !== null) {
-                    var newIds = JSON.parse(result).concat(item);
-                    console.log(newIds)
-                    AsyncStorage.setItem('cart', JSON.stringify(newIds));
-                    setCartItem(JSON.stringify(newIds))
+                    if (!result.includes(item)) {
+                        var newIds = JSON.parse(result).concat(item);
+                        console.log(newIds)
+                        AsyncStorage.setItem('cart', JSON.stringify(newIds));
+                        setCartItem(JSON.stringify(newIds))
+                    }
                 } else {
                     console.log('Data Not Found');
                     var array = new Array(item)

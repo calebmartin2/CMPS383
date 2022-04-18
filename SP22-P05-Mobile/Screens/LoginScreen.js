@@ -5,6 +5,7 @@ import { Button } from 'react-native-elements';
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 import authCookieContext from '../Authorization/AuthCookieProvider';
+import cartContext from '../Authorization/CartItemProvider';
 
 export default function LoginScreen({ navigation }) {
   const [username, onChangeUsername] = useState(null);
@@ -12,6 +13,8 @@ export default function LoginScreen({ navigation }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const { authCookie, saveAuthCookie } = useContext(authCookieContext);
+  const { removeAllItemCart } = useContext(cartContext);
+
 
   async function getMeTest() {
     axios({
@@ -56,11 +59,12 @@ export default function LoginScreen({ navigation }) {
       headers: { Cookie: authCookie }
     })
       .then(function (response) {
-        saveAuthCookie("AUTH-COOKIE")
+        saveAuthCookie("AUTH_COOKIE")
         setUserName("")
         onChangeUsername("")
         onChangePassword("")
         setIsLoggedIn(false)
+        removeAllItemCart()
         console.log(response)
       })
       .catch(function (error) {

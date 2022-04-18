@@ -63,6 +63,7 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                 removeAllItemCart()
             })
             .catch(function (error) {
+
                 console.log(error);
             });
     }
@@ -109,7 +110,8 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                             </TouchableOpacity>
                         ))}
                         <Text style={styles.price}>Total: ${calculateTotal()}</Text>
-                        < Button title="buy items" style={{marginTop: 20}} onPress={buyItems}/>
+                        {console.log(authCookie)}
+                        {authCookie === "AUTH_COOKIE" ? <Text style={styles.title}>Please log in to purchase</Text> : <Button title="buy items" style={{marginTop: 20}} onPress={buyItems}/>}
                         < Button title="remove all items" style={{marginTop: 10}} onPress={removeAllItemCart} />
                     </>
                 }
