@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
-import { AdminDashboard } from "./components/Admin/AdminDashboard";
-import { AdminManageProducts } from "./components/Admin/AdminManageProducts";
-import { AdminVerifyPublishers } from "./components/Admin/AdminVerifyPublishers";
-import { ManagePublishers } from "./components/Admin/ManagePublishers";
-import { checkForRole } from "./components/Auth/checkForRole";
-import Login from "./components/Auth/Login";
-import PublisherSignUp from "./components/Auth/PublisherSignUp";
-import SignUp from "./components/Auth/SignUp";
+import { AdminDashboard } from "./pages/Admin/AdminDashboard";
+import { AdminManageProducts } from "./pages/Admin/AdminManageProducts";
+import { AdminVerifyPublishers } from "./pages/Admin/AdminVerifyPublishers";
+import { ManagePublishers } from "./pages/Admin/ManagePublishers";
+import { checkForRole } from "./pages/Auth/checkForRole";
+import Login from "./pages/Auth/Login";
+import PublisherSignUp from "./pages/Auth/PublisherSignUp";
+import SignUp from "./pages/Auth/SignUp";
 import { Navmenu } from "./components/Navmenu";
 import NotFoundPage from "./components/NotFoundPage";
-import { PublisherDashboard } from "./components/Publisher/PublisherDashboard";
-import PublisherManageProducts from "./components/Publisher/PublisherManageProducts";
-import Cart from "./components/Store/Cart";
-import { ProductDetail } from "./components/Store/ProductDetail";
-import Receipt from "./components/Store/Receipt";
-import { Search } from "./components/Store/Search";
-import { Home } from "./components/Store/Store";
-import syncCart from "./components/User/syncCart";
-import UserLibrary from "./components/User/UserLibrary";
+import { PublisherDashboard } from "./pages/Publisher/PublisherDashboard";
+import PublisherManageProducts from "./pages/Publisher/PublisherManageProducts";
+import Cart from "./pages/Store/Cart";
+import { ProductDetail } from "./pages/Store/ProductDetail";
+import Receipt from "./pages/Store/Receipt";
+import { Search } from "./pages/Store/Search";
+import { Home } from "./pages/Store/Store";
+import syncCart from "./pages/User/syncCart";
+import UserLibrary from "./pages/User/UserLibrary";
 import { refreshUserInfo } from "./refreshUserInfo";
-import { TermsOfAgreement } from "./TermsOfAgreement";
+import { TermsOfAgreement } from "./pages/Auth/TermsOfAgreement";
 
 function App() {
 

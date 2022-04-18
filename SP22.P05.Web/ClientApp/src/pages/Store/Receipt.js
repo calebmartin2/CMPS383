@@ -8,8 +8,6 @@ export default function Receipt() {
     const { state } = useLocation();
     const navigate = useNavigate();
 
-
-
     if (state === null) {
         return (
             <>
@@ -21,6 +19,14 @@ export default function Receipt() {
         )
     }
     const { products } = state;
+
+    function calculateTotal() {
+        var sum = 0;
+        products.forEach(element => {
+            sum += element.price;
+        });
+        return sum.toFixed(2);
+    }
 
     return (
         <>
@@ -37,6 +43,7 @@ export default function Receipt() {
                     </div>
                 </div>
             ))}
+            <h4>Total: ${calculateTotal()}</h4>
             <Button onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button><br /><br />
             <Button onClick={() => { navigate("/library", { replace: false }) }}>Go to Library</Button>
 

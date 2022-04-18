@@ -38,15 +38,14 @@ export default function Cart({ setAmountCart }) {
         allCart = allCart.filter(item => item !== id.toString());
         localStorage.setItem("cart", JSON.stringify(allCart));
         setAmountCart(allCart.length);
-
     }
 
     function removeAllItemCart() {
         localStorage.removeItem("cart")
         setAmountCart(0);
         setProducts([]);
-
     }
+
     function calculateTotal() {
         var sum = 0;
         products.forEach(element => {
@@ -67,7 +66,8 @@ export default function Cart({ setAmountCart }) {
         })
             .then(function (response) {
                 console.log(response);
-                removeAllItemCart()
+                localStorage.removeItem("cart")
+                setAmountCart(0);
                 navigate('/receipt', { state: { products: products } });
 
             })

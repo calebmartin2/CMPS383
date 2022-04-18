@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Row, Col, Spinner } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import NotFoundPage from "../NotFoundPage";
+import NotFoundPage from "../../components/NotFoundPage";
 import { useNavigate } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 import { ProductCarousel } from "./Carousel";
@@ -63,7 +63,7 @@ export function ProductDetail({ setAmountCart }) {
                 return <Button variant="primary" onClick={() => handleAddCart()}>Add to cart</Button>
             }
         }
-        return null
+        return <Button variant="primary" disabled>Add to cart</Button>
 
     }
 
@@ -75,6 +75,9 @@ export function ProductDetail({ setAmountCart }) {
                         <Breadcrumb.Item linkAs={Link} to="/" linkProps={{ to: "/" }}>Store</Breadcrumb.Item>
                         <Breadcrumb.Item active>{product.name}</Breadcrumb.Item>
                     </Breadcrumb>
+                    {console.log(product.status)}
+                    {((Number(product.status) === 2)) && <h3 style={{backgroundColor: "#292721", color: "#ffd500", padding: "0.2em", borderRadius: "0.2em"}}>Product Under Review</h3>}
+                    {((Number(product.status) === 1)) && <h3 style={{backgroundColor: "#292721", color: "#ffd500", padding: "0.2em", borderRadius: "0.2em"}}>Product Not For Sale</h3>}
                     <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
                     <Row>
                         <Col lg={8} xs={12}>

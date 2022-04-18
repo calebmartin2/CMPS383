@@ -40,7 +40,7 @@ export function ProductList({search}) {
             {loading
             ? <Spinner animation="border" variant="info" />
                 : <div className="ProductList mx-auto text-break">
-                    {(!products.length && !loading) && <h3 style={{color: "lightGray"}}>No results were returned for that query.</h3>}
+                    {((products.length === 0) && search) && <h3 style={{color: "lightGray"}}>No results were returned for that query.</h3>}
                     <Row xs={1} md={2} lg={3} className="g-4" >
                         {products.map((product) => (
                             <ProductCard key={product.id} myProduct={product} cart={cart} />
