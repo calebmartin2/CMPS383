@@ -12,10 +12,9 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
 
     const [products, setProducts] = useState([]);
     const { cartItem, removeAllItemCart } = useContext(cartContext);
-    const {authCookie, saveAuthCookie} = useContext(authCookieContext);
+    const { authCookie, saveAuthCookie } = useContext(authCookieContext);
 
     function refreshCart() {
-        var tempCart = cartItem;
         if (!cartItem) {
             setProducts([])
             return;
@@ -32,11 +31,10 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
             .catch(function (error) {
                 setProducts([])
                 console.log(error);
-
             });
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             refreshCart();
         });
@@ -56,14 +54,13 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
             url: baseUrl + '/api/user-products/add-to-account',
             method: 'post',
             data: JSON.parse(cartItem),
-            headers: {cookie: authCookie}
+            headers: { cookie: authCookie }
         })
             .then(function (response) {
                 console.log(response);
                 removeAllItemCart()
             })
             .catch(function (error) {
-
                 console.log(error);
             });
     }
@@ -74,6 +71,11 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                 <Text style={styles.empty}>No items in cart</Text>
             </>
         )
+    }
+
+    function handleRemoveAllItemCart() {
+        removeAllItemCart();
+        setProducts([]);
     }
 
     return (
@@ -91,7 +93,6 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                                                 width: 100,
                                                 height: 100,
                                             }} source={{ uri: baseUrl + product.iconName }} />
-
                                         </Col>
                                         <Col>
                                             <Row>
@@ -111,11 +112,10 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                         ))}
                         <Text style={styles.price}>Total: ${calculateTotal()}</Text>
                         {console.log(authCookie)}
-                        {authCookie === "AUTH_COOKIE" ? <Text style={styles.title}>Please log in to purchase</Text> : <Button title="buy items" style={{marginTop: 20}} onPress={buyItems}/>}
-                        < Button title="remove all items" style={{marginTop: 10}} onPress={removeAllItemCart} />
+                        {authCookie === "AUTH_COOKIE" ? <Text style={styles.title}>Please log in to purchase</Text> : <Button title="buy items" style={{ marginTop: 20 }} onPress={buyItems} />}
+                        < Button title="remove all items" style={{ marginTop: 10 }} onPress={() => handleRemoveAllItemCart()} />
                     </>
                 }
-
             </View>
         </ScrollView >
     );
@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'rgb(19,24,27)',
-
     },
     price: {
         fontSize: 20,

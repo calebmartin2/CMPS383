@@ -17,7 +17,7 @@ export default function ProductInfo({ route }) {
                 <Text style={styles.blurb}>{product.blurb}</Text>
                 <Text style={styles.description}>{product.description}</Text>
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                {cartItem.includes(product.id) ?
+                {cartItem && cartItem.includes(product.id) ?
                  <Button title="In Cart"/>
                 : <Button title="Add to cart" onPress={() => handleAddCart(product.id)}/>}
             </View>

@@ -51,16 +51,6 @@ function Root() {
           fontWeight: 'bold',
         },
       }} />
-      <Tab.Screen name="Account" component={LoginScreen} options={{
-        title: 'Account',
-        headerStyle: {
-          backgroundColor: 'rgb(33,37,41)',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}/>
       <Tab.Screen name="Shopping Cart" component={ShoppingCart} options={{
         title: 'Shopping Cart',
         headerStyle: {
@@ -70,7 +60,17 @@ function Root() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-      }}/>
+      }} />
+      <Tab.Screen name="Account" component={LoginScreen} options={{
+        title: 'Account',
+        headerStyle: {
+          backgroundColor: 'rgb(33,37,41)',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }} />
     </Tab.Navigator>
   )
 }
@@ -81,56 +81,58 @@ function App() {
   return (
     <AuthCookieProvider>
       <CartItemProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Root"
-            component={Root}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="ICE - Store" component={HomeScreen} 
-          />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Library" component={LibraryScreen} options ={{
-            title: 'Library',
-            headerStyle: {
-              backgroundColor: 'rgb(33,37,41)'
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            }}} />
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Root"
+              component={Root}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="ICE - Store" component={HomeScreen}
+            />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Library" component={LibraryScreen} options={{
+              title: 'Library',
+              headerStyle: {
+                backgroundColor: 'rgb(33,37,41)'
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              }
+            }} />
 
-          <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} options={{
-        title: 'Terms and Conditions', headerStyle: {
-          backgroundColor: 'rgb(33,37,41)',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        }}} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} options={{
-        title: 'Sign Up',
-        headerStyle: {
-          backgroundColor: 'rgb(33,37,41)',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}/>
-          <Stack.Screen name="ProductInfo" component={ProductInfo} options={({ route }) => ({
-            title: route.params.product.name, headerStyle: {
-              backgroundColor: 'rgb(33,37,41)',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-          })}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+            <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} options={{
+              title: 'Terms and Conditions', headerStyle: {
+                backgroundColor: 'rgb(33,37,41)',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              }
+            }} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} options={{
+              title: 'Sign Up',
+              headerStyle: {
+                backgroundColor: 'rgb(33,37,41)',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            }} />
+            <Stack.Screen name="ProductInfo" component={ProductInfo} options={({ route }) => ({
+              title: route.params.product.name, headerStyle: {
+                backgroundColor: 'rgb(33,37,41)',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            })}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
       </CartItemProvider>
     </AuthCookieProvider>
   );
