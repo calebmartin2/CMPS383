@@ -49,9 +49,16 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("manage"), Authorize(Roles = RoleNames.Admin)]
-    public IEnumerable<ProductDto> GetManageAllProducts()
+    public IEnumerable<ProductDto> GetManageAllProducts(string? query)
     {
-        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
+        var products = from p in dataContext.Set<Product>()
+                       select p;
+
+        if (!String.IsNullOrEmpty(query))
+            products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
+        
+        products = products.OrderByDescending(x => x.Id);
+
         return productService.GetProductDtos(products);
     }
 
