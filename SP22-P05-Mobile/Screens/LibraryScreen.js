@@ -62,9 +62,13 @@ export default function UserLibrary() {
                                 </Row>
                                 <Row>
                                     <Text style={styles.blurb}>{product.blurb}</Text>
+                                    <Text>{product.publisherName}</Text>
                                 </Row>
                             </Col>
                         </Grid>
+                        <View style={styles.container2}>
+                                <Text style={styles.price}>{product.publisherName}</Text>
+                            </View>
                     </Card>
                 ))
                 }
@@ -105,5 +109,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "300",
         textAlignVertical: 'center',
+    },
+    price: {
+        fontSize: 20,
+        fontWeight: "700",
+        textAlign: 'right',
+        color: 'rgb(255,255,255)'
     }
 });
