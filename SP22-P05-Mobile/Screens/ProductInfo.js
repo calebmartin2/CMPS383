@@ -25,7 +25,6 @@ export default function ProductInfo({ route }) {
             <View style={styles.container}>
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.publisherName}>Publisher: {product.publisherName}</Text>
-                <Text style={styles.blurb}>{product.blurb}</Text>
                 {product.pictures && product.pictures.map((picture) =>
                     <View key={picture} style={styles.imgContainer}>
                         <Image style={styles.image} source={{ uri: baseUrl + picture }} />
@@ -51,13 +50,6 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         flex: 1,
         aspectRatio: 1.77 // Your aspect ratio
-    },
-    blurb: {
-        color: 'rgb(200,200,200)',
-        fontSize: 20,
-        paddingLeft: 10,
-        paddingTop: 10,
-        paddingBottom: 15,
     },
     name: {
         fontSize: 50,
