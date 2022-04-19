@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { Button, Card, CloseButton } from "react-native-elements";
-import { Text, StyleSheet, View, ScrollView, TouchableOpacity, RefreshControl, Image } from 'react-native';
+import { Text, StyleSheet, View, ScrollView, TouchableOpacity, RefreshControl, Image, Alert } from 'react-native';
 import baseUrl from "../BaseUrl";
 import cartContext from "../Authorization/CartItemProvider";
 import { StatusBar } from 'expo-status-bar';
@@ -48,6 +48,16 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
         });
         return sum.toFixed(2);
     }
+    function buyItemsConfirm() {
+        Alert.alert('Are you sure you want to buy the product(s)?', renderBuyAlert(), [
+            {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            { text: 'OK', onPress: () => buyItems() },
+        ]);
+    }
 
     function buyItems() {
         axios({
@@ -57,13 +67,24 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
             headers: { cookie: authCookie }
         })
             .then(function (response) {
-                console.log(response);
                 removeAllItemCart()
+                // build string of product names
+                Alert.alert("Successfully bought ", renderBuyAlert());
+
                 setProducts([])
             })
             .catch(function (error) {
                 console.log(error);
             });
+    }
+
+    function renderBuyAlert() {
+        var productNames = "";
+        products.forEach(element => {
+            productNames += element.name + " $" + element.price.toFixed(2) + "\n";
+        });
+        productNames += "\nTotal: $" + calculateTotal();
+        return productNames;
     }
 
     function RenderNoItems() {
@@ -109,36 +130,34 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                 {!products.length ? <RenderNoItems /> :
                     <>
                         {products.map((product) => (
-                            <TouchableOpacity key={product.id}>
-                                <Card containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
-                                    <Grid>
-                                        <Col style={{ width: 120 }}>
-                                            <Image style={{
-                                                width: 100,
-                                                height: 100,
-                                            }} source={{ uri: baseUrl + product.iconName }} />
-                                        </Col>
-                                        <Col>
-                                            <Row>
-                                                <Card.Title style={styles.title}>{product.name} </Card.Title>
-                                            </Row>
-                                            <Row>
-                                                <Text style={styles.blurb}>{product.blurb}</Text>
-                                            </Row>
-                                        </Col>
-                                    </Grid>
-                                    <View style={styles.container2}>
-                                        <Text style={styles.price}>{product.publisherName}</Text>
-                                        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                                    </View>
-                                </Card>
-                                <Button title="remove item" onPress={() => handleRemoveItem(product.id)}/>
-                            </TouchableOpacity>
+                            <Card key={product.id} containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
+                                <Grid>
+                                    <Col style={{ width: 120 }}>
+                                        <Image style={{
+                                            width: 100,
+                                            height: 100,
+                                        }} source={{ uri: baseUrl + product.iconName }} />
+                                    </Col>
+                                    <Col>
+                                        <Row>
+                                            <Card.Title style={styles.title}>{product.name} </Card.Title>
+                                        </Row>
+                                        <Row>
+                                            <Text style={styles.blurb}>{product.blurb}</Text>
+                                        </Row>
+                                    </Col>
+                                </Grid>
+                                <View style={styles.container2}>
+                                    <Text style={styles.price}>{product.publisherName}</Text>
+                                    <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                                </View>
+                                <Button style={styles.remove} title="remove product" onPress={() => handleRemoveItem(product.id)} />
+                            </Card>
                         ))}
                         <Text style={styles.price}>Total: ${calculateTotal()}</Text>
                         {console.log(authCookie)}
-                        {authCookie === "AUTH_COOKIE" ? <Text style={styles.title}>Please log in to purchase</Text> : <Button title="buy items" style={{ marginTop: 20 }} onPress={buyItems} />}
-                        <Button title="remove all items" style={{ marginTop: 10 }} onPress={() => handleRemoveAllItemCart()} />
+                        {authCookie === "AUTH_COOKIE" ? <Text style={styles.title}>Please log in to purchase</Text> : <Button title="buy items" style={{ marginTop: 20 }} onPress={buyItemsConfirm} />}
+                        <Button title="remove all products" style={{ marginTop: 10 }} onPress={() => handleRemoveAllItemCart()} />
                     </>
                 }
             </View>
@@ -157,7 +176,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "700",
         textAlign: 'right',
-        color: 'rgb(255,255,255)'
+        color: 'rgb(255,255,255)',
     },
     title: {
         fontSize: 20,

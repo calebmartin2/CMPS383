@@ -5,11 +5,13 @@ import axios from "axios";
 import baseUrl from '../BaseUrl';
 import { Text, Card } from 'react-native-elements';
 import { Col, Row, Grid } from "react-native-easy-grid";
+import cartContext from '../Authorization/CartItemProvider';
 
 
 export default function HomeScreen({ navigation }) {
     const [products, setProducts] = useState([]);
     const [refreshing, setRefreshing] = React.useState(false);
+    const { cartItem } = useContext(cartContext);
 
     const wait = timeout => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -31,7 +33,10 @@ export default function HomeScreen({ navigation }) {
             });
     }
     useEffect(() => {
-        fetchProducts();
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchProducts();
+            return unsubscribe;
+        });
     }, [])
 
     return (
@@ -59,7 +64,8 @@ export default function HomeScreen({ navigation }) {
                             </Grid>
                             <View style={styles.container2}>
                                 <Text style={styles.price}>{product.publisherName}</Text>
-                                <Text style={styles.empty}> {product.isInLibrary && "IN LIBRARY"}</Text>
+                                {product.isInLibrary && <Text style={styles.empty}>IN LIBRARY</Text>}
+                                {cartItem && cartItem.includes(product.id) && <Text style={styles.empty}>IN CART</Text>}
                                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
                             </View>
                         </Card>
