@@ -346,12 +346,16 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("/api/publisher/products"), Authorize(Roles = RoleNames.Publisher)]
-    public IEnumerable<ProductDto> GetPublisherProducts()
+    public IEnumerable<ProductDto> GetPublisherProducts(string? query)
     {
-        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
         var publisherId = User.GetCurrentUserId();
+        var products = dataContext.Set<Product>().Where(x => x.PublisherId == publisherId);
 
-        return productService.GetProductDtos(products.Where(x => x.PublisherId == publisherId));
+        if (!String.IsNullOrEmpty(query))
+            products = products.Where(x => x.Name!.Contains(query));
+
+        products = products.OrderByDescending(x => x.Id);
+        return productService.GetProductDtos(products);
     }
 
     [HttpGet("library"), Authorize(Roles = RoleNames.User)]
