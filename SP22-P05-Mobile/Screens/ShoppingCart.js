@@ -89,9 +89,7 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
 
     function RenderNoItems() {
         return (
-            <>
-                <Text style={styles.empty}>No items in cart</Text>
-            </>
+            <Text style={styles.empty}>No items in cart</Text>
         )
     }
 
@@ -147,17 +145,26 @@ export default function ShoppingCart({ setAmountCart, navigation }) {
                                         </Row>
                                     </Col>
                                 </Grid>
+
                                 <View style={styles.container2}>
                                     <Text style={styles.price}>{product.publisherName}</Text>
                                     <Text style={styles.price}>${product.price.toFixed(2)}</Text>
                                 </View>
-                                <Button style={styles.remove} title="remove product" onPress={() => handleRemoveItem(product.id)} />
+                                <View style={{
+                                    flexDirection: "row",
+                                    justifyContent: "flex-end",
+                                    marginTop: 5
+                                }}>
+                                    <Button titleStyle={{ color: "red" }} type="clear" title="Remove" onPress={() => handleRemoveItem(product.id)} />
+                                </View>
                             </Card>
                         ))}
-                        <Text style={styles.price}>Total: ${calculateTotal()}</Text>
+                        <Text style={styles.total}>Total: ${calculateTotal()}</Text>
                         {console.log(authCookie)}
-                        {authCookie === "AUTH_COOKIE" ? <Text style={styles.title}>Please log in to purchase</Text> : <Button title="buy items" style={{ marginTop: 20 }} onPress={buyItemsConfirm} />}
-                        <Button title="remove all products" style={{ marginTop: 10 }} onPress={() => handleRemoveAllItemCart()} />
+                        {authCookie === "AUTH_COOKIE" ? <Text style={styles.pleaseLogIn}>Please log in to purchase</Text> : <Button title="Buy Now" style={{ marginTop: 20 }} onPress={buyItemsConfirm} />}
+                        <View style={{ marginTop: 15 }}>
+                            <Button title="Remove all items" type="clear" onPress={() => handleRemoveAllItemCart()} />
+                        </View>
                     </>
                 }
             </View>
@@ -178,10 +185,23 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         color: 'rgb(255,255,255)',
     },
+    total: {
+        fontSize: 20,
+        fontWeight: "700",
+        textAlign: 'right',
+        color: 'rgb(255,255,255)',
+        margin: 20
+    },
     title: {
         fontSize: 20,
         textAlign: 'left',
         color: 'rgb(255,255,255)'
+    },
+    pleaseLogIn: {
+        marginTop: 10,
+        fontSize: 18,
+        textAlign: "center",
+        color: 'rgb(200,200,200)'
     },
     blurb: {
         color: 'rgb(255,255,255)',

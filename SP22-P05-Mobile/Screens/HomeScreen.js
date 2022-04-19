@@ -64,9 +64,12 @@ export default function HomeScreen({ navigation }) {
                             </Grid>
                             <View style={styles.container2}>
                                 <Text style={styles.price}>{product.publisherName}</Text>
-                                {product.isInLibrary && <Text style={styles.empty}>IN LIBRARY</Text>}
-                                {cartItem && cartItem.includes(product.id) && <Text style={styles.empty}>IN CART</Text>}
+                                
                                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                            </View>
+                            <View>
+                            {product.isInLibrary && <Text style={styles.inLibrary}>IN LIBRARY</Text>}
+                                {cartItem && cartItem.includes(product.id) && <Text style={styles.inCart}>IN CART</Text>}
                             </View>
                         </Card>
                     </TouchableOpacity>
@@ -90,6 +93,24 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         textAlign: 'right',
         color: 'rgb(255,255,255)'
+    },
+    inLibrary: {
+        color: "#00ff26",
+        fontSize: 18,
+        fontWeight: "300",
+        backgroundColor: "#0a4d00",
+        padding: 5,
+        marginTop: 5,
+        alignSelf: 'flex-end'
+    },
+    inCart: {
+        color: "#00e5ff",
+        backgroundColor: "#003f63",
+        fontSize: 18,
+        fontWeight: "300",
+        padding: 5,
+        marginTop: 5,
+        alignSelf: 'flex-end'
     },
     title: {
         fontSize: 20,

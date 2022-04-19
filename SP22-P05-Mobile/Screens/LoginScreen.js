@@ -105,13 +105,17 @@ export default function LoginScreen({ navigation }) {
           />
         </SafeAreaView>
         < Button title="Login" onPress={handleLogin} />
-        < Button title="Sign Up" style={{ marginTop: 10 }} onPress={() => navigation.navigate('SignUp')} />
+        <View style={{ marginTop: 15 }}>
+          <Button title="Sign Up" onPress={() => navigation.navigate('SignUp')} />
+        </View>
       </View>
         :
         <View style={styles.container}>
           <Text style={styles.username}>Hello, {userName}!</Text>
           < Button title="View Library" onPress={() => navigation.navigate('Library')} />
-          < Button title="Logout" style={{ marginTop: 10 }} onPress={handleLogout} />
+          <View style={{ marginTop: 15 }}>
+            <Button title="Logout" onPress={handleLogout} />
+          </View>
         </View>}
     </>
   );
