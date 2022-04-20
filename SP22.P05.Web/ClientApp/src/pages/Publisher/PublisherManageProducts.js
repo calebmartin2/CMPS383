@@ -102,7 +102,7 @@ export default function PublisherManageProducts() {
                 {modalType === "Edit" && <EditProduct product={currentEditProduct} handleClose={handleClose} />}
                 {modalType === "UpdateFile" && <UpdateProductFileModal product={currentEditProduct} handleClose={handleClose} />}
             </Modal>
-            <Form className="d-flex" onSubmit={e => { e.preventDefault() }}>
+            <Form className="d-flex" style={{ float: "right", width: "35%"}} onSubmit={e => { e.preventDefault() }}>
                 <FormControl
                     type="search"
                     placeholder="Search"

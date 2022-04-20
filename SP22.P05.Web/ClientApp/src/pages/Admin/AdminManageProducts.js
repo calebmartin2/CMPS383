@@ -37,7 +37,7 @@ export function AdminManageProducts() {
                 controller.abort();
                 clearTimeout(delayDebounceFn);
             }
-    }, [products])
+    }, [products, search])
 
   
 
@@ -71,7 +71,7 @@ export function AdminManageProducts() {
                 <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Manage Products</Breadcrumb.Item>
             </Breadcrumb>
-            <Form className="d-flex" onSubmit={e => { e.preventDefault() }}>
+            <Form style={{ float: "right", width: "35%", marginBottom: "0.5em" }} onSubmit={e => { e.preventDefault() }}>
                 <FormControl
                     type="search"
                     placeholder="Search"
