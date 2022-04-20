@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useEffect, useState} from "react";
-import { Breadcrumb, Dropdown, DropdownButton, Form, Table, Modal} from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Breadcrumb, Dropdown, DropdownButton, Form, FormControl, Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { EditProduct } from "../../components/EditProductModal";
 import { checkForRole } from "../Auth/checkForRole";
@@ -9,28 +9,37 @@ export function AdminManageProducts() {
     const [products, setProducts] = useState([]);
     const [currentEditProduct, setCurrentEditProduct] = useState(null);
     const [show, setShow] = useState(false);
+    const [search, setSearch] = useState("");
 
     const handleClose = () => {
-        fetchProducts();
         setShow(false);
     }
     const handleShow = () => setShow(true);
 
     useEffect(() => {
         document.title = "ICE - Manage Products"
-        fetchProducts();
-    }, [])
-
-    async function fetchProducts() {
-        axios.get('/api/products/manage')
-            .then(function (response) {
-                const data = response.data;
-                setProducts(data);
+        const controller = new AbortController();
+        const delayDebounceFn = setTimeout(() => {
+            axios({
+                signal: controller.signal,
+                url: '/api/products/manage',
+                params: { query: search },
+                method: 'get',
             })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+                .then(function (response) {
+                    setProducts(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }, 300)
+            return () => {
+                controller.abort();
+                clearTimeout(delayDebounceFn);
+            }
+    }, [products])
+
+  
 
     async function changeStatus(id, status) {
         axios.put('/api/products/change-status/' + id + '/' + status)
@@ -44,7 +53,6 @@ export function AdminManageProducts() {
     function deleteProudct(id) {
         axios.delete('/api/products/' + id)
             .then(function (response) {
-                fetchProducts();
             })
             .catch(function (error) {
                 console.log(error);
@@ -63,6 +71,14 @@ export function AdminManageProducts() {
                 <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Manage Products</Breadcrumb.Item>
             </Breadcrumb>
+            <Form className="d-flex" onSubmit={e => { e.preventDefault() }}>
+                <FormControl
+                    type="search"
+                    placeholder="Search"
+                    className="me-2"
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+            </Form>
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
