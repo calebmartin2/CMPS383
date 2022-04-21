@@ -125,15 +125,14 @@ public class ProductsController : ControllerBase
         if (publisherId == null || productDto.file == null || productDto.icon == null || productDto.Pictures == null)
             return BadRequest();
 
+        if (productDto.icon.Length > 102400)
+            return BadRequest("Icon file is too large. Max file size is 100KiB");
+
         using (var image = new MagickImage(productDto.icon.OpenReadStream()))
         {
             if (image.Width != image.Height)
                 return BadRequest("Image not 1:1 aspect ratio");
         }
-
-        if (productDto.icon.Length > 102400)
-            return BadRequest("Icon file is too large. Max file size is 100KiB");
-
 
         foreach (var picture in productDto.Pictures)
         {
@@ -141,15 +140,16 @@ public class ProductsController : ControllerBase
             {
                 var ratio = (double)image.Width / image.Height;
 
+                if (picture.Length > 5242880)
+                    return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
+
                 if (ratio is < 1.770 or > 1.78)
                     return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
 
-                if (picture.Length > 5242880)
-                    return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
             }
         }
 
-        var newIconFileName = Guid.NewGuid().ToString() + ".png";
+        var newIconFileName = Guid.NewGuid() + ".png";
         var product = new Product
         {
             Name = productDto.Name,
@@ -254,6 +254,24 @@ public class ProductsController : ControllerBase
                 image.Write(iconPath);
             }
             product.IconName = newIconFileName;
+        }
+
+        //should be in a separate method
+        if (productDto.Pictures != null)
+        {
+            foreach (var picture in productDto.Pictures)
+            {
+                using (var image = new MagickImage(picture.OpenReadStream()))
+                {
+                    var ratio = (double)image.Width / image.Height;
+
+                    if (picture.Length > 5242880)
+                        return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
+
+                    if (ratio is < 1.770 or > 1.78)
+                        return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
+                }
+            }
         }
 
         // Handle updating pictures
