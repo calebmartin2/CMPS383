@@ -18,6 +18,7 @@ export function Navmenu({ amountCart, setAmountCart }) {
   function handleLogout() {
     localStorage.removeItem('user');
     localStorage.removeItem('cart');
+    sessionStorage.removeItem('sortOrder');
     axios.post('/api/authentication/logout', {
     })
       .then(function (response) {

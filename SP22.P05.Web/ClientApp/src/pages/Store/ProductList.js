@@ -4,7 +4,7 @@ import { Row, Spinner } from "react-bootstrap";
 import { ProductCard } from "./ProductCard";
 import './ProductList.css';
 
-export function ProductList({search}) {
+export function ProductList({search, sortOrder}) {
     const [loading, setLoading] = useState(false);
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
@@ -20,7 +20,7 @@ export function ProductList({search}) {
         setLoading(true);
         async function fetchProducts() {
             axios.get('/api/products', {
-                params: {query: search}
+                params: {query: search, sortOrder: sortOrder}
             })
                 .then(function (response) {
                     console.log(response.data);
@@ -33,7 +33,7 @@ export function ProductList({search}) {
                 });
         }
         fetchProducts();
-    }, [search])
+    }, [search, sortOrder]);
 
     return (
         <> 
