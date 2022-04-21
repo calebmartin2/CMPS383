@@ -25,14 +25,26 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<ProductDto> GetAllProducts(string? query)
+    public IEnumerable<ProductDto> GetAllProducts(string? query, string? sortOrder)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
 
         if (!String.IsNullOrEmpty(query))
             products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
 
-        products = products.OrderByDescending(x => x.UserInfos.Count());
+        if (!String.IsNullOrEmpty(sortOrder))
+            products = sortOrder switch
+            {
+                "most-popular" => products.OrderByDescending(x => x.UserInfos.Count()),
+                "name" => products.OrderBy(x => x.Name),
+                "highest-price" => products.OrderByDescending(x => x.Price),
+                "lowest-price" => products.OrderBy(x => x.Price),
+                "most-recent" => products.OrderByDescending(x => x.Id),
+                _ => products
+            };
+        else
+            products = products.OrderByDescending(x => x.UserInfos.Count());
+
         var retval = productService.GetProductDtos(products).ToList();
 
         if (User.IsInRole(RoleNames.User))
