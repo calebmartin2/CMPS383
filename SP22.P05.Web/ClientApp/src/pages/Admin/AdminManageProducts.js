@@ -30,33 +30,34 @@ export function AdminManageProducts() {
                     setProducts(response.data);
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
         }, 300)
         return () => {
             controller.abort();
             clearTimeout(delayDebounceFn);
         }
-    }, [products, search])
-
-
+    }, [search, show])
 
     async function changeStatus(id, status) {
         axios.put('/api/products/change-status/' + id + '/' + status)
             .then(function (response) {
             })
             .catch(function (error) {
-                console.log(error);
             });
     }
 
-    function deleteProudct(id) {
+    function deleteProduct(id) {
         axios.delete('/api/products/' + id)
             .then(function (response) {
+                axios({
+                    url: '/api/products/manage',
+                    params: { query: search },
+                    method: 'get',
+                })
+                    .then(function (response) {
+                        setProducts(response.data);
+                    })
             })
-            .catch(function (error) {
-                console.log(error);
-            });
     }
 
     function handleEditShow(product) {
@@ -138,7 +139,7 @@ export function AdminManageProducts() {
                                     </Dropdown.Item>
                                     {product.fileName && <Dropdown.Item as="button"><Link to={product.fileName} target="_blank" download>Download</Link></Dropdown.Item>}
                                     <Dropdown.Item as="button" onClick={() => handleEditShow(product)}>Edit Info</Dropdown.Item>
-                                    <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProudct(product.id) }}>Delete</Dropdown.Item>
+                                    <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProduct(product.id) }}>Delete</Dropdown.Item>
                                 </DropdownButton>
                             </td>
                         </tr>

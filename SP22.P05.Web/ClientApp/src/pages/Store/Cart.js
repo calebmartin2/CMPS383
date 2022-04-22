@@ -23,7 +23,6 @@ export default function Cart({ setAmountCart }) {
                 setLoading(false);
             })
             .catch(function (error) {
-                console.log(error);
                 setLoading(false);
             });
 
@@ -58,21 +57,21 @@ export default function Cart({ setAmountCart }) {
         var tempCart = JSON.parse(cart);
         if (checkForRole('User')) {
             navigate("/Login", { replace: true });
+            return
         }
+        window.confirm("Are you sure you want to purchase these items for $" + calculateTotal() + "?") &&
         axios({
             url: '/api/user-products/add-to-account',
             method: 'post',
             data: tempCart
         })
             .then(function (response) {
-                console.log(response);
                 localStorage.removeItem("cart")
                 setAmountCart(0);
                 navigate('/receipt', { state: { products: products } });
 
             })
             .catch(function (error) {
-                console.log(error);
             });
     }
     function RenderNoItems() {
@@ -107,7 +106,7 @@ export default function Cart({ setAmountCart }) {
                     <Card bg="black" text="white" >
                         <Card.Body> <span style={{ float: "right" }}>Total: ${calculateTotal()} </span></Card.Body>
                     </Card>
-                    <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() => { if (window.confirm("Are you sure you want to purchase these items for $" + calculateTotal() + "?")) buyItems() }}>Buy Now</Button>
+                    <Button variant="success" style={{ float: "right", margin: "1em" }} onClick={() => { buyItems() }}>Buy Now</Button>
                     <Button style={{ float: "right", margin: "1em" }} onClick={() => { navigate("/", { replace: false }) }}>Continue Shopping</Button>
                     <p style={{ color: "#888", textDecoration: "underline", width: "fit-content"}} onClick={() => removeAllItemCart()}>Remove All Items</p>
                 </div>

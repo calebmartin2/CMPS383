@@ -23,7 +23,6 @@ export default function PublisherManageProducts() {
     useEffect(() => {
         document.title = "ICE - Manage Products"
         const controller = new AbortController();
-        console.log(search)
         const delayDebounceFn = setTimeout(() => {
             axios({
                 signal: controller.signal,
@@ -38,7 +37,6 @@ export default function PublisherManageProducts() {
                     setLoading(false);
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
         }, 300)
         return () => {

@@ -27,7 +27,6 @@ export function EditProduct({ product, handleClose }) {
     const handleEdit = (e) => {
         setLoading(true);
         e.preventDefault();
-        console.log(product.id);
         var bodyFormData = new FormData();
         bodyFormData.append('name', name);
         bodyFormData.append('description', description);

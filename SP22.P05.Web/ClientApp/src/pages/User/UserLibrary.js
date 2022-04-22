@@ -25,7 +25,6 @@ export default function UserLibrary() {
                 })
                 .catch(function (error) {
                     setLoading(false);
-                    console.log(error);
                 });
         }, 100)
         return () => {

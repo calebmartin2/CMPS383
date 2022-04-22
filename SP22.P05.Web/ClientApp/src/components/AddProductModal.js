@@ -40,7 +40,6 @@ export function AddProduct({ handleClose }) {
             })
             .catch(function (error) {
                 setAddProductError(true);
-                console.log(error.response.data);
                 setError(error.response.data);
                 setAddLoading(false);
             });

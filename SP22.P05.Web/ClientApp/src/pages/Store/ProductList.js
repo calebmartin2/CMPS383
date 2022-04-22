@@ -23,13 +23,11 @@ export function ProductList({search, sortOrder}) {
                 params: {query: search, sortOrder: sortOrder}
             })
                 .then(function (response) {
-                    console.log(response.data);
                     const data = response.data;
                     setProducts(data);
                     setLoading(false);
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
         }
         fetchProducts();

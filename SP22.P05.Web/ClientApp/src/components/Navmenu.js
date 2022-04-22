@@ -22,13 +22,11 @@ export function Navmenu({ amountCart, setAmountCart }) {
     axios.post('/api/authentication/logout', {
     })
       .then(function (response) {
-        console.log(response.data);
         setAmountCart(0);
         navigate("/", { replace: true });
         window.location.reload();
       })
       .catch(function (error) {
-        console.log(error);
       });
   }
 

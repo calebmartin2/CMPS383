@@ -15,12 +15,10 @@ export function ManagePublishers() {
     async function fetchPublishers() {
         axios.get('/api/users/get-approved-publishers')
             .then(function (response) {
-                console.log(response.data);
                 const data = response.data;
                 setPublishers(data);
             })
             .catch(function (error) {
-                console.log(error);
             });
     }
 

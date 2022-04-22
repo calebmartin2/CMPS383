@@ -19,7 +19,6 @@ export function UpdateProductFileModal({ product, handleClose }) {
         var bodyFormData = new FormData();
         bodyFormData.append('productId', product.id)
         bodyFormData.append('file', fileRef.current.files[0])
-        console.log("PROD: " + product.id);
         axios({
             method: "post",
             url: "/api/file/updatefile",
@@ -27,13 +26,11 @@ export function UpdateProductFileModal({ product, handleClose }) {
             headers: { "Content-Type": "multipart/form-data" },
         })
             .then(function (response) {
-                console.log(response);
                 handleClose();
                 setAddEditLoading(false);
             })
             .catch(function (response) {
                 setAddProductError(true);
-                console.log(response);
                 setAddEditLoading(false);
             });
     }

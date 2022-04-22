@@ -25,13 +25,11 @@ export function ProductDetail({ setAmountCart }) {
         axios.get('/api/products/' + productId)
             .then(function (response) {
                 const data = response.data;
-                console.log(data);
                 setProduct(data);
                 setLoading(false);
                 document.title = "ICE - " + response.data.name
             })
             .catch(function (error) {
-                console.log(error);
                 setLoading(false);
             });
     }, [productId])
@@ -70,8 +68,8 @@ export function ProductDetail({ setAmountCart }) {
         <>
             {loading ?  <Spinner animation="border" variant="info" /> : product ?
                 <>
-                    {((Number(product.status) === 2)) && <h3 style={{backgroundColor: "#292721", color: "#ffd500", padding: "0.2em", borderRadius: "0.2em"}}>Product Under Review</h3>}
-                    {((Number(product.status) === 1)) && <h3 style={{backgroundColor: "#292721", color: "#ffd500", padding: "0.2em", borderRadius: "0.2em"}}>Product Not For Sale</h3>}
+                    {((Number(product.status) === 2)) && <h3 style={{backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.2em", borderRadius: "0.2em"}}>Product Under Review</h3>}
+                    {((Number(product.status) === 1)) && <h3 style={{backgroundColor: "#5c3a00", color: "#ffb029", padding: "0.2em", borderRadius: "0.2em"}}>Product Not For Sale</h3>}
                     <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
                     <Row>
                         <Col lg={8} xs={12}>
