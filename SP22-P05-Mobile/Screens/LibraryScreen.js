@@ -72,7 +72,6 @@ export default function UserLibrary() {
                                 </Row>
                                 <Row>
                                     <Text style={styles.blurb}>{product.blurb}</Text>
-                                    <Text>{product.publisherName}</Text>
                                 </Row>
                             </Col>
                         </Grid>

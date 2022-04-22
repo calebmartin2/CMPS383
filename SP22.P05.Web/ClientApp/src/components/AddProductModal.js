@@ -88,7 +88,7 @@ export function AddProduct({ handleClose }) {
                                 animation="border"
                                 size="sm"
                                 role="status"
-                                aria-hidden="true" />Uploading</> : <>Add</>}
+                                aria-hidden="true" /> Uploading</> : <>Add</>}
                         </Button>
                         <Button variant="danger" onClick={handleClose}>
                             Discard
