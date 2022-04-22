@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, ScrollView, TouchableOpacity, RefreshControl, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, RefreshControl, Image } from 'react-native';
 import axios from "axios";
 import baseUrl from '../BaseUrl';
-import { Text, Card } from 'react-native-elements';
+import { Text, Card, SearchBar } from 'react-native-elements';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import authCookieContext from '../Authorization/AuthCookieProvider';
 
@@ -11,7 +11,11 @@ export default function UserLibrary() {
     const [products, setProducts] = useState([]);
     const { authCookie } = useContext(authCookieContext);
     const [refreshing, setRefreshing] = React.useState(false);
+    const [search, setSearch] = useState("");
 
+    const updateSearch = (search) => {
+        setSearch(search);
+    }
 
     const wait = timeout => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -22,11 +26,12 @@ export default function UserLibrary() {
         wait(1000).then(() => setRefreshing(false));
     }, []);
 
-    async function fetchLibrary(){
+    async function fetchLibrary() {
         axios({
             url: baseUrl + '/api/products/library',
             method: 'get',
-            headers: { Cookie: authCookie }
+            headers: { Cookie: authCookie },
+            params: { query: search },
         })
             .then(function (response) {
                 setProducts(response.data);
@@ -38,37 +43,48 @@ export default function UserLibrary() {
 
     useEffect(() => {
         fetchLibrary();
-    }, [])
+    }, [search])
 
 
     return (
         <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View style={styles.container}>
-            <StatusBar style="light" />
-            {!products.length && <Text style = {styles.empty}>no products in library</Text>}
-            {products.map((product) => (
-                    <Card containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
+            <View style={styles.container}>
+                <StatusBar style="light" />
+                <SearchBar
+                    placeholder="Search"
+                    onChangeText={updateSearch}
+                    value={search}
+                />
+                {!products.length && <Text style={styles.empty}>no products in library</Text>}
+                {products.map((product) => (
+                    <Card key={product.id} containerStyle={{ backgroundColor: 'rgb(33,37,41)', borderColor: 'rgb(9,117,159)' }} >
                         <Grid>
                             <Col style={{ width: 120 }}>
-                            <Image style={{width: 100,
-height: 100,}} source={{ uri: baseUrl + product.iconName }}/>
+                                <Image style={{
+                                    width: 100,
+                                    height: 100,
+                                }} source={{ uri: baseUrl + product.iconName }} />
 
                             </Col>
                             <Col>
                                 <Row>
-                        <Card.Title style={styles.title}>{product.name} </Card.Title>
+                                    <Card.Title style={styles.title}>{product.name} </Card.Title>
                                 </Row>
                                 <Row>
-                        <Text style={styles.blurb}>{product.blurb}</Text>
+                                    <Text style={styles.blurb}>{product.blurb}</Text>
+                                    <Text>{product.publisherName}</Text>
                                 </Row>
                             </Col>
                         </Grid>
+                        <View style={styles.container2}>
+                                <Text style={styles.price}>{product.publisherName}</Text>
+                            </View>
                     </Card>
-            ))
-            }
-        </View>
-    </ScrollView >
-);
+                ))
+                }
+            </View>
+        </ScrollView >
+    );
 }
 
 const styles = StyleSheet.create({
@@ -103,5 +119,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "300",
         textAlignVertical: 'center',
+    },
+    price: {
+        fontSize: 20,
+        fontWeight: "700",
+        textAlign: 'right',
+        color: 'rgb(255,255,255)'
     }
 });

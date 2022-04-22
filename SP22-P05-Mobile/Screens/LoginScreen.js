@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useContext, useEffect } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button } from "react-native";
+import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert } from "react-native";
+import { Button } from 'react-native-elements';
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 import authCookieContext from '../Authorization/AuthCookieProvider';
+import cartContext from '../Authorization/CartItemProvider';
 
 export default function LoginScreen({ navigation }) {
   const [username, onChangeUsername] = useState(null);
@@ -11,6 +13,8 @@ export default function LoginScreen({ navigation }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const { authCookie, saveAuthCookie } = useContext(authCookieContext);
+  const { removeAllItemCart } = useContext(cartContext);
+
 
   async function getMeTest() {
     axios({
@@ -33,14 +37,20 @@ export default function LoginScreen({ navigation }) {
       password: password
     })
       .then(function (response) {
-        setIsLoggedIn(true);
-        var cookie = response.headers["set-cookie"][0].split(";")[0];
-        async function temp() {
-          setUserName(response.data.userName);
-          await saveAuthCookie(cookie);
-          navigation.navigate('Root', { screen: 'Store' })
+        if (response.data.roles.includes("User")) {
+          setIsLoggedIn(true);
+          var cookie = response.headers["set-cookie"][0].split(";")[0];
+          async function temp() {
+            setUserName(response.data.userName);
+            await saveAuthCookie(cookie);
+            navigation.navigate('Root', { screen: 'Store' })
+          }
+          temp();
+        } else {
+          Alert.alert("Cannot log in as " + response.data.roles[0])
+          handleLogout();
         }
-        temp();
+
       })
       .catch(function (error) {
         console.log(error);
@@ -55,11 +65,12 @@ export default function LoginScreen({ navigation }) {
       headers: { Cookie: authCookie }
     })
       .then(function (response) {
-        saveAuthCookie("AUTH-COOKIE")
+        saveAuthCookie("AUTH_COOKIE")
         setUserName("")
         onChangeUsername("")
         onChangePassword("")
         setIsLoggedIn(false)
+        removeAllItemCart()
         console.log(response)
       })
       .catch(function (error) {
@@ -93,24 +104,18 @@ export default function LoginScreen({ navigation }) {
             placeholder="Password"
           />
         </SafeAreaView>
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
-        <Button
-          title="Sign Up"
-          onPress={() => navigation.navigate('SignUp')}
-        />
+        < Button title="Login" onPress={handleLogin} />
+        <View style={{ marginTop: 15 }}>
+          <Button title="Sign Up" onPress={() => navigation.navigate('SignUp')} />
+        </View>
       </View>
         :
         <View style={styles.container}>
           <Text style={styles.username}>Hello, {userName}!</Text>
-          <Button
-            title = "Go To Library"
-            onPress={() => navigation.navigate('Library')}
-          />
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogout}>
-            <Text style={styles.loginText}>LOGOUT</Text>
-          </TouchableOpacity>
+          < Button title="View Library" onPress={() => navigation.navigate('Library')} />
+          <View style={{ marginTop: 15 }}>
+            <Button title="Logout" onPress={handleLogout} />
+          </View>
         </View>}
     </>
   );
@@ -148,10 +153,9 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 20,
-    paddingLeft: 20,
     fontWeight: "bold",
     margin: 15,
-    textAlign: 'left',
+    textAlign: 'center',
     color: 'rgb(255,255,255)'
   },
   scrollView: {
