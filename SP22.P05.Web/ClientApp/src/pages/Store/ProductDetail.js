@@ -1,12 +1,11 @@
 import axios from "axios";
+import { uniq } from "lodash";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button, Row, Col, Spinner } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Button, Col, Row, Spinner } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import NotFoundPage from "../../components/NotFoundPage";
-import { useNavigate } from "react-router-dom";
 import { checkForRole } from "../Auth/checkForRole";
 import { ProductCarousel } from "./Carousel";
-import { uniq } from "lodash";
 export function ProductDetail({ setAmountCart }) {
     let navigate = useNavigate();
 
@@ -71,17 +70,11 @@ export function ProductDetail({ setAmountCart }) {
         <>
             {loading ?  <Spinner animation="border" variant="info" /> : product ?
                 <>
-                    <Breadcrumb>
-                        <Breadcrumb.Item linkAs={Link} to="/" linkProps={{ to: "/" }}>Store</Breadcrumb.Item>
-                        <Breadcrumb.Item active>{product.name}</Breadcrumb.Item>
-                    </Breadcrumb>
-                    {console.log(product.status)}
                     {((Number(product.status) === 2)) && <h3 style={{backgroundColor: "#292721", color: "#ffd500", padding: "0.2em", borderRadius: "0.2em"}}>Product Under Review</h3>}
                     {((Number(product.status) === 1)) && <h3 style={{backgroundColor: "#292721", color: "#ffd500", padding: "0.2em", borderRadius: "0.2em"}}>Product Not For Sale</h3>}
                     <h1 style={{ fontWeight: "700", overflowWrap: "break-word" }}>{product.name}</h1>
                     <Row>
                         <Col lg={8} xs={12}>
-                            {console.log("PIC2 " + product.pictures)}
                             < ProductCarousel pictures={product.pictures}/>
                         </Col>
                         <Col>
@@ -93,9 +86,7 @@ export function ProductDetail({ setAmountCart }) {
                             </div>
                         </Col>
                     </Row>
-
                 </>
-
                 : <NotFoundPage />}
         </>
 

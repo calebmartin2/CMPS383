@@ -20,7 +20,7 @@ export function Home() {
 
   function handleSearch(e) {
     e.preventDefault();
-    const path = axios.getUri({ url: "/search", params: { query: search } });
+    const path = axios.getUri({ url: "/search/", params: { query: search } });
     navigate(path)
   }
   function handleSelect(e) {

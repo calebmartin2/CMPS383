@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Dropdown, DropdownButton, Form, FormControl, Modal, Table } from "react-bootstrap";
+import { Breadcrumb, Dropdown, DropdownButton, Form, FormControl, Modal, Row, Col, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { EditProduct } from "../../components/EditProductModal";
 import { checkForRole } from "../Auth/checkForRole";
@@ -32,14 +32,14 @@ export function AdminManageProducts() {
                 .catch(function (error) {
                     console.log(error);
                 });
-            }, 300)
-            return () => {
-                controller.abort();
-                clearTimeout(delayDebounceFn);
-            }
+        }, 300)
+        return () => {
+            controller.abort();
+            clearTimeout(delayDebounceFn);
+        }
     }, [products, search])
 
-  
+
 
     async function changeStatus(id, status) {
         axios.put('/api/products/change-status/' + id + '/' + status)
@@ -71,14 +71,22 @@ export function AdminManageProducts() {
                 <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Manage Products</Breadcrumb.Item>
             </Breadcrumb>
-            <Form style={{ float: "right", width: "35%", marginBottom: "0.5em" }} onSubmit={e => { e.preventDefault() }}>
-                <FormControl
-                    type="search"
-                    placeholder="Search"
-                    className="me-2"
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-            </Form>
+            <Row>
+                <Col sm={12} md={6} lg={8}>
+                    <h1>Manage Products</h1>
+                </Col>
+                <Col sm={12} md={6} lg={4}>
+                    <Form onSubmit={e => { e.preventDefault() }}>
+                        <FormControl
+                            type="search"
+                            placeholder="Search"
+                            className="me-2"
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </Form>
+                </Col>
+            </Row>
+
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
@@ -140,7 +148,7 @@ export function AdminManageProducts() {
             </Table>
 
             <Modal show={show} onHide={handleClose}>
-                <EditProduct product={currentEditProduct} handleClose={handleClose}/>
+                <EditProduct product={currentEditProduct} handleClose={handleClose} />
             </Modal>
         </>
     )

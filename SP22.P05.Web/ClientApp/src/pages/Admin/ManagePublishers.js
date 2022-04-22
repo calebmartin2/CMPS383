@@ -31,6 +31,7 @@ export function ManagePublishers() {
                 <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Manage Publishers</Breadcrumb.Item>
             </Breadcrumb>
+            <h1>Manage Publishers</h1>
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>

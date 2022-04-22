@@ -20,13 +20,13 @@ export function Search() {
 
     function handleSearch(e) {
         e.preventDefault();
-        const path = axios.getUri({ url: "/search", params: { query: search, sortOrder: sortOrder } });
+        const path = axios.getUri({ url: "/search/", params: { query: search, sortOrder: sortOrder } });
         navigate(path)
     }
 
     function handleSelect(e) {
         setSortOrder(e)
-        const path = axios.getUri({ url: "/search", params: { query: search, sortOrder: e } });
+        const path = axios.getUri({ url: "/search/", params: { query: search, sortOrder: e } });
         navigate(path)
     }
 
