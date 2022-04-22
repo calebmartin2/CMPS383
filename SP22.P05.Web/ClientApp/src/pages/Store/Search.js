@@ -7,16 +7,16 @@ import SortDropdown from "./SortDropdown";
 
 export function Search() {
     const [search, setSearch] = useState("");
-    const [sortOrder, setSortOrder] = useState("most-popular");
     const navigate = useNavigate()
     const [searchParams] = useSearchParams();
     const query = searchParams.get("query");
+    const [sortOrder, setSortOrder] = useState("")
+    const order = searchParams.get("sortOrder");
+
     useEffect(() => {
-        console.log(query)
-        if (query) {
-            setSearch(query);
-        }
-    }, [query]);
+        query && setSearch(query);
+        order && setSortOrder(order);
+    }, [query, order]);
 
     function handleSearch(e) {
         e.preventDefault();
@@ -26,6 +26,8 @@ export function Search() {
 
     function handleSelect(e) {
         setSortOrder(e)
+        const path = axios.getUri({ url: "/search", params: { query: search, sortOrder: e } });
+        navigate(path)
     }
 
     return (
