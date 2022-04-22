@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useEffect, useState} from "react";
-import { Breadcrumb, Dropdown, DropdownButton, Form, Table, Modal} from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Breadcrumb, Dropdown, DropdownButton, Form, FormControl, Modal, Row, Col, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { EditProduct } from "../../components/EditProductModal";
 import { checkForRole } from "../Auth/checkForRole";
@@ -9,46 +9,55 @@ export function AdminManageProducts() {
     const [products, setProducts] = useState([]);
     const [currentEditProduct, setCurrentEditProduct] = useState(null);
     const [show, setShow] = useState(false);
+    const [search, setSearch] = useState("");
 
     const handleClose = () => {
-        fetchProducts();
         setShow(false);
     }
     const handleShow = () => setShow(true);
 
     useEffect(() => {
         document.title = "ICE - Manage Products"
-        fetchProducts();
-    }, [])
-
-    async function fetchProducts() {
-        axios.get('/api/products/manage')
-            .then(function (response) {
-                const data = response.data;
-                setProducts(data);
+        const controller = new AbortController();
+        const delayDebounceFn = setTimeout(() => {
+            axios({
+                signal: controller.signal,
+                url: '/api/products/manage',
+                params: { query: search },
+                method: 'get',
             })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+                .then(function (response) {
+                    setProducts(response.data);
+                })
+                .catch(function (error) {
+                });
+        }, 300)
+        return () => {
+            controller.abort();
+            clearTimeout(delayDebounceFn);
+        }
+    }, [search, show])
 
     async function changeStatus(id, status) {
         axios.put('/api/products/change-status/' + id + '/' + status)
             .then(function (response) {
             })
             .catch(function (error) {
-                console.log(error);
             });
     }
 
-    function deleteProudct(id) {
+    function deleteProduct(id) {
         axios.delete('/api/products/' + id)
             .then(function (response) {
-                fetchProducts();
+                axios({
+                    url: '/api/products/manage',
+                    params: { query: search },
+                    method: 'get',
+                })
+                    .then(function (response) {
+                        setProducts(response.data);
+                    })
             })
-            .catch(function (error) {
-                console.log(error);
-            });
     }
 
     function handleEditShow(product) {
@@ -63,6 +72,22 @@ export function AdminManageProducts() {
                 <Breadcrumb.Item linkAs={Link} to="/admin" linkProps={{ to: "/admin" }}>Admin Dashboard</Breadcrumb.Item>
                 <Breadcrumb.Item active>Manage Products</Breadcrumb.Item>
             </Breadcrumb>
+            <Row>
+                <Col sm={12} md={6} lg={8}>
+                    <h1>Manage Products</h1>
+                </Col>
+                <Col sm={12} md={6} lg={4}>
+                    <Form onSubmit={e => { e.preventDefault() }}>
+                        <FormControl
+                            type="search"
+                            placeholder="Search"
+                            className="me-2"
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </Form>
+                </Col>
+            </Row>
+
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
@@ -114,7 +139,7 @@ export function AdminManageProducts() {
                                     </Dropdown.Item>
                                     {product.fileName && <Dropdown.Item as="button"><Link to={product.fileName} target="_blank" download>Download</Link></Dropdown.Item>}
                                     <Dropdown.Item as="button" onClick={() => handleEditShow(product)}>Edit Info</Dropdown.Item>
-                                    <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProudct(product.id) }}>Delete</Dropdown.Item>
+                                    <Dropdown.Item as="button" variant="danger" onClick={() => { if (window.confirm('Delete ' + product.name + ' from the system? THIS ACTION IS IRREVERSABLE.')) deleteProduct(product.id) }}>Delete</Dropdown.Item>
                                 </DropdownButton>
                             </td>
                         </tr>
@@ -124,7 +149,7 @@ export function AdminManageProducts() {
             </Table>
 
             <Modal show={show} onHide={handleClose}>
-                <EditProduct product={currentEditProduct} handleClose={handleClose}/>
+                <EditProduct product={currentEditProduct} handleClose={handleClose} />
             </Modal>
         </>
     )

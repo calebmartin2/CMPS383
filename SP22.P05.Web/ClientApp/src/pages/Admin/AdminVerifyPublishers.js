@@ -11,13 +11,11 @@ export function AdminVerifyPublishers() {
     async function fetchPendingPublisher() {
         axios.get('/api/users/get-pending-publishers')
             .then(function (response) {
-                console.log(response.data);
                 const data = response.data;
                 setPendingPublisher(data);
                 setLoading(true);
             })
             .catch(function (error) {
-                console.log(error);
             });
     }
 
@@ -27,7 +25,6 @@ export function AdminVerifyPublishers() {
                 fetchPendingPublisher();
             })
             .catch(function (error) {
-                console.log(error);
             });
     }
 
@@ -48,10 +45,8 @@ export function AdminVerifyPublishers() {
         })
             .then(function (response) {
                 fetchPendingPublisher();
-                console.log(response);
             })
             .catch(function (response) {
-                console.log(response);
             });
 
     }

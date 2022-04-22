@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Text, Alert, Button } from "react-native";
+import { SafeAreaView, StyleSheet, TextInput, View, Alert } from "react-native";
+import { Button } from 'react-native-elements';
 import axios from 'axios';
 import baseUrl from '../BaseUrl';
 
@@ -11,7 +12,7 @@ export default function SignUpScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState(null)
 
   function handleSignUp() {
-    if(password != confirmPassword){
+    if (password != confirmPassword) {
       Alert.alert("Passwords must match.");
       return
     }
@@ -48,7 +49,7 @@ export default function SignUpScreen({ navigation }) {
             secureTextEntry={true}
             placeholder="Password"
           />
-           <TextInput
+          <TextInput
             style={styles.input}
             onChangeText={setConfirmPassword}
             value={confirmPassword}
@@ -58,11 +59,12 @@ export default function SignUpScreen({ navigation }) {
         </SafeAreaView>
         <Button
           title="Terms and Conditions"
+          type="clear"
           onPress={() => navigation.navigate('TermsAndConditions')}
         />
-        <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-          <Text style={styles.signUpText}>SIGN UP</Text>
-        </TouchableOpacity>
+        <View style={{ marginTop: 10 }}>
+          < Button title="Sign Up" onPress={handleSignUp} />
+        </View>
       </View>
     </>
   );

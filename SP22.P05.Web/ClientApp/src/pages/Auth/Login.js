@@ -43,7 +43,6 @@ export function Login({ setAmountCart }) {
             })
             .catch(function (error) {
                 setisLoginFail(true)
-                console.log(error);
                 setLoading(false);
 
             });

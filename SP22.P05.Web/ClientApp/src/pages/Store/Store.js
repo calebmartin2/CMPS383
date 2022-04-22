@@ -1,26 +1,44 @@
-import { useState } from "react";
-import { Button, Form, FormControl, Row, Col } from "react-bootstrap";
-import { ProductList } from "./ProductList";
-import { useNavigate  } from "react-router-dom";
 import axios from "axios";
+import { useState, useEffect } from "react";
+import { Button, Col, Form, FormControl, Row } from "react-bootstrap";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ProductList } from "./ProductList";
+import SortDropdown from "./SortDropdown";
 
 export function Home() {
 
   const [search, setSearch] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [searchParams] = useSearchParams();
+  const order = searchParams.get("sortOrder");
+
   const navigate = useNavigate()
+
+  useEffect(() => {
+    order ? setSortOrder(order) : setSortOrder('most-popular')
+  }, [order]);
 
   function handleSearch(e) {
     e.preventDefault();
-    const path = axios.getUri({ url: "/search", params: {query: search} });
+    const path = axios.getUri({ url: "/search/", params: { query: search } });
     navigate(path)
   }
+  function handleSelect(e) {
+    const path = axios.getUri({ url: "/", params: { sortOrder: e } });
+    navigate(path)
+    setSortOrder(e)
+  }
+
   return (
     <>
       <Row>
-        <Col xs={4} md={6} lg={8}>
+        <Col xs={4} md={2} lg={6}>
           <h1>STORE</h1>
         </Col>
-        <Col xs={8} md={6} lg={4}>
+        <Col xs={8} md={4} lg={2}>
+          <SortDropdown sortOrder={sortOrder} handleSelect={handleSelect} />
+        </Col>
+        <Col xs={12} md={6} lg={4}>
           <Form className="d-flex" onSubmit={(e) => handleSearch(e)}>
             <FormControl
               type="search"
@@ -33,7 +51,7 @@ export function Home() {
           </Form>
         </Col>
       </Row>
-      <ProductList/>
+      <ProductList sortOrder={sortOrder} />
     </>
   );
 }

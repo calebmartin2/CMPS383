@@ -4,7 +4,7 @@
     "slug": "SP22-P05-G01-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ice-icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -21,8 +21,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/ice-adaptive-icon.png",
+        "backgroundColor": "#000000"
       },
       "package": "com.selu383.sp22.g01"
     },

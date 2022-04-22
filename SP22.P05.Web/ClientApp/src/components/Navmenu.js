@@ -18,16 +18,15 @@ export function Navmenu({ amountCart, setAmountCart }) {
   function handleLogout() {
     localStorage.removeItem('user');
     localStorage.removeItem('cart');
+    sessionStorage.removeItem('sortOrder');
     axios.post('/api/authentication/logout', {
     })
       .then(function (response) {
-        console.log(response.data);
         setAmountCart(0);
         navigate("/", { replace: true });
         window.location.reload();
       })
       .catch(function (error) {
-        console.log(error);
       });
   }
 

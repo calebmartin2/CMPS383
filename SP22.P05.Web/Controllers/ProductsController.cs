@@ -25,14 +25,26 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<ProductDto> GetAllProducts(string? query)
+    public IEnumerable<ProductDto> GetAllProducts(string? query, string? sortOrder)
     {
         var products = dataContext.Set<Product>().Where(x => x.Status == Product.StatusType.Active);
 
         if (!String.IsNullOrEmpty(query))
             products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
 
-        products = products.OrderByDescending(x => x.UserInfos.Count());
+        if (!String.IsNullOrEmpty(sortOrder))
+            products = sortOrder switch
+            {
+                "most-popular" => products.OrderByDescending(x => x.UserInfos.Count()),
+                "name" => products.OrderBy(x => x.Name),
+                "highest-price" => products.OrderByDescending(x => x.Price),
+                "lowest-price" => products.OrderBy(x => x.Price),
+                "most-recent" => products.OrderByDescending(x => x.Id),
+                _ => products
+            };
+        else
+            products = products.OrderByDescending(x => x.UserInfos.Count());
+
         var retval = productService.GetProductDtos(products).ToList();
 
         if (User.IsInRole(RoleNames.User))
@@ -49,9 +61,16 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("manage"), Authorize(Roles = RoleNames.Admin)]
-    public IEnumerable<ProductDto> GetManageAllProducts()
+    public IEnumerable<ProductDto> GetManageAllProducts(string? query)
     {
-        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
+        var products = from p in dataContext.Set<Product>()
+                       select p;
+
+        if (!String.IsNullOrEmpty(query))
+            products = products.Where(x => x.Name!.Contains(query) || x.Publisher.CompanyName!.Contains(query));
+        
+        products = products.OrderByDescending(x => x.Id);
+
         return productService.GetProductDtos(products);
     }
 
@@ -106,15 +125,14 @@ public class ProductsController : ControllerBase
         if (publisherId == null || productDto.file == null || productDto.icon == null || productDto.Pictures == null)
             return BadRequest();
 
-        using (var image = new MagickImage(productDto.icon.OpenReadStream()))
-        {
-            if (image.Width != image.Height)
-                return BadRequest("Image not 1:1 aspect ratio");
-        }
-
         if (productDto.icon.Length > 102400)
             return BadRequest("Icon file is too large. Max file size is 100KiB");
 
+        using (var image = new MagickImage(productDto.icon.OpenReadStream()))
+        {
+            if (image.Width != image.Height)
+                return BadRequest("Icon not 1:1 aspect ratio");
+        }
 
         foreach (var picture in productDto.Pictures)
         {
@@ -122,15 +140,15 @@ public class ProductsController : ControllerBase
             {
                 var ratio = (double)image.Width / image.Height;
 
-                if (ratio is < 1.770 or > 1.78)
-                    return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
-
                 if (picture.Length > 5242880)
                     return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
+
+                if (ratio is < 1.7 or > 1.8)
+                    return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
             }
         }
 
-        var newIconFileName = Guid.NewGuid().ToString() + ".png";
+        var newIconFileName = Guid.NewGuid() + ".png";
         var product = new Product
         {
             Name = productDto.Name,
@@ -217,6 +235,12 @@ public class ProductsController : ControllerBase
             if (productDto.icon.Length > 102400)
                 return BadRequest("Icon file is too large. Max file size is 100KiB");
 
+            using (var image = new MagickImage(productDto.icon.OpenReadStream()))
+            {
+                if (image.Width != image.Height)
+                    return BadRequest("Icon not 1:1 aspect ratio");
+            }
+
             // Delete existing file
             var delPath = Path.Combine(Directory.GetCurrentDirectory(), $"ProductFiles//{id}", product.IconName);
             var delFile = new FileInfo(delPath);
@@ -235,6 +259,24 @@ public class ProductsController : ControllerBase
                 image.Write(iconPath);
             }
             product.IconName = newIconFileName;
+        }
+
+        //should be in a separate method
+        if (productDto.Pictures != null)
+        {
+            foreach (var picture in productDto.Pictures)
+            {
+                using (var image = new MagickImage(picture.OpenReadStream()))
+                {
+                    var ratio = (double)image.Width / image.Height;
+
+                    if (picture.Length > 5242880)
+                        return BadRequest("Picture " + picture.FileName + " too large. Max picture size is 5 MiB");
+
+                    if (ratio is < 1.7 or > 1.8)
+                        return BadRequest("Picture " + picture.FileName + " not 16:9 aspect ratio");
+                }
+            }
         }
 
         // Handle updating pictures
@@ -346,12 +388,16 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("/api/publisher/products"), Authorize(Roles = RoleNames.Publisher)]
-    public IEnumerable<ProductDto> GetPublisherProducts()
+    public IEnumerable<ProductDto> GetPublisherProducts(string? query)
     {
-        var products = dataContext.Set<Product>().OrderByDescending(x => x.Id);
         var publisherId = User.GetCurrentUserId();
+        var products = dataContext.Set<Product>().Where(x => x.PublisherId == publisherId);
 
-        return productService.GetProductDtos(products.Where(x => x.PublisherId == publisherId));
+        if (!String.IsNullOrEmpty(query))
+            products = products.Where(x => x.Name!.Contains(query));
+
+        products = products.OrderByDescending(x => x.Id);
+        return productService.GetProductDtos(products);
     }
 
     [HttpGet("library"), Authorize(Roles = RoleNames.User)]

@@ -8,7 +8,6 @@ export function refreshUserInfo() {
         if (!isEqual(JSON.parse(localStorage.getItem('user')), response.data)) {
           localStorage.removeItem('user');
           localStorage.setItem('user', JSON.stringify(response.data))
-          console.error("User data different, refreshing.")
           window.location.reload(false);
         }
       })
@@ -17,6 +16,5 @@ export function refreshUserInfo() {
           window.location.reload(false);
         }
         localStorage.removeItem('user');
-        console.log(error);
       });
   }

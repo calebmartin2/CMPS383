@@ -38,12 +38,10 @@ export function PublisherSignUp() {
             email: email
         })
             .then(function (response) {
-                console.log(response.data);
                 navigate("/Login", {state: {success: success } });
                 setLoading(false);
             })
             .catch(function (error) {
-                console.log(error);
                 setLoading(false);
             });
     }

@@ -37,12 +37,10 @@ export function SignUp() {
             password: password
         })
             .then(function (response) {
-                console.log(response.data);
                 setLoading(false);
                 navigate("/Login", {state: {success: success } });
             })
             .catch(function (error) {
-                console.log(error);
                 setLoading(false);
             });
     }
