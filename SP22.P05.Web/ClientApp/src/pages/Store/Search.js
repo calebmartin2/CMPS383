@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Breadcrumb, Button, Col, Form, FormControl, Row } from "react-bootstrap";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ProductList } from "./ProductList";
