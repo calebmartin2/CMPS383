@@ -6,17 +6,12 @@ import { ProductList } from "./ProductList";
 import SortDropdown from "./SortDropdown";
 
 export function Search() {
-    const [search, setSearch] = useState("");
     const navigate = useNavigate()
     const [searchParams] = useSearchParams();
     const query = searchParams.get("query");
-    const [sortOrder, setSortOrder] = useState("")
+    const [search, setSearch] = useState(query);
     const order = searchParams.get("sortOrder");
-
-    useEffect(() => {
-        query && setSearch(query);
-        order && setSortOrder(order);
-    }, [query, order]);
+    const [sortOrder, setSortOrder] = useState(order ? order : "most-popular")
 
     function handleSearch(e) {
         e.preventDefault();
