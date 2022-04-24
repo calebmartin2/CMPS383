@@ -40,7 +40,7 @@ public class ProductsController : ControllerBase
                 "highest-price" => products.OrderByDescending(x => x.Price),
                 "lowest-price" => products.OrderBy(x => x.Price),
                 "most-recent" => products.OrderByDescending(x => x.Id),
-                _ => products
+                _ => products.OrderByDescending(x => x.UserInfos.Count())
             };
         else
             products = products.OrderByDescending(x => x.UserInfos.Count());

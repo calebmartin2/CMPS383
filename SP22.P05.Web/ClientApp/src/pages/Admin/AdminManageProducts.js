@@ -91,6 +91,7 @@ export function AdminManageProducts() {
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
+                        <th>Icon</th>
                         <th>Name</th>
                         <th>Publisher</th>
                         <th>Status</th>
@@ -100,6 +101,7 @@ export function AdminManageProducts() {
                 <tbody>
                     {products.map((product) => (
                         <tr key={product.id}>
+                            <td style={{width: "2em"}}><img src={product.iconName} alt={"icon"} style={{width: "2em"}}/></td>
                             <td>{product.name}</td>
                             <td>{product.publisherName}</td>
                             <td>

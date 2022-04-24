@@ -73,7 +73,7 @@ export default function PublisherManageProducts() {
                     <h1>Manage Products</h1>
                 </Col>
                 <Col sm={8} md={4} lg={2}>
-                    <Button variant="primary" className="custom-primary-btn mb-3" onClick={() => handleAddShow()} style={{float: "right"}}>Add Product</Button>
+                    <Button variant="primary" className="custom-primary-btn mb-3" onClick={() => handleAddShow()} style={{ float: "right" }}>Add Product</Button>
                 </Col>
                 <Col sm={12} md={12} lg={4}>
                     <Form onSubmit={e => { e.preventDefault() }}>
@@ -95,10 +95,10 @@ export default function PublisherManageProducts() {
                 ? <Spinner animation="border" variant="info" />
                 : products.length > 0 ?
                     <>
-
                         <Table striped bordered hover variant="dark">
                             <thead>
                                 <tr>
+                                    <th>Icon</th>
                                     <th>Name</th>
                                     <th>Price</th>
                                     <th>Status</th>
@@ -108,6 +108,7 @@ export default function PublisherManageProducts() {
                             <tbody>
                                 {products.map((product) => (
                                     <tr key={product.id}>
+                                        <td style={{ width: "2em" }}><img src={product.iconName} alt={"icon"} style={{ width: "2em" }} /></td>
                                         <td>{product.name}</td>
                                         <td>${product.price.toFixed(2)}</td>
                                         <td>{product.status === 0 ? "Active" : product.status === 1 ? "Hidden" : product.status === 2 ? "Inactive" : null}</td>
