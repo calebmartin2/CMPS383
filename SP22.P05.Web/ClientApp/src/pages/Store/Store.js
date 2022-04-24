@@ -8,21 +8,18 @@ import SortDropdown from "./SortDropdown";
 export function Home() {
 
   const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState("");
   const [searchParams] = useSearchParams();
   const order = searchParams.get("sortOrder");
+  const [sortOrder, setSortOrder] = useState(order ? order : "most-popular");
 
   const navigate = useNavigate()
-
-  useEffect(() => {
-    order ? setSortOrder(order) : setSortOrder('most-popular')
-  }, [order]);
 
   function handleSearch(e) {
     e.preventDefault();
     const path = axios.getUri({ url: "/search/", params: { query: search } });
     navigate(path)
   }
+  
   function handleSelect(e) {
     const path = axios.getUri({ url: "/", params: { sortOrder: e } });
     navigate(path)

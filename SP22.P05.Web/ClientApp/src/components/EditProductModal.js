@@ -93,7 +93,7 @@ export function EditProduct({ product, handleClose }) {
                                 animation="border"
                                 size="sm"
                                 role="status"
-                                aria-hidden="true" />Saving Changes</> : <>Save Changes</>}
+                                aria-hidden="true" /> Saving Changes</> : <>Save Changes</>}
                         </Button>
                         <Button variant="danger" onClick={handleClose}>
                             Discard
